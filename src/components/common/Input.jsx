@@ -12,7 +12,6 @@ const Label = styled.label`
   display: flex;
   align-items: center;
   height: 34px;
-  font-family: 'Pretendard';
   font-size: 16px;
   color: #000;
   font-style: normal;
@@ -27,12 +26,16 @@ const StyledInput = styled.input`
   padding: 0 16px;
   border: 1px solid #D9695C;
   border-radius: 10px;
+  box-sizing: border-box;
   outline: none;
+  font-family: inherit;
   font-size: 16px;
+  font-weight: 400;
   background-color: #FFF;
 
   &::placeholder {
     color: #A5A5A5;
+    font-weight: 400;
   }
 
   &:focus {
@@ -41,7 +44,9 @@ const StyledInput = styled.input`
 `;
 
 const HelperText = styled.div`
+  font-family: 'Pretendard', sans-serif;
   font-size: 16px;
+  font-weight: 400;
   margin-top: 4px;
   color: #D9695C;
 `;
