@@ -1,33 +1,56 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import {
+  CheerUp,
+  GoodJob,
+  Hi,
+  NeedHelp,
+  NiceToMeet,
+  OnMyWay,
+  RunningLate,
+  Tired,
+  WorkingHard,
+} from './components/common/Badge';
+import Goal from './components/common/Goal';
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [value, setValue] = useState('');
+  const [completed, setCompleted] = useState(false);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        <Goal
+          value={value}
+          completed={completed}
+          onChange={(e) => setValue(e.target.value)}
+          onComplete={() => setCompleted(true)}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '10px',
+        }}
+      >
+        <Hi />
+        <NiceToMeet />
+        <CheerUp />
+        <WorkingHard />
+        <OnMyWay />
+        <Tired />
+        <NeedHelp />
+        <RunningLate />
+        <GoodJob />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }

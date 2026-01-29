@@ -1,6 +1,6 @@
 import { PILL_CONFIG } from '../../constants/PILL_CONFIG';
 import { PillShape } from './PillShape.jsx';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { useRef, useEffect } from 'react';
 
 const GoalTextArea = styled.textarea`

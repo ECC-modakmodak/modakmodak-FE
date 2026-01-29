@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { PILL_CONFIG } from '../../constants/PILL_CONFIG';
 import { PillShape } from './PillShape';
 
@@ -12,8 +12,8 @@ const PillBase = styled.span`
 `;
 
 export default function Pill({
-  variant, // goal, badge, remind, mood, type, today
-  state, // eg. for goal: default, completed
+  variant, // badge, remind, mood, type, today
+  state,
   children,
   ...props
 }) {
