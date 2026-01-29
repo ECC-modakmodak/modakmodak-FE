@@ -15,6 +15,7 @@ import { useState } from 'react';
 import Remind from './components/common/tagChip/Remind';
 import { Chatty, Quiet } from './components/common/tagChip/Mood';
 import { Cafe, Cam, Other, Zoom } from './components/common/tagChip/StudyType';
+import Today from './components/common/tagChip/Today';
 
 function App() {
   const [value, setValue] = useState('');
@@ -91,6 +92,19 @@ function App() {
           <Cam />
           <Other />
         </div>
+      </div>
+      {/* 오늘의 팟  */}
+      <div
+        style={{
+          marginTop: '30px',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '10px',
+        }}
+      >
+        <Today label="이화여대" />
+        <Today label="21:00" />
+        <Today label="모각코" />
       </div>
     </div>
   );

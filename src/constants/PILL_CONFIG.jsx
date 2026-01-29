@@ -58,6 +58,8 @@ export const PILL_CONFIG = {
       cam: { bg: 'rgba(255, 154, 38, 0.55)' },
       other: { bg: 'rgba(38, 172, 255, 0.55)' },
     },
-    today: { bg: '#fff', color: '#D9695C', border: '1px solid #D9695C' },
+    today: {
+      default: { bg: '#fff', color: '#D9695C', border: '1px solid #D9695C' },
+    },
   },
 };
