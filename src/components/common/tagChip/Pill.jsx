@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { PILL_CONFIG } from '../../constants/PILL_CONFIG';
+import { PILL_CONFIG } from '../../../constants/PILL_CONFIG';
 import { PillShape } from './PillShape';
 
 const PillBase = styled.span`

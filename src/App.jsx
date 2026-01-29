@@ -9,17 +9,22 @@ import {
   RunningLate,
   Tired,
   WorkingHard,
-} from './components/common/Badge';
-import Goal from './components/common/Goal';
+} from './components/common/tagChip/Badge';
+import Goal from './components/common/tagChip/Goal';
 import { useState } from 'react';
-import Remind from './components/common/Remind';
+import Remind from './components/common/tagChip/Remind';
+import { Chatty, Quiet } from './components/common/tagChip/Mood';
+import { Cafe, Cam, Other, Zoom } from './components/common/tagChip/StudyType';
 
 function App() {
   const [value, setValue] = useState('');
   const [completed, setCompleted] = useState(false);
 
   return (
-    <>
+    <div
+      className="App"
+      style={{ backgroundColor: '#ffffff', padding: '50px' }}
+    >
       {/* 목표 입력 테스트 */}
       <div
         style={{
@@ -58,7 +63,36 @@ function App() {
       <div style={{ marginTop: '30px' }}>
         <Remind />
       </div>
-    </>
+      {/* 공부 태그 테스트 */}
+      <div>
+        {/* 분위기 태그 */}
+        <div
+          style={{
+            marginTop: '30px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '10px',
+          }}
+        >
+          <Chatty />
+          <Quiet />
+        </div>
+        {/* 공부 유형 태그 */}
+        <div
+          style={{
+            marginTop: '30px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '10px',
+          }}
+        >
+          <Cafe />
+          <Zoom />
+          <Cam />
+          <Other />
+        </div>
+      </div>
+    </div>
   );
 }
 
