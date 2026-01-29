@@ -10,6 +10,8 @@ const GoalTextArea = styled.textarea`
   outline: none;
   resize: none;
   text-align: center;
+  font: inherit;
+  line-height: 1.1;
 
   box-sizing: border-box;
   height: auto;
@@ -74,8 +76,8 @@ export default function Goal({
     const pr = parseFloat(cs.paddingRight);
 
     const textW = m.scrollWidth;
-    const nextW = clamp(textW + pl + pr, 30, 300);
-    const finalW = value ? nextW : 300;
+    const nextW = clamp(textW + pl + pr, 30, 250);
+    const finalW = value ? nextW : 250;
 
     t.style.width = `${finalW}px`;
 

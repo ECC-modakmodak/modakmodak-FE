@@ -1,21 +1,20 @@
-import './App.css';
-import {
-  CheerUp,
-  GoodJob,
-  Hi,
-  NeedHelp,
-  NiceToMeet,
-  OnMyWay,
-  RunningLate,
-  Tired,
-  WorkingHard,
-} from './components/common/tagChip/Badge';
-import Goal from './components/common/tagChip/Goal';
 import { useState } from 'react';
-import Remind from './components/common/tagChip/Remind';
-import { Chatty, Quiet } from './components/common/tagChip/Mood';
-import { Cafe, Cam, Other, Zoom } from './components/common/tagChip/StudyType';
-import Today from './components/common/tagChip/Today';
+import Goal from '../components/common/tagChip/Goal';
+import Remind from '../components/common/tagChip/Remind';
+import {
+  Hi,
+  NiceToMeet,
+  CheerUp,
+  WorkingHard,
+  OnMyWay,
+  Tired,
+  NeedHelp,
+  RunningLate,
+  GoodJob,
+} from '../components/common/tagChip/Badge';
+import { Chatty, Quiet } from '../components/common/tagChip/Mood';
+import { Cafe, Zoom, Cam, Other } from '../components/common/tagChip/StudyType';
+import Today from '../components/common/tagChip/Today';
 
 export default function ComponentTest() {
   const [value, setValue] = useState('');
