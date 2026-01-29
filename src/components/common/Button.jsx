@@ -33,7 +33,7 @@ const StyledButton = styled.button`
           font-size: 14px;
           font-weight: 500;
           border-radius: 10px;
-          width: auto;
+          width: 100%;
           padding: 0 20px;
         `;
       case 'small':
