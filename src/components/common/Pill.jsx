@@ -7,6 +7,7 @@ const PillBase = styled.span`
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  cursor: pointer;
 
   ${PillShape}
 `;

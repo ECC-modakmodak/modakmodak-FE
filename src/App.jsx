@@ -12,6 +12,7 @@ import {
 } from './components/common/Badge';
 import Goal from './components/common/Goal';
 import { useState } from 'react';
+import Remind from './components/common/Remind';
 
 function App() {
   const [value, setValue] = useState('');
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <>
+      {/* 목표 입력 테스트 */}
       <div
         style={{
           display: 'flex',
@@ -33,6 +35,7 @@ function App() {
           onComplete={() => setCompleted(true)}
         />
       </div>
+      {/* 상태 배지 테스트 */}
       <div
         style={{
           display: 'flex',
@@ -50,6 +53,10 @@ function App() {
         <NeedHelp />
         <RunningLate />
         <GoodJob />
+      </div>
+      {/* 회고 테스트 */}
+      <div style={{ marginTop: '30px' }}>
+        <Remind />
       </div>
     </>
   );
