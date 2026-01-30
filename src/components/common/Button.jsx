@@ -16,13 +16,14 @@ const StyledButton = styled.button`
   ${(props) => {
     if (props.variant === 'chip') {
       return `
-        height: 43px;
-        padding: 9px 22px;
+        height: 50px;
+        padding: 10px 20px;
         gap: 10px;
         border-radius: 100px;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         width: auto;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
       `;
     }
 
