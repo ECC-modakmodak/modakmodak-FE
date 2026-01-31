@@ -14,14 +14,12 @@ const Label = styled.label`
   height: 34px;
   font-size: 16px;
   color: #000;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
   margin-bottom: 4px;
 `;
 
 const StyledInput = styled.input`
-  width: ${(props) => props.width || '100%'};
+  width: 100%;
   height: 61px;
   padding: 0 16px;
   border: 1px solid #D9695C;
