@@ -5,39 +5,43 @@ const InputWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: ${(props) => props.width || '100%'};
-  margin-bottom: 16px;
+  margin-bottom: 25px;
 `;
 
 const Label = styled.label`
   display: flex;
   align-items: center;
   height: 34px;
-  font-size: 16px;
   color: #000;
-  font-weight: 400;
+  font-size: ${(props) => props.fontSize || '16px'};
+  font-weight: ${(props) => props.fontWeight || '400'};
   margin-bottom: 4px;
 `;
 
 const StyledInput = styled.input`
   width: 100%;
-  height: 61px;
-  padding: 0 16px;
-  border: 1px solid #D9695C;
+  /* 팟 만들기(50px), 회원가입(61px), 기타(40px) */
+  height: ${(props) => props.height || '61px'};
+  /* 회원가입(13/20), 팟 만들기(14/23), 기타(11/19) */
+  padding: ${(props) => props.padding || '13px 20px'};
+
+  border: 1px solid ${(props) => props.variant === 'black' ? '#000' : '#D9695C'};
   border-radius: 10px;
   box-sizing: border-box;
   outline: none;
   font-family: inherit;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: ${(props) => props.fontSize || '16px'};
+  font-weight: ${(props) => props.fontWeight || '400'};
+  color: #000;
   background-color: #FFF;
 
   &::placeholder {
-    color: #A5A5A5;
+    color: ${(props) => props.variant === 'black' ? '#D9D9D9' :'#A5A5A5'};
     font-weight: 400;
   }
 
   &:focus {
-    border-color: #D9695C;
+    border-color: ${(props) => props.variant === 'black' ? '#000' : '#D9695C'};
   }
 `;
 
@@ -49,14 +53,25 @@ const HelperText = styled.div`
   color: #D9695C;
 `;
 
-const Input = ({ label, helperText, error, width, ...props }) => {
+export default function Input({ label, helperText, width, height, padding, fontSize, fontWeight, variant, ...props}) {
   return (
     <InputWrapper width={width}>
-      {label && <Label>{label}</Label>}
-      <StyledInput error={error} {...props} />
-      {helperText && <HelperText error={error}>{helperText}</HelperText>}
+      {label && (
+        <Label fontSize={fontSize} fontWeight={fontWeight}>
+          {label}
+        </Label>
+      )}
+
+      <StyledInput
+        height={height}
+        padding={padding}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+        variant={variant}
+        {...props}
+      />
+
+      {helperText && <HelperText>{helperText}</HelperText>}
     </InputWrapper>
   );
-};
-
-export default Input;
+}
