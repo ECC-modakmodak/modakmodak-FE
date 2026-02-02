@@ -91,9 +91,6 @@ const Button = styled.button`
   font-weight: 500;
 `;
 
-
-/* === disablelink -> 허용 but 추가 창 작업, 알림창도 디자인 === */
-
 /* 미완성된 페이지 처리 */
 export default function NavBar() {
   const DisabledLink = (e) => {
