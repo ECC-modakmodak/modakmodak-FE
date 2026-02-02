@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logoSvg from '../../assets/svg/logo.svg';
@@ -16,7 +16,7 @@ const NavWrap = styled.nav`
   width: 100%;
   min-height: 110px;
   padding: 20px 3.125% 20px 5.208%;
-  background-color: #FFF;
+  background-color: #fff;
   text-align: center;
 `;
 /* 좌측 메뉴 (팟, 팟메이트, 회고) */
@@ -29,10 +29,10 @@ const Left = styled.div`
 `;
 const TextLink_Red = styled(Link)`
   text-decoration: none;
-  color: #D9695C;
+  color: #d9695c;
 
   &:visited {
-    color: #D9695C;
+    color: #d9695c;
   }
 `;
 const TextLink_Blk = styled(Link)`
@@ -83,10 +83,10 @@ const Button = styled.button`
   height: clamp(38px, 8vw, 61px);
 
   border-radius: 10px;
-  border: 1px solid #D9695C;
-  background: #FBF2F1;
+  border: 1px solid #d9695c;
+  background: #fbf2f1;
 
-  color: #D9695C;
+  color: #d9695c;
   font-size: clamp(16px, 2.4vw, 25px);
   font-weight: 500;
 `;
@@ -102,12 +102,18 @@ export default function NavBar() {
     <NavWrap>
       <Left>
         <TextLink_Red to="/">팟</TextLink_Red> {/* 팟 페이지 링크 연결 */}
-        <TextLink_Blk to="/" onClick={DisabledLink}>팟메이트</TextLink_Blk>
-        <TextLink_Blk to="/" onClick={DisabledLink}>회고</TextLink_Blk>
+        <TextLink_Blk to="/" onClick={DisabledLink}>
+          팟메이트
+        </TextLink_Blk>
+        <TextLink_Blk to="/" onClick={DisabledLink}>
+          회고
+        </TextLink_Blk>
       </Left>
 
       <Center>
-        <LogoLink to="/"> {/* 홈 페이지 연결 필요*/}
+        <LogoLink to="/">
+          {' '}
+          {/* 홈 페이지 연결 필요*/}
           <LogoImg src={logoSvg} alt="logo" />
         </LogoLink>
       </Center>
@@ -118,7 +124,7 @@ export default function NavBar() {
           <span>알림 0</span>
         </RightBox>
         <RightBox to="/" onClick={DisabledLink}>
-          <RightImg src={profileSvg} alt="profile" /> 
+          <RightImg src={profileSvg} alt="profile" />
           <span>닉네임</span>
         </RightBox>
         <Button type="button">로그아웃</Button>
