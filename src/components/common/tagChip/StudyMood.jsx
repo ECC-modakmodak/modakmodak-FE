@@ -1,0 +1,20 @@
+import Pill from './Pill';
+
+const STUDY_MOOD_DATA = {
+  chatty: { label: '#도란도란', backgroundColor: 'rgba(54, 78, 233, 0.55)' },
+  quiet: { label: '#조용히', backgroundColor: 'rgba(74, 198, 33, 0.55)' },
+};
+
+export default function StudyMood({ type }) {
+  const studyMood = STUDY_MOOD_DATA[type] || {};
+  return (
+    <Pill
+      variant="filled"
+      size="small"
+      backgroundColor={studyMood.backgroundColor}
+      style={{ cursor: 'default' }}
+    >
+      {studyMood.label}
+    </Pill>
+  );
+}
