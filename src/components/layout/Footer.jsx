@@ -15,7 +15,7 @@ const FooterWrap = styled.footer`
   justify-content: center;
 
   text-align: center;
-  font-size: 20px;
+  ffont-size: clamp(12px, 2.5vw, 20px);
   font-weight: 400;
   color: #A5A5A5;
 
