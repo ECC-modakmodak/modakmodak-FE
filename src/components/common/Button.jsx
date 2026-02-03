@@ -6,29 +6,52 @@ const StyledButton = styled.button`
   box-sizing: border-box;
   white-space: nowrap;
   font-family: 'Pretendard', sans-serif;
-  font-style: normal;
-  line-height: normal;
   text-align: center;
   align-items: center;
   cursor: pointer;
   transition: transform 0.1s ease;
   
-  ${({shape, size}) => {
+  ${({shape, size, height, fontSize, fontWeight, padding}) => {
+    const styleDefaults = {
+      chip: {
+        // 회고 마무리 버튼
+        large: { h: '50px', fz: '24px', fw: '600', p: '10px 20px'},
+        // 홈 화면 확인하기 버튼
+        small: { h: '39px', fz: '20px', fw: '400', p: '0 0' }
+      },
+      rect: {
+        large: { h: '61px', fz: '20px', fw: '500', p: '0 20px' },
+        // 참여 신청하기 버튼
+        slim: { h: '40px', fz: '14px', fw: '500', p: '0 20px' },
+        full: { h: '61px', fz: '20px', fw: '500', p: '0 20px' }
+      }
+    };
+
+    const config = styleDefaults[shape]?.[size] || styleDefaults.rect.large;
+
+    const finalHeight = height || config.h;
+    const finalFontSize = fontSize || config.fz;
+    const finalFontWeight = fontWeight || config.fw;
+    const finalPadding = padding || config.p;
+
     // 알약 형태 버튼 (회고 마무리, 홈 화면의 확인하기 등)
     if(shape === 'chip') {
       return `
-        height: ${size === 'large' ? '50px' : '39px'};
-        padding: ${size === 'large' ? '10px 20px' : '0 0'};
+        height: ${finalHeight};
+        font-size: ${finalFontSize};
+        font-weight: ${finalFontWeight};
+        padding: ${finalPadding};
         border-radius: 100px;
         box-shadow: 0 0 ${size === 'large' ? '10px' : '7px'} rgba(0, 0, 0, 0.25);
-        font-size: ${size === 'large' ? '24px' : '20px'};
-        font-weight: ${size === 'large' ? '600' : '400'};
         width: auto;
       `;
     }
     // 기본 사각 형태 (로그인, 회원가입, 중복확인 등)
     return `
-      height: ${size === 'slim' ? '40px' : '61px'};
+      height: ${finalHeight};
+      font-size: ${finalFontSize};
+      font-weight: ${finalFontWeight};
+      padding: ${finalPadding};
       border-radius: 10px;
       width: ${size === 'full' ? '100%' : 'auto'};
     `;
@@ -36,13 +59,9 @@ const StyledButton = styled.button`
 
   background-color: ${({variant, bgColor}) => {
     if(bgColor) return bgColor;
-    switch (variant) {
-      case 'gray': return '#D9D9D9';
-      case 'secondary': return '#FBF2F1';
-      case 'white': return '#FFF';
-      default: return '#D9695C';
-    }
-  }}
+    const colors = { gray: '#D9D9D9', secondary: '#FBF2F1', white: '#FFF' };
+    return colors[variant] || '#D9695C';
+  }};
 
   color: ${({variant}) => {
     if (variant === 'gray' || variant === 'white') return '#000';
@@ -50,24 +69,23 @@ const StyledButton = styled.button`
     return '#FFF';
   }};
 
+  border: ${({variant}) => (variant === 'secondary' ? '1px solid #D9695C' : 'none')};
+  
   &:active {
     opacity: 0.8;
     transform: scale(0.98);
   }
-
-  border: ${({variant}) => (variant === 'secondary' ? '1px solid #D9695C' : 'none')};
-  font-size: ${({fontSize}) => fontSize || '16px'};
-  font-weight: ${({fontWeight}) => fontWeight || '500'};
   `;
 
- 
-
-  const Button = ({ children, shape = 'rect', size = 'large', variant = 'primary', fontSize, fontWeight, bgColor, ...props}) => {
+  export default function Button({ children, shape = 'rect', size = 'large', variant = 'primary', ...props}) {
     return (
-      <StyledButton shape={shape} size={size} variant={variant} fontSize={fontSize} fontWeight={fontWeight} bgColor={bgColor} {...props}>
+      <StyledButton
+        shape={shape}
+        size={size}
+        variant={variant}
+        {...props}
+      >
         {children}
       </StyledButton>
     );
-  };
-
-  export default Button;
+  }
