@@ -1,9 +1,9 @@
 import Pill from './Pill';
 
-export default function Today({ label }) {
+export default function Today({ content }) {
   return (
-    <Pill variant="today" state="default" style={{ cursor: 'default' }}>
-      {label}
+    <Pill variant="outlined" size="large" style={{ cursor: 'default' }}>
+      {content}
     </Pill>
   );
 }
