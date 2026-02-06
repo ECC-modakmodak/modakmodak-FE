@@ -383,7 +383,7 @@ export default function Home() {
                       padding: '0',
                     }}
                   >
-                    <p>회고할 팟이 없어요!</p>
+                    <p>회고할 팟이 없어요.</p>
                   </SubText>
                 )}
               </SubCard>
