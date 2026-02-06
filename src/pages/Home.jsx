@@ -13,7 +13,7 @@ import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
 
 // (임시) 팟 대표 이미지
-import potImg1 from '../assets/images/potImg1.JPG';
+import podImg1 from '../assets/images/podImg1.JPG';
 
 // === 전체 큰 틀 ===
 
@@ -177,7 +177,7 @@ const Grid = styled.div`
   gap: 24px;
 `;
 
-const PotCard = styled(Link)`
+const PodCard = styled(Link)`
   height: 300px;
   background: #fff;
   border-radius: 30px;
@@ -196,25 +196,25 @@ const PotCard = styled(Link)`
   }
 `;
 
-const PotImg = styled.img`
+const PodImg = styled.img`
   margin: 33px 0 0 0;
   width: 100%;
   height: 47%;
   object-fit: cover;
 `;
 
-const PotBody = styled.div`
+const PodBody = styled.div`
   padding: 12px 16px 20px 16px;
 `;
 
-const PotName = styled.p`
+const PodName = styled.p`
   margin: 8px 0 10px;
   font-size: 20px;
   font-weight: 400;
   color: #000;
 `;
 
-const PotDetail = styled.div`
+const PodDetail = styled.div`
   display: flex;
   gap: 12px;
   font-size: 16px;
@@ -228,7 +228,7 @@ const PotDetail = styled.div`
   }
 `;
 
-const PotSvg = styled.img`
+const PodSvg = styled.img`
   width: 24px;
   height: 24px;
 
@@ -256,7 +256,7 @@ export default function Home() {
   };
 
   // [기능 추가 필요]  - 팟 생성 일자 최신순으로 12개 정렬
-  const recommendPots = Array.from({ length: 12 }).map((_, i) => ({
+  const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
     id: i,
     mood: i % 2 === 0 ? 'chatty' : 'quiet',
     type: i % 3 === 0 ? 'cafe' : i % 3 === 1 ? 'zoom' : 'other',
@@ -302,7 +302,8 @@ export default function Home() {
                     <Phill shape="chip" variant="outlined" size="large">
                       {today.place}
                     </Phill>
-                    에서{' '}
+                    에서
+                    {' '}
                     <Phill shape="chip" variant="outlined" size="large">
                       {today.name}
                     </Phill>
@@ -383,7 +384,7 @@ export default function Home() {
                       padding: '0',
                     }}
                   >
-                    <p>회고할 팟이 없어요!</p>
+                    <p>회고할 팟이 없어요.</p>
                   </SubText>
                 )}
               </SubCard>
@@ -395,34 +396,34 @@ export default function Home() {
             <SectionTitle>함꼐할 팟 찾기</SectionTitle>
             {/* 추천 팟 목록 grid 3*4 12개 */}
             <Grid>
-              {recommendPots.map((p) => (
-                <PotCard key={p.id} to={`/p/${p.id}`}>
+              {recommendPods.map((p) => (
+                <PodCard key={p.id} to={`/p/${p.id}`}>
                   {/* (임시) 팟 상세 페이지로 이동 */}
-                  <PotImg src={potImg1} alt="팟 이미지" />
-                  <PotBody>
+                  <PodImg src={podImg1} alt="팟 이미지" />
+                  <PodBody>
                     <Tag>
                       <StudyMood type={p.mood} />
                       <StudyType type={p.type} />
                     </Tag>
 
-                    <PotName>{p.title}</PotName>
+                    <PodName>{p.title}</PodName>
 
-                    <PotDetail>
+                    <PodDetail>
                       {p.location ? (
                         /* 위치 정보 o */
                         <span>
-                          <PotSvg src={Location_S} alt="위치" />
+                          <PodSvg src={Location_S} alt="위치" />
                           {p.location}
                         </span>
                       ) : /* 위치 정보 x */
                       null}
                       <span>
-                        <PotSvg src={Profile_S} alt="참여인원" />
+                        <PodSvg src={Profile_S} alt="참여인원" />
                         {p.people}
                       </span>
-                    </PotDetail>
-                  </PotBody>
-                </PotCard>
+                    </PodDetail>
+                  </PodBody>
+                </PodCard>
               ))}
             </Grid>
           </Section>
