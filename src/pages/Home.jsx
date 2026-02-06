@@ -302,7 +302,8 @@ export default function Home() {
                     <Phill shape="chip" variant="outlined" size="large">
                       {today.place}
                     </Phill>
-                    에서{' '}
+                    에서
+                    {' '}
                     <Phill shape="chip" variant="outlined" size="large">
                       {today.name}
                     </Phill>
