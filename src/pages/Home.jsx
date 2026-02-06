@@ -17,7 +17,7 @@ import podImg1 from '../assets/images/podImg1.JPG';
 
 // === 전체 큰 틀 ===
 
-// 1920*1962 비율 맞춰서 반응형 수정 필요
+// 1920*1024 비율 맞춰서 반응형 수정 필요
 const Page = styled.div`
   width: 100%;
   min-height: 100vh;
