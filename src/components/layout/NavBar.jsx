@@ -14,7 +14,7 @@ const NavWrap = styled.nav`
   justify-content: space-between; /* 가로축 */
   align-items: center; /* 세로축 */
   width: 100%;
-  min-height: 110px;
+  min-height: 130px;
   padding: 20px 3.125% 20px 5.208%;
   background-color: #fff;
   text-align: center;
