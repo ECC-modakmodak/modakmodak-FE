@@ -7,7 +7,6 @@ const GoalTextArea = styled.textarea`
   field-sizing: content;
   min-width: 30px;
   max-width: 250px;
-  min-height: 40px;
 
   display: block;
   outline: none;
