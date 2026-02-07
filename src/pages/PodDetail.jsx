@@ -2,10 +2,12 @@ import styled from '@emotion/styled';
 import PodPreview from '../components/pod/PodPreview';
 import Button from '../components/common/Button';
 import PodMember from '../components/pod/PodMember';
-import { useState } from 'react';
+import ApplyPopup from '../components/popup/ApplyPopup';
+import { useEffect, useState } from 'react';
+import ApplyConfirmPopup from '../components/popup/ApplyConfirmPopup';
 
 export default function PodDetail() {
-  const isHost = true; // 임시 플래그, 추후 수정 필요
+  const isHost = false; // (임시) 팟장 모드 전환
 
   // 팟장이 수정 가능한 팟 정보
   const [podInfo, setPodInfo] = useState({
@@ -21,6 +23,12 @@ export default function PodDetail() {
       [name]: value,
     }));
   };
+
+  // 참여 신청 팝업
+  const [isApplyPopupOpen, setIsApplyPopupOpen] = useState(false);
+  const [timeChecked, setTimeChecked] = useState(false);
+  const [placeChecked, setPlaceChecked] = useState(false);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
 
   const [members, setMembers] = useState([
     {
@@ -61,49 +69,91 @@ export default function PodDetail() {
     }));
   };
 
+  // 팝업 뜨면 스크롤 제어
+  useEffect(() => {
+    if (isApplyPopupOpen || isConfirmPopupOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isApplyPopupOpen, isConfirmPopupOpen]);
+
   return (
-    <PodDetailContainer>
-      <PodPreviewContainer>
-        <PodPreview
-          podImage="/images/img-placeholder.png"
-          podName="모닥모닥코"
-          location="이대"
-          currentPeople={3}
-          maxPeople={5}
-          description="혼자서는 아무것도 못하는 감자예요🥔 같이 코드 쓸 사람?"
-          studyMood="chatty"
-          studyType="cafe"
-          time={podInfo.time}
-          place={podInfo.place}
-          isHost={isHost}
-          hostMention={podInfo.hostMention}
-          onInputChange={handleUpdatedPodInfo}
-        />
-        <ButtonWrapper>
-          <Button shape="rect" size="slim" width="200px">
-            {isHost ? '팟 모집 종료하기' : '참여 신청하기'}
-          </Button>
-        </ButtonWrapper>
-      </PodPreviewContainer>
-      <PodDetailInfoContainer>
-        {members.map((member) => (
-          <PodMember
-            key={member.id}
-            id={member.id}
-            profileImage={member.profileImage}
-            name={member.name}
-            goal={member.goal}
-            isHost={member.isHost}
-            hostMention={member.isHost ? podInfo.hostMention : ''}
-            onHostMentionChange={handleUpdatedPodInfo}
-            status={member.status}
-            showAttendance={isHost}
-            attendenceChecked={!!attendenceById[member.id]}
-            onToggleAttendance={() => onToggleAttendance(member.id)}
+    <>
+      <PodDetailContainer>
+        <PodPreviewContainer>
+          <PodPreview
+            podImage="/images/img-placeholder.png"
+            podName="모닥모닥코"
+            location="이대"
+            currentPeople={3}
+            maxPeople={5}
+            description="혼자서는 아무것도 못하는 감자예요🥔 같이 코드 쓸 사람?"
+            studyMood="chatty"
+            studyType="cafe"
+            time={podInfo.time}
+            place={podInfo.place}
+            isHost={isHost}
+            hostMention={podInfo.hostMention}
+            onInputChange={handleUpdatedPodInfo}
           />
-        ))}
-      </PodDetailInfoContainer>
-    </PodDetailContainer>
+          <ButtonWrapper>
+            <Button
+              shape="rect"
+              size="slim"
+              width="200px"
+              onClick={() => {
+                isHost ? null : setIsApplyPopupOpen(true);
+              }}
+            >
+              {isHost ? '팟 모집 종료하기' : '참여 신청하기'}
+            </Button>
+          </ButtonWrapper>
+        </PodPreviewContainer>
+        <PodDetailInfoContainer>
+          {members.map((member) => (
+            <PodMember
+              key={member.id}
+              id={member.id}
+              profileImage={member.profileImage}
+              name={member.name}
+              goal={member.goal}
+              isHost={member.isHost}
+              hostMention={member.isHost ? podInfo.hostMention : ''}
+              onHostMentionChange={handleUpdatedPodInfo}
+              status={member.status}
+              showAttendance={isHost}
+              attendenceChecked={!!attendenceById[member.id]}
+              onToggleAttendance={() => onToggleAttendance(member.id)}
+            />
+          ))}
+        </PodDetailInfoContainer>
+      </PodDetailContainer>
+      {isApplyPopupOpen && (
+        <>
+          <Overlay onClick={() => setIsApplyPopupOpen(false)} />
+          <ApplyPopup
+            setIsApplyPopupOpen={setIsApplyPopupOpen}
+            timeChecked={timeChecked}
+            setTimeChecked={setTimeChecked}
+            placeChecked={placeChecked}
+            setPlaceChecked={setPlaceChecked}
+            podInfo={podInfo}
+            onConfirm={() => setIsConfirmPopupOpen(true)}
+          />
+        </>
+      )}
+      {isConfirmPopupOpen && (
+        <>
+          <Overlay onClick={() => setIsConfirmPopupOpen(false)} />
+          <ApplyConfirmPopup
+            setIsConfirmPopupOpen={setIsConfirmPopupOpen}
+            isOpen={isConfirmPopupOpen}
+            onClose={() => setIsConfirmPopupOpen(false)}
+          />
+        </>
+      )}
+    </>
   );
 }
 
@@ -133,4 +183,11 @@ const PodDetailInfoContainer = styled.div`
   border-radius: 30px;
   gap: 20px;
   padding: 18px;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: transparent;
+  z-index: 999;
 `;

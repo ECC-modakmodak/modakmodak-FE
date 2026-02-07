@@ -224,7 +224,7 @@ const PodDetailInfoItem = styled.div`
   font-weight: 400;
 
   input {
-    color: ${(props) => (props.$isEditMode ? '#D9695C' : '#000')};
+    color: ${(props) => (props.$isUpdated ? '#D9695C' : '#000')};
   }
 
   img {
@@ -243,7 +243,8 @@ const EditContainer = styled.div`
 `;
 
 const EditInput = styled.input`
-  flex: 0 1 auto;
+  flex: 1;
+  min-width: 0;
   width: ${(props) => props.value.length + 2}ch;
   border: none;
   font-family: inherit;
@@ -261,7 +262,6 @@ const EditInput = styled.input`
 
 const EditButton = styled.button`
   flex-shrink: 0;
-  white-space: nowrap;
   font-size: 14px;
   font-weight: 500;
   color: #828282;
