@@ -12,7 +12,7 @@ const Page = styled.div`
   height: 100%;
   padding: 60px 0;
   margin: 0;
-  
+
   box-sizing: border-box;
   flex-direction: column;
   align-items: center;
@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  margin-bottom: 41px;  
+  margin-bottom: 41px;
 
   color: #000;
   font-size: 28px;
@@ -51,8 +51,8 @@ const Content = styled.div`
   height: 500px;
 
   border-radius: 500px;
-  background: #FBF2F1;
-  box-shadow: 0 0 10px 0 #D9695C;
+  background: #fbf2f1;
+  box-shadow: 0 0 10px 0 #d9695c;
 
   position: relative;
 `;
@@ -93,7 +93,7 @@ const OtherInputWrapper = styled.div`
   top: 50%;
   transform: translateY(-50%);
   margin-left: 15px;
-  
+
   display: flex;
   align-items: center;
   gap: 8px;
@@ -105,28 +105,19 @@ const OtherInput = styled(Input)`
   width: 186px;
   height: 40px;
   padding: 11px 19px;
-  
-  border-radius: 10px;
-  border: 1px solid #000;
-  outline: none;
-  
+
   font-size: 16px;
   color: #000;
   background: #fff;
-  font-family: 'Pretendard', sans-serif;
-  
-  cursor: ${(props) => props.readOnly ? 'pointer' : 'text'}; 
 
-  &::placeholder {
-    color: #D9D9D9;
-  }
+  cursor: ${(props) => (props.readOnly ? 'pointer' : 'text')};
 `;
 
 const SaveBtn = styled.button`
   background: none;
   border: none;
   padding: 0;
-  
+
   color: #000;
   font-size: 16px;
   font-weight: 400;
@@ -137,7 +128,7 @@ const SaveBtn = styled.button`
 `;
 
 // 팟 만들기
-const TextLink = styled(Link)`
+export const TextLink = styled(Link)`
   position: absolute;
   bottom: 0;
   right: -150px;
@@ -158,11 +149,11 @@ const TextLink = styled(Link)`
 // func.
 export default function CreatedPod() {
   // === 선택 option 관리 ===
-  const [mood, setMood] = useState(null); 
-  const [type, setType] = useState(null); 
-  const [maxPeople, setMaxPeople] = useState(null); 
-  
-  // 기타(Other) 옵션 관련 
+  const [mood, setMood] = useState(null);
+  const [type, setType] = useState(null);
+  const [maxPeople, setMaxPeople] = useState(null);
+
+  // 기타(Other) 옵션 관련
   const [otherText, setOtherText] = useState('');
   const [isOtherSaved, setIsOtherSaved] = useState(false);
 
@@ -187,7 +178,7 @@ export default function CreatedPod() {
     if (otherText.trim().length > 0) {
       setIsOtherSaved(true);
     } else {
-      alert("내용을 입력해주세요.");
+      alert('내용을 입력해주세요.');
     }
   };
 
@@ -206,10 +197,10 @@ export default function CreatedPod() {
       type: type, // 'cafe', 'zoom', 'other'
       detail: type === 'other' ? otherText : null, // 기타 선택 시 상세 내용
       maxPeople: maxPeople, // 2, 3, 4, 5, 6
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
-    console.log("(임시 )백엔드 전송용 데이터 미리보기");
+    console.log('(임시 )백엔드 전송용 데이터 미리보기');
     console.log(payload);
   };
 
@@ -217,7 +208,7 @@ export default function CreatedPod() {
   const isFormValid = () => {
     const isMoodSelected = mood !== null;
     const isMaxPeopleSelected = maxPeople !== null;
-    
+
     let isTypeSelected = false;
     if (type === 'cafe' || type === 'zoom') {
       isTypeSelected = true;
@@ -231,91 +222,94 @@ export default function CreatedPod() {
 
   return (
     <>
-    <Page>
-      <Container>
-        <Title>
-          🤔 어떤 팟을 만들까?
-        </Title>
-        <Content>
-          {/* StudyMood */}
-          <Row>
-            <OptionText
-              isSelected={mood === 'chatty'}
-              onClick={() => handleMoodClick('chatty')}>
-              도란도란한
-            </OptionText>
-            <Or>/</Or>
-            <OptionText
-              isSelected={mood === 'quiet'}
-              onClick={() => handleMoodClick('quiet')}>
-              조용한
-            </OptionText>
-          </Row>
-
-          {/* StudyType */}
-          <Row>
-            <OptionText 
-            isSelected={type === 'cafe'} 
-            onClick={() => handleTypeClick('cafe')}>
-              카공
-            </OptionText>
-            <Or>/</Or>
-            <OptionText 
-            isSelected={type === 'zoom'} 
-            onClick={() => handleTypeClick('zoom')}>
-              줌공
-            </OptionText>
-            <Or>/</Or>
-            <OtherOptionWrapper>
-              <OptionText 
-              isSelected={type === 'other'} 
-              onClick={() => handleTypeClick('other')}>
-                기타
+      <Page>
+        <Container>
+          <Title>🤔 어떤 팟을 만들까?</Title>
+          <Content>
+            {/* StudyMood */}
+            <Row>
+              <OptionText
+                isSelected={mood === 'chatty'}
+                onClick={() => handleMoodClick('chatty')}
+              >
+                도란도란한
               </OptionText>
-              {/* 기타 선택 -> input 나타남 */}
-              {type === 'other' && (
-                <OtherInputWrapper>
-                  <OtherInput 
-                    type="text" 
-                    placeholder="예) 공간 대여"
-                    value={otherText}
-                    onChange={(e) => setOtherText(e.target.value)}
-                    readOnly={isOtherSaved} 
-                    onClick={handleInputClick} 
-                  />
-                  {!isOtherSaved && (
-                    <SaveBtn onClick={handleOtherSave}>
-                      저장
-                    </SaveBtn>
-                  )}
-                </OtherInputWrapper>
-              )}
-            </OtherOptionWrapper>
-          </Row>
-          {/* StudySize */}
-          <Row>
-            {[2, 3, 4, 5, 6].map((num, index) => (
-              <React.Fragment key={num}>
-                <OptionText 
-                  isSelected={maxPeople === num} 
-                  onClick={() => handleMaxPeopleClick(num)}
+              <Or>/</Or>
+              <OptionText
+                isSelected={mood === 'quiet'}
+                onClick={() => handleMoodClick('quiet')}
+              >
+                조용한
+              </OptionText>
+            </Row>
+
+            {/* StudyType */}
+            <Row>
+              <OptionText
+                isSelected={type === 'cafe'}
+                onClick={() => handleTypeClick('cafe')}
+              >
+                카공
+              </OptionText>
+              <Or>/</Or>
+              <OptionText
+                isSelected={type === 'zoom'}
+                onClick={() => handleTypeClick('zoom')}
+              >
+                줌공
+              </OptionText>
+              <Or>/</Or>
+              <OtherOptionWrapper>
+                <OptionText
+                  isSelected={type === 'other'}
+                  onClick={() => handleTypeClick('other')}
                 >
-                  {num}인
+                  기타
                 </OptionText>
-                {index < 4 && <Or>/</Or>}
-              </React.Fragment>
-            ))}
-          </Row>
-          {/* 조건 충족 시 '팟 만들기' 버튼 표시 (원의 우측 하단 바깥) */}
-          {isFormValid() && (
-            <TextLink to="/" onClick={handleSubmit}> {/* 팟만들기-2페이지로 연결 */}
-              팟 만들기
-              <img src={Arrow_R} alt="화살표" />
-            </TextLink>
+                {/* 기타 선택 -> input 나타남 */}
+                {type === 'other' && (
+                  <OtherInputWrapper>
+                    <OtherInput
+                      laebl="other.text"
+                      placeholder="예) 공간 대여"
+                      value={otherText}
+                      onChange={(e) => setOtherText(e.target.value)}
+                      readOnly={isOtherSaved}
+                      onClick={handleInputClick}
+                    />
+                    {!isOtherSaved && (
+                      <SaveBtn onClick={handleOtherSave}>저장</SaveBtn>
+                    )}
+                  </OtherInputWrapper>
+                )}
+              </OtherOptionWrapper>
+            </Row>
+            {/* StudySize */}
+            <Row>
+              {[2, 3, 4, 5, 6].map((num, index) => (
+                <React.Fragment key={num}>
+                  <OptionText
+                    isSelected={maxPeople === num}
+                    onClick={() => handleMaxPeopleClick(num)}
+                  >
+                    {num}인
+                  </OptionText>
+                  {index < 4 && <Or>/</Or>}
+                </React.Fragment>
+              ))}
+            </Row>
+            {/* 조건 충족 시 '팟 만들기' 버튼 표시 (원의 우측 하단 바깥) */}
+            {isFormValid() && (
+              <TextLink to="/CreatePod_2" onClick={handleSubmit}>
+                {' '}
+                {/* 팟만들기-2페이지로 연결 */}
+                팟 만들기
+                <img src={Arrow_R} alt="화살표" />
+              </TextLink>
             )}
-        </Content>
-      </Container>
-    </Page>
+          </Content>
+        </Container>
+      </Page>
     </>
   );
 }
