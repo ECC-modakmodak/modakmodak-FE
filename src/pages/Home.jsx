@@ -350,7 +350,7 @@ export default function Home() {
                   <p>원하는 팟을</p>
                   <p>직접 만들어 보세요!</p>
                 </SubText>
-                <TextLink to="/">
+                <TextLink to="/CreatePod">
                   팟 만들러 가기
                   <img src={Arrow_R} alt="화살표" />
                 </TextLink>
