@@ -10,6 +10,7 @@ import Signup from './pages/Signup';
 function Home() {
   return <div>ExHome</div>;
 }
+import Home from './pages/Home';
 
 export default function App() {
   return (
