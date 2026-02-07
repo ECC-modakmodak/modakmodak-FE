@@ -2,19 +2,20 @@ import styled from '@emotion/styled';
 import PodPreview from '../components/pod/PodPreview';
 import Button from '../components/common/Button';
 import PodMember from '../components/pod/PodMember';
-import ApplyPopup from '../components/popup/ApplyPopup';
+import ApplyPopup from '../components/popup/Apply';
 import { useEffect, useState } from 'react';
-import ApplyConfirmPopup from '../components/popup/ApplyConfirmPopup';
+import ApplyConfirmPopup from '../components/popup/ApplyConfirm';
+import PodClosePopup from '../components/popup/PodClose';
 
 export default function PodDetail() {
-  const myId = 3; // (임시) 내 아이디
-  const isHost = false; // (임시) 팟장 모드 전환
+  const myId = 1; // (임시) 내 아이디
+  const isHost = true; // (임시) 팟장 모드 전환
 
   // 팟장이 수정 가능한 팟 정보
   const [podInfo, setPodInfo] = useState({
     time: '1/23 23:00',
     place: '꽃피다 이화다방',
-    hostMention: '안녕하세요, 팟장 모다기입니다!',
+    hostMention: '',
   });
 
   const handleUpdatedPodInfo = (e) => {
@@ -26,6 +27,7 @@ export default function PodDetail() {
   };
 
   // 참여 신청 팝업
+  const [isClosePopupOpen, setIsClosePopupOpen] = useState(false);
   const [isApplyPopupOpen, setIsApplyPopupOpen] = useState(false);
   const [timeChecked, setTimeChecked] = useState(false);
   const [placeChecked, setPlaceChecked] = useState(false);
@@ -39,7 +41,6 @@ export default function PodDetail() {
       goal: 'Thread 클론 코딩',
       isHost: true,
       status: 'hi',
-      hostMention: '안녕하세요, 팟장 모다기입니다!',
     },
     {
       id: 2,
@@ -104,7 +105,7 @@ export default function PodDetail() {
               size="slim"
               width="200px"
               onClick={() => {
-                isHost ? null : setIsApplyPopupOpen(true);
+                isHost ? setIsClosePopupOpen(true) : setIsApplyPopupOpen(true);
               }}
             >
               {isHost ? '팟 모집 종료하기' : '참여 신청하기'}
@@ -152,6 +153,16 @@ export default function PodDetail() {
             setIsConfirmPopupOpen={setIsConfirmPopupOpen}
             isOpen={isConfirmPopupOpen}
             onClose={() => setIsConfirmPopupOpen(false)}
+          />
+        </>
+      )}
+      {isClosePopupOpen && (
+        <>
+          <Overlay onClick={() => setIsClosePopupOpen(false)} />
+          <PodClosePopup
+            setIsClosePopupOpen={setIsClosePopupOpen}
+            isOpen={isClosePopupOpen}
+            onClose={() => setIsClosePopupOpen(false)}
           />
         </>
       )}

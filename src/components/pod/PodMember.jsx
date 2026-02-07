@@ -93,13 +93,13 @@ export default function PodMember({
         <MemberName>{name}</MemberName>
         <Goal
           as="input"
-          readOnly={!isMe}
+          readOnly
           value={goal}
           completed="true"
           style={{
             fontSize: '16px',
             height: '25px',
-            cursor: isMe ? 'text' : 'default',
+            cursor: 'default',
           }}
         />
         {isHost ? (
@@ -236,8 +236,6 @@ const HostMention = styled.input`
 
   flex: 1;
   min-width: 0;
-
-  color: ${(props) => (props.$isUpdated ? '#D9695C' : '#000')};
 
   &[placeholder]:empty::before {
     content: attr(placeholder);
