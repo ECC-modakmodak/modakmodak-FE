@@ -2,11 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import './index.css';
 import ComponentTest from './pages/component-test';
-
-/* 임시 홈 */
-function Home() {
-  return <div>ExHome</div>;
-}
+import Home from './pages/Home';
 
 export default function App() {
   return (
