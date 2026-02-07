@@ -21,7 +21,9 @@ const Badges = ({ setStatus }) => {
       {BADGE_TYPES.map((type) => (
         <Badge
           key={type}
+          type="button"
           onClick={(e) => {
+            e.preventDefault();
             e.stopPropagation();
             setStatus(type);
           }}
@@ -139,7 +141,12 @@ export default function PodMember({
           />
           {isMe && isBadgesVisible && (
             <>
-              <Overlay onClick={() => setIsBadgesVisible(false)} />
+              <Overlay
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsBadgesVisible(false);
+                }}
+              />
               <Badges setStatus={handleStatus} />
             </>
           )}
@@ -158,7 +165,7 @@ const BadgeContainer = styled.div`
   flex-wrap: wrap;
   gap: 15px;
   padding: 16px 27px;
-  z-index: 10;
+  z-index: 1001;
   width: 550px;
   background-color: #ffffff;
   border: 1px solid #d9695c;
@@ -289,6 +296,7 @@ const CustomCheckbox = styled.span`
 `;
 
 const StatusBadgeWrapper = styled.div`
+  position: relative;
   display: flex;
   margin-left: auto;
 `;
