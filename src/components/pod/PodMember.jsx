@@ -35,6 +35,7 @@ const Badges = ({ setStatus }) => {
 
 export default function PodMember({
   id,
+  isMe,
   profileImage,
   name,
   goal,
@@ -92,21 +93,26 @@ export default function PodMember({
         <MemberName>{name}</MemberName>
         <Goal
           as="input"
+          readOnly={!isMe}
           value={goal}
           completed="true"
-          style={{ fontSize: '16px', height: '25px', cursor: 'default' }}
-          readOnly
+          style={{
+            fontSize: '16px',
+            height: '25px',
+            cursor: isMe ? 'text' : 'default',
+          }}
         />
         {isHost ? (
           <HostMention
             name="hostMention"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
             value={hostMention}
-            readOnly={!isHost}
+            readOnly={!(isHost && isMe)}
             onChange={onHostMentionChange}
             onFocus={handleFocus}
             onBlur={handleFinishEditing}
             onKeyDown={handleKeyDown}
+            $canEdit={isHost && isMe}
             $isUpdated={isUpdated}
           />
         ) : (
@@ -125,9 +131,18 @@ export default function PodMember({
         )}
         <StatusBadgeWrapper
           onClick={() => setIsBadgesVisible(!isBadgesVisible)}
+          style={{ cursor: isMe ? 'pointer' : 'default' }}
         >
-          <Status type={status} />
-          {isBadgesVisible && <Badges setStatus={handleStatus} />}
+          <Status
+            type={status}
+            style={{ cursor: isMe ? 'pointer' : 'default' }}
+          />
+          {isMe && isBadgesVisible && (
+            <>
+              <Overlay onClick={() => setIsBadgesVisible(false)} />
+              <Badges setStatus={handleStatus} />
+            </>
+          )}
         </StatusBadgeWrapper>
       </MemberInfoContainer>
     </MemberContainer>
@@ -231,7 +246,7 @@ const HostMention = styled.input`
 
   &: focus {
     border-bottom: ${(props) =>
-      props.$isEditMode ? '1px solid #828282' : 'none'};
+      props.$canEdit ? '1px solid #828282' : 'none'};
   }
 `;
 
@@ -278,4 +293,11 @@ const CustomCheckbox = styled.span`
 const StatusBadgeWrapper = styled.div`
   display: flex;
   margin-left: auto;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: transparent;
+  z-index: 999;
 `;

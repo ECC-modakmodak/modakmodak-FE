@@ -22,15 +22,35 @@ export default function PodPreview({
     time: false,
     place: false,
   });
-  const [originalField, setOriginalField] = useState('');
+  const [originalField, setOriginalField] = useState({
+    time: time,
+    place: place,
+  });
 
   const handleFocus = (e) => {
-    setOriginalField(e.target.value);
+    const { name, value } = e.target;
+    setOriginalField((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const checkUpdate = (name, value) => {
+    if (value !== originalField[name]) {
+      setUpdatedField((prev) => ({
+        ...prev,
+        [name]: true,
+      }));
+      setOriginalField((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleBlurOrEnter = (e) => {
     const { name, value } = e.target;
-    if (value !== originalField) {
+    if (value !== originalField[name]) {
       setUpdatedField((prev) => ({
         ...prev,
         [name]: true,
@@ -39,11 +59,14 @@ export default function PodPreview({
     e.target.blur();
   };
 
-  const handleEditClick = (field) => {
-    setUpdatedField((prev) => ({
-      ...prev,
-      [field]: true,
-    }));
+  const handleEditClick = (field, e) => {
+    const input = e.currentTarget.previousSibling;
+    if (document.activeElement === input) {
+      checkUpdate(field, input.value);
+      input.blur();
+    } else {
+      input.focus();
+    }
   };
 
   return (
@@ -75,7 +98,7 @@ export default function PodPreview({
           <StudyType type={studyType} />
         </TagContainer>
         <PodDetailInfoContainer>
-          <PodDetailInfoItem $isEditMode={isEditMode}>
+          <PodDetailInfoItem $isEditMode={isEditMode} $canEdit={isHost}>
             <IconWrapper>
               <img src="/pod/time.svg" alt="시간 아이콘" />
               {isHost && updatedField?.time && <StatusDot />}
@@ -86,6 +109,7 @@ export default function PodPreview({
                 value={time}
                 onChange={onInputChange}
                 $isUpdated={updatedField?.time}
+                $canEdit={isHost}
                 onFocus={handleFocus}
                 onBlur={handleBlurOrEnter}
                 onKeyDown={(e) => {
@@ -95,13 +119,13 @@ export default function PodPreview({
                 }}
               />
               {isHost && (
-                <EditButton onClick={() => handleEditClick('time')}>
+                <EditButton onClick={(e) => handleEditClick('time', e)}>
                   수정
                 </EditButton>
               )}
             </EditContainer>
           </PodDetailInfoItem>
-          <PodDetailInfoItem $isEditMode={isEditMode}>
+          <PodDetailInfoItem $isEditMode={isEditMode} $canEdit={isHost}>
             <IconWrapper>
               <img src="/pod/place.svg" alt="장소 아이콘" />
               {isHost && updatedField?.place && <StatusDot />}
@@ -112,6 +136,7 @@ export default function PodPreview({
                 value={place}
                 onChange={onInputChange}
                 $isUpdated={updatedField?.place}
+                $canEdit={isHost}
                 onFocus={handleFocus}
                 onBlur={handleBlurOrEnter}
                 onKeyDown={(e) => {
@@ -121,7 +146,7 @@ export default function PodPreview({
                 }}
               />
               {isHost && (
-                <EditButton onClick={() => handleEditClick('place')}>
+                <EditButton onClick={(e) => handleEditClick('place', e)}>
                   수정
                 </EditButton>
               )}
@@ -255,8 +280,9 @@ const EditInput = styled.input`
   padding: 0;
   color: ${(props) => (props.$isUpdated ? '#D9695C' : '#000')};
 
-  &:focus {
-    border-bottom: 1px solid #828282;
+  &: focus {
+    border-bottom: ${(props) =>
+      props.$canEdit ? '1px solid #828282' : 'none'};
   }
 `;
 

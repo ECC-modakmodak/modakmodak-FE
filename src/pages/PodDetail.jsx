@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import ApplyConfirmPopup from '../components/popup/ApplyConfirmPopup';
 
 export default function PodDetail() {
+  const myId = 3; // (임시) 내 아이디
   const isHost = false; // (임시) 팟장 모드 전환
 
   // 팟장이 수정 가능한 팟 정보
@@ -115,6 +116,7 @@ export default function PodDetail() {
             <PodMember
               key={member.id}
               id={member.id}
+              isMe={member.id === myId}
               profileImage={member.profileImage}
               name={member.name}
               goal={member.goal}
