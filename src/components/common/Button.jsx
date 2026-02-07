@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const StyledButton = styled.button`
   display: flex;
@@ -10,21 +10,21 @@ const StyledButton = styled.button`
   align-items: center;
   cursor: pointer;
   transition: transform 0.1s ease;
-  
-  ${({shape, size, height, fontSize, fontWeight, padding}) => {
+
+  ${({ shape, size, height, fontSize, fontWeight, padding }) => {
     const styleDefaults = {
       chip: {
         // 회고 마무리 버튼
-        large: { h: '50px', fz: '24px', fw: '600', p: '10px 20px'},
+        large: { h: '50px', fz: '24px', fw: '600', p: '10px 20px' },
         // 홈 화면 확인하기 버튼
-        small: { h: '39px', fz: '20px', fw: '400', p: '0 0' }
+        small: { h: '39px', fz: '20px', fw: '400', p: '0 0' },
       },
       rect: {
         large: { h: '61px', fz: '20px', fw: '500', p: '0 20px' },
         // 참여 신청하기 버튼
         slim: { h: '40px', fz: '14px', fw: '500', p: '0 20px' },
-        full: { h: '61px', fz: '20px', fw: '500', p: '0 20px' }
-      }
+        full: { h: '61px', fz: '20px', fw: '500', p: '0 20px' },
+      },
     };
 
     const config = styleDefaults[shape]?.[size] || styleDefaults.rect.large;
@@ -35,7 +35,7 @@ const StyledButton = styled.button`
     const finalPadding = padding || config.p;
 
     // 알약 형태 버튼 (회고 마무리, 홈 화면의 확인하기 등)
-    if(shape === 'chip') {
+    if (shape === 'chip') {
       return `
         height: ${finalHeight};
         font-size: ${finalFontSize};
@@ -57,35 +57,37 @@ const StyledButton = styled.button`
     `;
   }}
 
-  background-color: ${({variant, bgColor}) => {
-    if(bgColor) return bgColor;
+  background-color: ${({ variant, bgColor }) => {
+    if (bgColor) return bgColor;
     const colors = { gray: '#D9D9D9', secondary: '#FBF2F1', white: '#FFF' };
     return colors[variant] || '#D9695C';
   }};
 
-  color: ${({variant}) => {
+  color: ${({ variant }) => {
     if (variant === 'gray' || variant === 'white') return '#000';
     if (variant === 'secondary') return '#D9695C';
     return '#FFF';
   }};
 
-  border: ${({variant}) => (variant === 'secondary' ? '1px solid #D9695C' : 'none')};
-  
+  border: ${({ variant }) =>
+    variant === 'secondary' ? '1px solid #D9695C' : 'none'};
+
   &:active {
     opacity: 0.8;
     transform: scale(0.98);
   }
-  `;
+`;
 
-  export default function Button({ children, shape = 'rect', size = 'large', variant = 'primary', ...props}) {
-    return (
-      <StyledButton
-        shape={shape}
-        size={size}
-        variant={variant}
-        {...props}
-      >
-        {children}
-      </StyledButton>
-    );
-  }
+export default function Button({
+  children,
+  shape = 'rect',
+  size = 'large',
+  variant = 'primary',
+  ...props
+}) {
+  return (
+    <StyledButton shape={shape} size={size} variant={variant} {...props}>
+      {children}
+    </StyledButton>
+  );
+}
