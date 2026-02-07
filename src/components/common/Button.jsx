@@ -16,6 +16,8 @@ const StyledButton = styled.button`
       chip: {
         // 회고 마무리 버튼
         large: { h: '50px', fz: '24px', fw: '600', p: '10px 20px' },
+        // 팝업 버튼
+        medium: { h: '50px', fz: '20px', fw: '400', p: '13px 23px' },
         // 홈 화면 확인하기 버튼
         small: { h: '39px', fz: '20px', fw: '400', p: '0 0' },
       },
@@ -42,7 +44,7 @@ const StyledButton = styled.button`
         font-weight: ${finalFontWeight};
         padding: ${finalPadding};
         border-radius: 100px;
-        box-shadow: 0 0 ${size === 'large' ? '10px' : '7px'} rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 ${size === 'medium' ? '0' : size === 'large' ? '10px' : '7px'} rgba(0, 0, 0, 0.25);
         width: auto;
       `;
     }
@@ -53,7 +55,7 @@ const StyledButton = styled.button`
       font-weight: ${finalFontWeight};
       padding: ${finalPadding};
       border-radius: 10px;
-      width: ${size === 'full' ? '100%' : 'auto'};
+      width: ${size === 'full' || size === 'slim' ? '100%' : 'auto'};
     `;
   }}
 
