@@ -5,7 +5,8 @@ const InputWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: ${(props) => props.width || '100%'};
-  margin-bottom: 25px;
+  margin-bottom: 0;
+  gap: 0;
 `;
 
 const Label = styled.label`
@@ -15,7 +16,7 @@ const Label = styled.label`
   color: #000;
   font-size: ${(props) => props.fontSize || '16px'};
   font-weight: ${(props) => props.fontWeight || '400'};
-  margin-bottom: 4px;
+  margin-bottom: ${(props) => props.labelGap || '0'};
 `;
 
 const StyledInput = styled.input`
@@ -25,7 +26,8 @@ const StyledInput = styled.input`
   /* 회원가입(13/20), 팟 만들기(14/23), 기타(11/19) */
   padding: ${(props) => props.padding || '13px 20px'};
 
-  border: 1px solid ${(props) => props.variant === 'black' ? '#000' : '#D9695C'};
+  border: 1px solid
+    ${(props) => (props.variant === 'black' ? '#000' : '#D9695C')};
   border-radius: 10px;
   box-sizing: border-box;
   outline: none;
@@ -33,15 +35,16 @@ const StyledInput = styled.input`
   font-size: ${(props) => props.fontSize || '16px'};
   font-weight: ${(props) => props.fontWeight || '400'};
   color: #000;
-  background-color: #FFF;
+  background-color: #fff;
 
   &::placeholder {
-    color: ${(props) => props.variant === 'black' ? '#D9D9D9' :'#A5A5A5'};
+    color: ${(props) => (props.variant === 'black' ? '#D9D9D9' : '#A5A5A5')};
     font-weight: 400;
   }
 
   &:focus {
-    border-color: ${(props) => props.variant === 'black' ? '#000' : '#D9695C'};
+    border-color: ${(props) =>
+      props.variant === 'black' ? '#000' : '#D9695C'};
   }
 `;
 
@@ -50,14 +53,25 @@ const HelperText = styled.div`
   font-size: 16px;
   font-weight: 400;
   margin-top: 4px;
-  color: #D9695C;
+  color: #d9695c;
 `;
 
-export default function Input({ label, helperText, width, height, padding, fontSize, fontWeight, variant, ...props}) {
+export default function Input({
+  label,
+  labelGap,
+  helperText,
+  width,
+  height,
+  padding,
+  fontSize,
+  fontWeight,
+  variant,
+  ...props
+}) {
   return (
     <InputWrapper width={width}>
       {label && (
-        <Label fontSize={fontSize} fontWeight={fontWeight}>
+        <Label fontSize={fontSize} fontWeight={fontWeight} labelGap={labelGap}>
           {label}
         </Label>
       )}
