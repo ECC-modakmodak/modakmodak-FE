@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 
 import Input from '../components/common/Input';
-import Arrow_R from '../assets/svg/Arrow_R.svg';
+import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 
 // css emotion
 const Page = styled.div`
@@ -188,7 +188,7 @@ export default function CreatedPod() {
       setIsOtherSaved(false);
     }
   };
-  // CreatePod_2로 넘길 데이터 1차 payload
+  // CreatePod_detail로 넘길 데이터 1차 payload
   const step1Payload = {
     mood,
     type,
@@ -299,13 +299,13 @@ export default function CreatedPod() {
             {/* 조건 충족 시 '팟 만들기' 버튼 표시 (원의 우측 하단 바깥) */}
             {isFormValid() && (
               <TextLink
-                to="/CreatePod_2"
+                to="/create/detail"
                 state={{ step1: step1Payload }}
                 onClick={handleSubmit}
               >
                 {/* 팟만들기-2페이지로 연결 */}
                 팟 만들기
-                <img src={Arrow_R} alt="화살표" />
+                <img src={ArrowBtn} alt="화살표" />
               </TextLink>
             )}
           </Content>

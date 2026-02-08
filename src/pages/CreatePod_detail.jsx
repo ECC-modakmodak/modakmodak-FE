@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import Arrow_R from '../assets/svg/Arrow_R.svg';
+import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 // 팟 대표 이미지 4종
 import PodImg0 from '../assets/svg/PodImg0.SVG';
 import PodImg1 from '../assets/svg/PodImg1.SVG';
@@ -208,7 +208,7 @@ const TextLink = styled(Link)`
   cursor: pointer;
 `;
 
-export default function CreatePod_2() {
+export default function CreatePod_detail() {
   // === status ===
   const [inputs, setInputs] = useState({
     name: '',
@@ -479,7 +479,7 @@ export default function CreatePod_2() {
                 {' '}
                 {/* 같은 데이터로 팟 상세페이지 연결 */}
                 팟 만들기
-                <img src={Arrow_R} alt="화살표" />
+                <img src={ArrowBtn} alt="화살표" />
               </TextLink>
             )}
           </Right>
