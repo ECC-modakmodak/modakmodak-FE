@@ -430,7 +430,7 @@ export default function Home() {
 
           {/* === 추천 팟 영역 === */}
           <Section>
-            <SectionTitle>함꼐할 팟 찾기</SectionTitle>
+            <SectionTitle>함께할 팟 찾기</SectionTitle>
             {/* 추천 팟 목록 grid 3*4 12개 */}
             <Grid>
               {recommendPods.map((p) => (
