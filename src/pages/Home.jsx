@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { useState } from "react";
+import { useState } from 'react';
 
 import StudyType from '../components/common/tagChip/StudyType';
 import StudyMood from '../components/common/tagChip/StudyMood';
@@ -271,19 +271,23 @@ export default function Home() {
     e.preventDefault(); // Link 이동 막기
     alert('준비 중인 페이지입니다.'); // 알림창 표시
   };
-  
 
   // 모임 시간 아닐 때
-  const RandomEmoji = ["😴💤💤", "😵‍💫✨✨", "🤔💦💦"];
+  const RandomEmoji = ['😴💤💤', '😵‍💫✨✨', '🤔💦💦'];
   // 이 3개 중 랜덤
-  const [randomEmoji] = useState(() =>
-  RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)]
+  const [randomEmoji] = useState(
+    () => RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)],
   );
   // 모임 시간 중일 때
-  const RandomText = ["불태우는 중 🔥🔥", "오늘도 한 걸음 👣👣", "꾸준히 달려요 🏃🏻🏃🏻", "집중하고 있어요 🧐🧐"]
+  const RandomText = [
+    '불태우는 중 🔥🔥',
+    '오늘도 한 걸음 👣👣',
+    '꾸준히 달려요 🏃🏻🏃🏻',
+    '집중하고 있어요 🧐🧐',
+  ];
   // 이 4개 중 랜덤
-  const [randomText] = useState(() =>
-  RandomText[Math.floor(Math.random() * RandomText.length)]
+  const [randomText] = useState(
+    () => RandomText[Math.floor(Math.random() * RandomText.length)],
   );
 
   return (
@@ -313,19 +317,30 @@ export default function Home() {
                 <>
                   <CardDetail>
                     오늘{' '}
-                    <Phill shape="chip" variant="outlined" size="large"
-                    style={{ marginLeft: '8px', marginRight: '3px' }}>
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.time}
                     </Phill>
                     ,{' '}
-                    <Phill shape="chip" variant="outlined" size="large"
-                    style={{ marginLeft: '8px', marginRight: '3px' }}>
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.place}
                     </Phill>
-                    에서
-                    {' '}
-                    <Phill shape="chip" variant="outlined" size="large"
-                    style={{ marginLeft: '8px', marginRight: '3px' }}>
+                    에서{' '}
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.name}
                     </Phill>
                     가 예정되어 있어요.
