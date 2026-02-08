@@ -134,6 +134,7 @@ const InputWrapper = styled.div`
   flex-direction: column;
   gap: 4px;
   width: 100%;
+  margin-top: 3px;
   margin-bottom: 4px;
 `;
 
