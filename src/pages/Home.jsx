@@ -240,10 +240,9 @@ const PodSvg = styled.img`
 export default function Home() {
   // === (임시) 덤 데이터 3set ===
 
-
   const retrospect = null;
   const today = null;
-  
+
   /*
   const retrospect = {
     name: '모각코_회고',
@@ -293,11 +292,11 @@ export default function Home() {
 
   // 앵커 스크롤
   function scrollToTarget(targetSelector) {
-  const target = document.querySelector(targetSelector);
-  if (!target) return;
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
     window.scrollTo({
-    top: target.offsetTop,
-    behavior: 'smooth',
+      top: target.offsetTop,
+      behavior: 'smooth',
     });
   }
 
@@ -392,7 +391,8 @@ export default function Home() {
                     to="/"
                     onClick={(e) => {
                       e.preventDefault();
-                      const target = document.querySelector('#recommendPotList');
+                      const target =
+                        document.querySelector('#recommendPotList');
                       if (!target) return;
 
                       window.scrollTo({
@@ -405,9 +405,9 @@ export default function Home() {
                       shape="chip"
                       variant="white"
                       size="small"
-                      style={{ fontSize: '20px', width: 118, height: 39 }}
+                      style={{ fontSize: '20px', width: 161, height: 39 }}
                     >
-                      확인하기
+                      팟 찾으러 가기
                     </Button>
                   </CheckBtn>
                 </>
