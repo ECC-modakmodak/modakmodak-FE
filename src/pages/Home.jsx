@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 import StudyType from '../components/common/tagChip/StudyType';
 import StudyMood from '../components/common/tagChip/StudyMood';
 
 import Phill from '../components/common/tagChip/Pill';
 import Button from '../components/common/Button';
-import Status from '../components/common/tagChip/Status';
-
 import Arrow_R from '../assets/svg/Arrow_R.svg';
 import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
@@ -80,11 +79,12 @@ const CardTitle = styled.h2`
 `;
 
 const CardDetail = styled.p`
+  display: flex;
   color: #000;
   font-size: 24px;
   font-weight: 500;
   line-height: 50px;
-  margin-bottom: 15px;
+  margin-bottom: 40px;
 
   align-items: center;
 `;
@@ -116,12 +116,13 @@ const RightCard = styled.div`
 `;
 
 const SubCard = styled(Card)`
-  padding: 25px;
+  padding: 34px 15px 21px 45px;
   display: flex;
   justify-content: space-between;
 
   border: 1px solid #d9d9d9;
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 
   :hover {
     box-shadow: 0 0 7px 0 rgba(217, 105, 92, 1);
@@ -134,7 +135,7 @@ const SubText = styled.div`
 
   p {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #000;
   }
@@ -142,7 +143,7 @@ const SubText = styled.div`
 
 const TextLink = styled(Link)`
   display: inline-flex;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
   color: #000;
   text-decoration: none;
@@ -239,10 +240,10 @@ const PodSvg = styled.img`
 export default function Home() {
   // === (임시) 덤 데이터 3set ===
 
-  /* null test data 
   const retrospect = null;
   const today = null;
-  */
+
+  /*
   const retrospect = {
     name: '모각코_회고',
   };
@@ -254,8 +255,8 @@ export default function Home() {
     type: 'cafe', // cafe / zoom / other
     goal: '소플의 리액트 7장 공부하기',
   };
-
-  // [기능 추가 필요]  - 팟 생성 일자 최신순으로 12개 정렬
+  */
+  // [TODO]  - 팟 생성 일자 최신순으로 12개 정렬
   const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
     id: i,
     mood: i % 2 === 0 ? 'chatty' : 'quiet',
@@ -271,16 +272,47 @@ export default function Home() {
     alert('준비 중인 페이지입니다.'); // 알림창 표시
   };
 
+  // 모임 시간 아닐 때
+  const RandomEmoji = ['😴💤💤', '😵‍💫✨✨', '🤔💦💦'];
+  // 이 3개 중 랜덤
+  const [randomEmoji] = useState(
+    () => RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)],
+  );
+  // 모임 시간 중일 때
+  const RandomText = [
+    '불태우는 중 🔥🔥',
+    '오늘도 한 걸음 👣👣',
+    '꾸준히 달려요 🏃🏻🏃🏻',
+    '집중하고 있어요 🧐🧐',
+  ];
+  // 이 4개 중 랜덤
+  const [randomText] = useState(
+    () => RandomText[Math.floor(Math.random() * RandomText.length)],
+  );
+
+  // 앵커 스크롤
+  function scrollToTarget(targetSelector) {
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
+    window.scrollTo({
+      top: target.offsetTop,
+      behavior: 'smooth',
+    });
+  }
+
   return (
     <>
       <Page>
         {/* === 최상단 상태 표시줄 === */}
-        {/* [기능 추가 필요] - 현재 시간 / 예정된 팟 시간 비교  */}
+        {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
         <StatusBar>
           {/* 현재 진행 중인 팟 x */}
-          <span>😴💤💤</span>
+          <span>{randomEmoji}</span>
           {/* 현재 진행 중인 팟 o */}
-          {/* <Status type="workingHard" /> */}
+          {/*
+          <span>{today.goal}를 위해 {randomText}</span>
+          [TODO] goal 마지막 글자 따라서 -> 을/를 구분
+          */}
         </StatusBar>
 
         {/* === 메인 컨텐츠 === */}
@@ -295,19 +327,34 @@ export default function Home() {
                 <>
                   <CardDetail>
                     오늘{' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.time}
                     </Phill>
                     ,{' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.place}
                     </Phill>
-                    에서
-                    {' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    에서{' '}
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
                       {today.name}
                     </Phill>
-                    팟이 예정되어 있어요.
+                    가 예정되어 있어요.
+                    {/* [TODO] name 마지막 글자 따라서 -> 이/가 수정 필요 */}
                   </CardDetail>
                   <Tag>
                     <StudyMood type={today.mood} />
@@ -331,14 +378,39 @@ export default function Home() {
                       variant="white"
                       size="small"
                       style={{ fontSize: '20px', width: 118, height: 39 }}
+                      data-target="#recommendPotList"
                     >
                       확인하기
                     </Button>
                   </CheckBtn>
                 </>
               ) : (
-                /* [추가] 오늘 예정된 팟 x */
-                <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
+                <>
+                  <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
+                  <CheckBtn
+                    to="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const target =
+                        document.querySelector('#recommendPotList');
+                      if (!target) return;
+
+                      window.scrollTo({
+                        top: target.offsetTop,
+                        behavior: 'smooth',
+                      });
+                    }}
+                  >
+                    <Button
+                      shape="chip"
+                      variant="white"
+                      size="small"
+                      style={{ fontSize: '20px', width: 161, height: 39 }}
+                    >
+                      팟 찾으러 가기
+                    </Button>
+                  </CheckBtn>
+                </>
               )}
             </TodayCard>
 
@@ -350,7 +422,7 @@ export default function Home() {
                   <p>원하는 팟을</p>
                   <p>직접 만들어 보세요!</p>
                 </SubText>
-                <TextLink to="/">
+                <TextLink to="/CreatePod">
                   팟 만들러 가기
                   <img src={Arrow_R} alt="화살표" />
                 </TextLink>
@@ -376,24 +448,25 @@ export default function Home() {
                     </TextLink>
                   </>
                 ) : (
-                  /* [추가] 회고할 팟 x  */
-                  <SubText
-                    style={{
-                      alignSelf: 'center',
-                      justifyContent: 'center',
-                      padding: '0',
-                    }}
-                  >
-                    <p>회고할 팟이 없어요.</p>
-                  </SubText>
+                  /* 회고할 팟 x  */
+                  <>
+                    <SubText>
+                      <p>나의 회고를</p>
+                      <p>돌아볼까요?</p>
+                    </SubText>
+                    <TextLink to="/" onClick={DisabledLink}>
+                      회고보러 가기
+                      <img src={Arrow_R} alt="화살표" />
+                    </TextLink>
+                  </>
                 )}
               </SubCard>
             </RightCard>
           </TopGrid>
 
           {/* === 추천 팟 영역 === */}
-          <Section>
-            <SectionTitle>함꼐할 팟 찾기</SectionTitle>
+          <Section id="recommendPotList">
+            <SectionTitle>함께할 팟 찾기</SectionTitle>
             {/* 추천 팟 목록 grid 3*4 12개 */}
             <Grid>
               {recommendPods.map((p) => (
