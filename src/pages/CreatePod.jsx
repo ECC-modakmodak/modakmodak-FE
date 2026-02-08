@@ -153,7 +153,7 @@ export default function CreatedPod() {
   const [type, setType] = useState(null);
   const [maxPeople, setMaxPeople] = useState(null);
 
-  // 기타(Other) 옵션 관련
+  // 기타(Other) option 관련
   const [otherText, setOtherText] = useState('');
   const [isOtherSaved, setIsOtherSaved] = useState(false);
 
@@ -188,20 +188,18 @@ export default function CreatedPod() {
       setIsOtherSaved(false);
     }
   };
+  // CreatePod_2로 넘길 데이터 1차 payload
+  const step1Payload = {
+    mood,
+    type,
+    studyTypeDetail: type === 'other' ? otherText : null,
+    maxPeople,
+    timestamp: new Date().toISOString(),
+  };
 
-  // 팟 제출
   const handleSubmit = () => {
-    // 전송할 데이터 객체 구성
-    const payload = {
-      mood: mood, // 'chatty', 'quiet'
-      type: type, // 'cafe', 'zoom', 'other'
-      detail: type === 'other' ? otherText : null, // 기타 선택 시 상세 내용
-      maxPeople: maxPeople, // 2, 3, 4, 5, 6
-      timestamp: new Date().toISOString(),
-    };
-
-    console.log('(임시 )백엔드 전송용 데이터 미리보기');
-    console.log(payload);
+    console.log('(임시) CreatePod step1 payload', step1Payload);
+    // 백엔드 전송은 아직 x, 2로 넘김
   };
 
   // 3개 선택 확인
@@ -300,8 +298,11 @@ export default function CreatedPod() {
             </Row>
             {/* 조건 충족 시 '팟 만들기' 버튼 표시 (원의 우측 하단 바깥) */}
             {isFormValid() && (
-              <TextLink to="/CreatePod_2" onClick={handleSubmit}>
-                {' '}
+              <TextLink
+                to="/CreatePod_2"
+                state={{ step1: step1Payload }}
+                onClick={handleSubmit}
+              >
                 {/* 팟만들기-2페이지로 연결 */}
                 팟 만들기
                 <img src={Arrow_R} alt="화살표" />
