@@ -7,12 +7,12 @@ import StudyMood from '../components/common/tagChip/StudyMood';
 
 import Phill from '../components/common/tagChip/Pill';
 import Button from '../components/common/Button';
-import Arrow_R from '../assets/svg/Arrow_R.svg';
+import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
 
 // (임시) 팟 대표 이미지
-import podImg1 from '../assets/images/podImg1.JPG';
+import podImg1 from '../assets/svg/podImg0.SVG';
 
 // === 전체 큰 틀 ===
 
@@ -290,20 +290,9 @@ export default function Home() {
     () => RandomText[Math.floor(Math.random() * RandomText.length)],
   );
 
-  // 앵커 스크롤
-  function scrollToTarget(targetSelector) {
-    const target = document.querySelector(targetSelector);
-    if (!target) return;
-    window.scrollTo({
-      top: target.offsetTop,
-      behavior: 'smooth',
-    });
-  }
-
   return (
     <>
       <Page>
-        {/* === 최상단 상태 표시줄 === */}
         {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
         <StatusBar>
           {/* 현재 진행 중인 팟 x */}
@@ -422,9 +411,9 @@ export default function Home() {
                   <p>원하는 팟을</p>
                   <p>직접 만들어 보세요!</p>
                 </SubText>
-                <TextLink to="/CreatePod">
+                <TextLink to="/create">
                   팟 만들러 가기
-                  <img src={Arrow_R} alt="화살표" />
+                  <img src={ArrowBtn} alt="화살표" />
                 </TextLink>
               </SubCard>
               <SubCard>
@@ -444,7 +433,7 @@ export default function Home() {
                     </SubText>
                     <TextLink to="/" onClick={DisabledLink}>
                       회고하러 가기
-                      <img src={Arrow_R} alt="화살표" />
+                      <img src={ArrowBtn} alt="화살표" />
                     </TextLink>
                   </>
                 ) : (
@@ -456,7 +445,7 @@ export default function Home() {
                     </SubText>
                     <TextLink to="/" onClick={DisabledLink}>
                       회고보러 가기
-                      <img src={Arrow_R} alt="화살표" />
+                      <img src={ArrowBtn} alt="화살표" />
                     </TextLink>
                   </>
                 )}
