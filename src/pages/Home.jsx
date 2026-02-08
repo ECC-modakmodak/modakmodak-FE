@@ -80,6 +80,7 @@ const CardTitle = styled.h2`
 `;
 
 const CardDetail = styled.p`
+  display: flex;
   color: #000;
   font-size: 24px;
   font-weight: 500;
@@ -116,12 +117,13 @@ const RightCard = styled.div`
 `;
 
 const SubCard = styled(Card)`
-  padding: 25px;
+  padding: 34px 15px 21px 45px;
   display: flex;
   justify-content: space-between;
 
   border: 1px solid #d9d9d9;
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 
   :hover {
     box-shadow: 0 0 7px 0 rgba(217, 105, 92, 1);
@@ -134,7 +136,7 @@ const SubText = styled.div`
 
   p {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #000;
   }
@@ -142,7 +144,7 @@ const SubText = styled.div`
 
 const TextLink = styled(Link)`
   display: inline-flex;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
   color: #000;
   text-decoration: none;
@@ -295,16 +297,19 @@ export default function Home() {
                 <>
                   <CardDetail>
                     오늘{' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    <Phill shape="chip" variant="outlined" size="large"
+                    style={{ marginLeft: '8px', marginRight: '3px' }}>
                       {today.time}
                     </Phill>
                     ,{' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    <Phill shape="chip" variant="outlined" size="large"
+                    style={{ marginLeft: '8px', marginRight: '3px' }}>
                       {today.place}
                     </Phill>
                     에서
                     {' '}
-                    <Phill shape="chip" variant="outlined" size="large">
+                    <Phill shape="chip" variant="outlined" size="large"
+                    style={{ marginLeft: '8px', marginRight: '3px' }}>
                       {today.name}
                     </Phill>
                     팟이 예정되어 있어요.
