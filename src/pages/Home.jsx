@@ -240,10 +240,11 @@ const PodSvg = styled.img`
 export default function Home() {
   // === (임시) 덤 데이터 3set ===
 
-  /* null test data 
+
   const retrospect = null;
   const today = null;
-  */
+  
+  /*
   const retrospect = {
     name: '모각코_회고',
   };
@@ -255,7 +256,7 @@ export default function Home() {
     type: 'cafe', // cafe / zoom / other
     goal: '소플의 리액트 7장 공부하기',
   };
-
+  */
   // [TODO]  - 팟 생성 일자 최신순으로 12개 정렬
   const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
     id: i,
@@ -289,6 +290,16 @@ export default function Home() {
   const [randomText] = useState(
     () => RandomText[Math.floor(Math.random() * RandomText.length)],
   );
+
+  // 앵커 스크롤
+  function scrollToTarget(targetSelector) {
+  const target = document.querySelector(targetSelector);
+  if (!target) return;
+    window.scrollTo({
+    top: target.offsetTop,
+    behavior: 'smooth',
+    });
+  }
 
   return (
     <>
@@ -368,13 +379,38 @@ export default function Home() {
                       variant="white"
                       size="small"
                       style={{ fontSize: '20px', width: 118, height: 39 }}
+                      data-target="#recommendPotList"
                     >
                       확인하기
                     </Button>
                   </CheckBtn>
                 </>
               ) : (
-                <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
+                <>
+                  <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
+                  <CheckBtn
+                    to="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const target = document.querySelector('#recommendPotList');
+                      if (!target) return;
+
+                      window.scrollTo({
+                        top: target.offsetTop,
+                        behavior: 'smooth',
+                      });
+                    }}
+                  >
+                    <Button
+                      shape="chip"
+                      variant="white"
+                      size="small"
+                      style={{ fontSize: '20px', width: 118, height: 39 }}
+                    >
+                      확인하기
+                    </Button>
+                  </CheckBtn>
+                </>
               )}
             </TodayCard>
 
@@ -429,7 +465,7 @@ export default function Home() {
           </TopGrid>
 
           {/* === 추천 팟 영역 === */}
-          <Section>
+          <Section id="recommendPotList">
             <SectionTitle>함께할 팟 찾기</SectionTitle>
             {/* 추천 팟 목록 grid 3*4 12개 */}
             <Grid>
