@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { useState } from "react";
 
 import StudyType from '../components/common/tagChip/StudyType';
 import StudyMood from '../components/common/tagChip/StudyMood';
 
 import Phill from '../components/common/tagChip/Pill';
 import Button from '../components/common/Button';
-import Status from '../components/common/tagChip/Status';
-
 import Arrow_R from '../assets/svg/Arrow_R.svg';
 import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
@@ -85,7 +84,7 @@ const CardDetail = styled.p`
   font-size: 24px;
   font-weight: 500;
   line-height: 50px;
-  margin-bottom: 15px;
+  margin-bottom: 40px;
 
   align-items: center;
 `;
@@ -257,7 +256,7 @@ export default function Home() {
     goal: '소플의 리액트 7장 공부하기',
   };
 
-  // [기능 추가 필요]  - 팟 생성 일자 최신순으로 12개 정렬
+  // [TODO]  - 팟 생성 일자 최신순으로 12개 정렬
   const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
     id: i,
     mood: i % 2 === 0 ? 'chatty' : 'quiet',
@@ -272,17 +271,34 @@ export default function Home() {
     e.preventDefault(); // Link 이동 막기
     alert('준비 중인 페이지입니다.'); // 알림창 표시
   };
+  
+
+  // 모임 시간 아닐 때
+  const RandomEmoji = ["😴💤💤", "😵‍💫✨✨", "🤔💦💦"];
+  // 이 3개 중 랜덤
+  const [randomEmoji] = useState(() =>
+  RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)]
+  );
+  // 모임 시간 중일 때
+  const RandomText = ["불태우는 중 🔥🔥", "오늘도 한 걸음 👣👣", "꾸준히 달려요 🏃🏻🏃🏻", "집중하고 있어요 🧐🧐"]
+  // 이 4개 중 랜덤
+  const [randomText] = useState(() =>
+  RandomText[Math.floor(Math.random() * RandomText.length)]
+  );
 
   return (
     <>
       <Page>
         {/* === 최상단 상태 표시줄 === */}
-        {/* [기능 추가 필요] - 현재 시간 / 예정된 팟 시간 비교  */}
+        {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
         <StatusBar>
           {/* 현재 진행 중인 팟 x */}
-          <span>😴💤💤</span>
+          <span>{randomEmoji}</span>
           {/* 현재 진행 중인 팟 o */}
-          {/* <Status type="workingHard" /> */}
+          {/*
+          <span>{today.goal}를 위해 {randomText}</span>
+          [TODO] goal 마지막 글자 따라서 -> 을/를 구분
+          */}
         </StatusBar>
 
         {/* === 메인 컨텐츠 === */}
@@ -312,7 +328,8 @@ export default function Home() {
                     style={{ marginLeft: '8px', marginRight: '3px' }}>
                       {today.name}
                     </Phill>
-                    팟이 예정되어 있어요.
+                    가 예정되어 있어요.
+                    {/* [TODO] name 마지막 글자 따라서 -> 이/가 수정 필요 */}
                   </CardDetail>
                   <Tag>
                     <StudyMood type={today.mood} />
@@ -342,7 +359,6 @@ export default function Home() {
                   </CheckBtn>
                 </>
               ) : (
-                /* [추가] 오늘 예정된 팟 x */
                 <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
               )}
             </TodayCard>
@@ -381,16 +397,17 @@ export default function Home() {
                     </TextLink>
                   </>
                 ) : (
-                  /* [추가] 회고할 팟 x  */
-                  <SubText
-                    style={{
-                      alignSelf: 'center',
-                      justifyContent: 'center',
-                      padding: '0',
-                    }}
-                  >
-                    <p>회고할 팟이 없어요.</p>
-                  </SubText>
+                  /* 회고할 팟 x  */
+                  <>
+                    <SubText>
+                      <p>나의 회고를</p>
+                      <p>돌아볼까요?</p>
+                    </SubText>
+                    <TextLink to="/" onClick={DisabledLink}>
+                      회고보러 가기
+                      <img src={Arrow_R} alt="화살표" />
+                    </TextLink>
+                  </>
                 )}
               </SubCard>
             </RightCard>
