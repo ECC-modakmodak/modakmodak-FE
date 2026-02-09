@@ -239,11 +239,11 @@ const PodSvg = styled.img`
 // func.
 export default function Home() {
   // === (임시) 덤 데이터 3set ===
-
+  /*
   const retrospect = null;
   const today = null;
+  */
 
-  /*
   const retrospect = {
     name: '모각코_회고',
   };
@@ -255,7 +255,7 @@ export default function Home() {
     type: 'cafe', // cafe / zoom / other
     goal: '소플의 리액트 7장 공부하기',
   };
-  */
+
   // [TODO]  - 팟 생성 일자 최신순으로 12개 정렬
   const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
     id: i,

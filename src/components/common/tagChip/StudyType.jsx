@@ -6,12 +6,12 @@ const STUDY_TYPE_DATA = {
   other: { label: '#기타', backgroundColor: 'rgba(38, 172, 255, 0.55)' },
 };
 
-export default function StudyType({ type }) {
+export default function StudyType({ type, size = 'small' }) {
   const studyType = STUDY_TYPE_DATA[type] || {};
   return (
     <Pill
       variant="filled"
-      size="small"
+      size={size}
       backgroundColor={studyType.backgroundColor}
       style={{ cursor: 'default' }}
     >

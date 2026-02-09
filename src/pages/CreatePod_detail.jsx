@@ -1,7 +1,7 @@
 // import
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
