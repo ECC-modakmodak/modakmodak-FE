@@ -21,14 +21,76 @@ export default function Signup() {
     targetMessage: '',
   });
 
+  const [errors, setErrors] = useState({
+    nickname: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'passwordConfirm') {
+      if (value !== formData.password) {
+        setErrors((prev) => ({
+          ...prev,
+          passwordConfirm: '다시 입력해 주세요.',
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, passwordConfirm: '' }));
+      }
+    }
+
+    if (name === 'password') {
+      if (value.length > 0 && value.length < 8) {
+        setErrors((prev) => ({ ...prev, password: '8자 이상 입력해주세요.' }));
+      } else {
+        setErrors((prev) => ({ ...prev, password: '' }));
+      }
+    }
+
+    if (name === 'passwordConfirm') {
+      if (value === '') {
+        setErrors((prev) => ({ ...prev, passwordConfirm: '' }));
+      } else if (value !== formData.password) {
+        setErrors((prev) => ({
+          ...prev,
+          passwordConfirm: '다시 입력해 주세요',
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          passwordConfirm: '비밀번호가 일치합니다.',
+        }));
+      }
+    }
+  };
+
+  const checkDuplicate = async (type) => {
+    const value = formData[type];
+    if (!value) return alert('값을 입력해주세요.');
+
+    try {
+      const isAvailable = true;
+      if (isAvailable) {
+        setErrors((prev) => ({
+          ...prev,
+          [type]: `사용 가능한 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
+        }));
+      }
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        [type]: `중복된 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO:
+
     alert('회원가입이 완료되었습니다.');
     navigate('/login');
   };
@@ -38,32 +100,40 @@ export default function Signup() {
       <LogoImage src={ModakLogo} alt="모닥모닥 로고" />
 
       <FormWrapper>
-        <RowWrapper>
+        <RowWrapper style={{ alignItems: 'flex-start' }}>
           <Input
             label="닉네임"
-            helperText="사용 가능한 닉네임입니다."
+            helperText={errors.nickname} // 에러가 있을 때만 보이게 함
             name="nickname"
             value={formData.nickname}
             onChange={handleChange}
             width="80%"
             placeholder="한글 또는 영어를 포함하는 2-10자"
           />
-          <SideButton variant="secondary" size="large">
+          <SideButton
+            variant="secondary"
+            size="large"
+            onClick={() => checkDuplicate('nickname')}
+          >
             중복 확인
           </SideButton>
         </RowWrapper>
 
-        <RowWrapper>
+        <RowWrapper style={{ alignItems: 'flex-start' }}>
           <Input
             label="아이디"
-            helperText="사용 가능한 아이디입니다."
+            helperText={errors.username} // 에러가 있을 때만 보이게 함
             name="username"
             value={formData.username}
             onChange={handleChange}
             width="80%"
             placeholder="영어, 숫자를 포함하는 4-20자"
           />
-          <SideButton variant="secondary" size="large">
+          <SideButton
+            variant="secondary"
+            size="large"
+            onClick={() => checkDuplicate('username')}
+          >
             중복 확인
           </SideButton>
         </RowWrapper>
@@ -85,7 +155,7 @@ export default function Signup() {
         <Input
           type="password"
           label="비밀번호 확인"
-          helperText="다시 입력해 주세요."
+          helperText={errors.passwordConfirm}
           name="passwordConfirm"
           value={formData.passwordConfirm}
           onChange={handleChange}
@@ -197,18 +267,17 @@ const FormWrapper = styled.div`
   max-width: 450px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
 `;
 
 const RowWrapper = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 14px;
   width: 100%;
 `;
 
 const SideButton = styled(Button)`
-  margin-bottom: 24px;
+  margin-top: 34px;
   white-space: nowrap;
   font-size: 16px;
 `;
@@ -217,13 +286,11 @@ const PinkBox = styled.div`
   background-color: #fbf2f1;
   width: 100%;
   border-radius: 10px;
-  margin: 5px 0px;
   padding: 2px 2px 18px 1px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   box-sizing: border-box;
-  gap: 7px;
 `;
 
 const SectionLabel = styled.label`
@@ -234,7 +301,6 @@ const SectionLabel = styled.label`
   height: 34px;
   line-height: 34px;
   display: block;
-  margin-bottom: -7px !important;
 `;
 
 const TagGroupContainer = styled.div`
@@ -246,16 +312,19 @@ const TagGroupContainer = styled.div`
 `;
 
 const SubBox = styled.div`
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #fff;
   border: 1px solid #d9695c;
   border-radius: 10px;
+  box-sizing: border-box;
   width: 100%;
   height: 61px;
   gap: 4px;
-  flex: 1;
+  margin-bottom: 7px;
+  padding: 17px 7px 17px 6px;
 `;
 
 const PlusIcon = styled.span`
@@ -265,12 +334,14 @@ const PlusIcon = styled.span`
 `;
 
 const PillButton = styled(Button)`
-  width: 98px !important;
+  min-width: 0;
+  flex: 1;
   height: 27px !important;
   font-size: 16px !important;
   font-weight: 600 !important;
   padding: 9px 22px !important;
   box-shadow: none !important;
+  white-space: nowrap;
 `;
 
 const SubmitButton = styled(Button)`
