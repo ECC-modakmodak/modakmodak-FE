@@ -3,8 +3,8 @@ import Goal from '../common/tagChip/Goal';
 import StudyMood from '../common/tagChip/StudyMood';
 import StudyType from '../common/tagChip/StudyType';
 import Button from '../common/Button';
-import Host from '../../assets/svg/Host.svg';
-import AreaSvg from '../../assets/svg/Location_S.svg';
+import Host from '/pod/pod-host.svg';
+import AreaSvg from '/pod/location.svg';
 import { useState } from 'react';
 
 // padding chk.
@@ -27,9 +27,9 @@ const DetailContent = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
+  padding-top: 50px;
 
   gap: 56px;
-  margin: 100px 237px 22px 237px;
 `;
 
 const ProfileSection = styled.div`
@@ -191,7 +191,7 @@ export default function MemberDetail({
                 <Goal
                   completed={false}
                   readOnly
-                  value={member.podGoal || '목표가 설정되지 않았습니다.'}
+                  value={member.podGoal || '어떤 목표를 이루어볼까요?'}
                   style={{
                     padding: '8px 20px',
                     fontSize: '20px',

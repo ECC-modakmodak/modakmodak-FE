@@ -9,8 +9,8 @@ import ApplyConfirmPopup from '../components/popup/ApplyConfirm';
 import PodClosePopup from '../components/popup/PodClose';
 
 export default function PodDetail() {
-  const myId = 1; // (임시) 내 아이디
-  const isHost = true; // (임시) 팟장 모드 전환
+  const myId = 3; // (임시) 내 아이디
+  const isHost = false; // (임시) 팟장 모드 전환
 
   // 팟장이 수정 가능한 팟 정보
   const [podInfo, setPodInfo] = useState({
