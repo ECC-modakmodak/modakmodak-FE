@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -19,9 +20,31 @@ export default function LoginPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate('/home');
+
+    const API_URL = `${import.meta.env.VITE_API_URL}/api/users/login`;
+
+    try {
+      const response = await axios.post(API_URL, {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      if (response.status === 200) {
+        console.log('로그인 성공 응답 데이터:', response.data);
+
+        const token = response.data.token;
+        if (token) localStorage.setItem('userToken', token);
+
+        navigate('/home');
+      }
+    } catch (err) {
+      console.error('로그인 에러: ', err.response?.data);
+      const errorMsg =
+        err.response?.data?.message || '아이디 또는 비밀번호가 틀렸습니다.';
+      alert(errorMsg);
+    }
   };
 
   const handleSignup = (e) => {
@@ -134,6 +157,7 @@ const InputWrapper = styled.div`
   flex-direction: column;
   gap: 4px;
   width: 100%;
+  margin-top: 3px;
   margin-bottom: 4px;
 `;
 

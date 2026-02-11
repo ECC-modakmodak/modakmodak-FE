@@ -5,7 +5,7 @@ const InputWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: ${(props) => props.width || '100%'};
-  margin-bottom: 0;
+  margin-bottom: 7px;
   gap: 0;
 `;
 
@@ -43,8 +43,7 @@ const StyledInput = styled.input`
   }
 
   &:focus {
-    border-color: ${(props) =>
-      props.variant === 'black' ? '#000' : '#D9695C'};
+    border: 1px solid #000;
   }
 `;
 
@@ -53,6 +52,9 @@ const HelperText = styled.div`
   font-size: 16px;
   font-weight: 400;
   margin-top: 4px;
+  height: 27px;
+  display: flex;
+  align-items: center;
   color: #d9695c;
 `;
 
