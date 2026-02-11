@@ -2,14 +2,15 @@ import styled from '@emotion/styled';
 import PodPreview from '../components/pod/PodPreview';
 import Button from '../components/common/Button';
 import PodMember from '../components/pod/PodMember';
+import MemberDetail from '../components/pod/MemberDetail';
 import ApplyPopup from '../components/popup/Apply';
 import { useEffect, useState } from 'react';
 import ApplyConfirmPopup from '../components/popup/ApplyConfirm';
 import PodClosePopup from '../components/popup/PodClose';
 
 export default function PodDetail() {
-  const myId = 1; // (임시) 내 아이디
-  const isHost = true; // (임시) 팟장 모드 전환
+  const myId = 3; // (임시) 내 아이디
+  const isHost = false; // (임시) 팟장 모드 전환
 
   // 팟장이 수정 가능한 팟 정보
   const [podInfo, setPodInfo] = useState({
@@ -33,12 +34,18 @@ export default function PodDetail() {
   const [placeChecked, setPlaceChecked] = useState(false);
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
 
+  // [추가] goal(메인 목표), podGoal(팟 목표), mainArea, studyMood/Type
+  // 서버에서 받아올 땐 소속 팟 안에 podGoal 위치
   const [members, setMembers] = useState([
     {
       id: 1,
       profileImage: '/images/img-placeholder.png',
       name: '모다기',
-      goal: 'Thread 클론 코딩',
+      goal: '웹 개발 마스터하기!!!',
+      podGoal: 'Thread 클론 코딩',
+      mainArea: '이화여자대학교',
+      studyMood: 'chatty',
+      studyType: 'cafe',
       isHost: true,
       status: 'hi',
     },
@@ -46,7 +53,11 @@ export default function PodDetail() {
       id: 2,
       profileImage: '/images/img-placeholder.png',
       name: '감자',
-      goal: '소플의 리액트 7장 공부',
+      goal: '웹 개발 마스터하기!!!',
+      podGoal: '소플의 리액트 7장 공부',
+      mainArea: '이화여자대학교',
+      studyMood: 'chatty',
+      studyType: 'zoom',
       isHost: false,
       status: 'niceToMeet',
     },
@@ -54,7 +65,11 @@ export default function PodDetail() {
       id: 3,
       profileImage: '/images/img-placeholder.png',
       name: '자고싶어요',
-      goal: '프로젝트 코드 리뷰',
+      goal: '웹 개발 마스터하기!!!',
+      podGoal: null,
+      mainArea: '이화여자대학교',
+      studyMood: 'quiet',
+      studyType: 'cafe',
       isHost: false,
       status: 'cheerUp',
     },
@@ -79,6 +94,17 @@ export default function PodDetail() {
       document.body.style.overflow = 'auto';
     }
   }, [isApplyPopupOpen, isConfirmPopupOpen]);
+
+  // [추가] 어떤 멤버를 클릭했는지 (null -> 리스트, 선택값o -> 상세페이지)
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
+  const selectedMember = members.find((m) => m.id === selectedMemberId) ?? null;
+
+  // [추가] podGoal 갱신
+  const updateMemberPodGoal = (memberId, nextPodGoal) => {
+    setMembers((prev) =>
+      prev.map((m) => (m.id === memberId ? { ...m, podGoal: nextPodGoal } : m)),
+    );
+  };
 
   return (
     <>
@@ -113,23 +139,50 @@ export default function PodDetail() {
           </ButtonWrapper>
         </PodPreviewContainer>
         <PodDetailInfoContainer>
-          {members.map((member) => (
-            <PodMember
-              key={member.id}
-              id={member.id}
-              isMe={member.id === myId}
-              profileImage={member.profileImage}
-              name={member.name}
-              goal={member.goal}
-              isHost={member.isHost}
-              hostMention={member.isHost ? podInfo.hostMention : ''}
-              onHostMentionChange={handleUpdatedPodInfo}
-              status={member.status}
-              showAttendance={isHost}
-              attendenceChecked={!!attendenceById[member.id]}
-              onToggleAttendance={() => onToggleAttendance(member.id)}
+          {/* [추가] 선택 o -> 멤버 상세페이지*/}
+          {/* [추가] 선택 x -> 멤버 리스트 페이지*/}
+          {selectedMember ? (
+            <MemberDetail
+              member={selectedMember}
+              myId={myId}
+              onClose={() => setSelectedMemberId(null)}
+              onChangePodGoal={(nextPodGoal) =>
+                updateMemberPodGoal(selectedMember.id, nextPodGoal)
+              }
             />
-          ))}
+          ) : (
+            <>
+              {members.map((member) => (
+                <ClickableMemberWrapper
+                  key={member.id}
+                  onClick={() => setSelectedMemberId(member.id)}
+                >
+                  <PodMember
+                    key={member.id}
+                    id={member.id}
+                    isMe={member.id === myId}
+                    profileImage={member.profileImage}
+                    name={member.name}
+                    goal={member.goal}
+                    podGoal={member.podGoal}
+                    mainArea={member.mainArea}
+                    studyMood={member.studyMood}
+                    studyType={member.studyType}
+                    isHost={member.isHost}
+                    hostMention={member.isHost ? podInfo.hostMention : ''}
+                    onHostMentionChange={handleUpdatedPodInfo}
+                    status={member.status}
+                    showAttendance={isHost}
+                    attendenceChecked={!!attendenceById[member.id]}
+                    onToggleAttendance={(e) => {
+                      e.stopPropagation(); // [추가] 출석체크 클릭할 때, 상세 페이지로 x
+                      onToggleAttendance(member.id);
+                    }}
+                  />
+                </ClickableMemberWrapper>
+              ))}
+            </>
+          )}
         </PodDetailInfoContainer>
       </PodDetailContainer>
       {isApplyPopupOpen && (
@@ -203,4 +256,9 @@ const Overlay = styled.div`
   inset: 0;
   background-color: transparent;
   z-index: 999;
+`;
+
+// [추가]
+const ClickableMemberWrapper = styled.div`
+  cursor: pointer;
 `;

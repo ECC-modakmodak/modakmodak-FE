@@ -35,12 +35,17 @@ const Badges = ({ setStatus }) => {
   );
 };
 
+// [추가] 추가한 속성들 우선 넣어두었습니다.
 export default function PodMember({
   id,
   isMe,
   profileImage,
   name,
   goal,
+  podGoal,
+  mainArea,
+  studyMood,
+  studyType,
   isHost,
   hostMention,
   onHostMentionChange,
@@ -96,7 +101,7 @@ export default function PodMember({
         <Goal
           as="input"
           readOnly
-          value={goal}
+          value={podGoal}
           completed="true"
           style={{
             fontSize: '16px',
@@ -116,12 +121,15 @@ export default function PodMember({
             onKeyDown={handleKeyDown}
             $canEdit={isHost && isMe}
             $isUpdated={isUpdated}
+            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
           />
         ) : (
           <Placeholder />
         )}
         {showAttendance && (
-          <AttendanceLabel>
+          <AttendanceLabel
+            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
+          >
             <HiddenCheckbox
               type="checkbox"
               aria-label={`${id} 출석 체크`}
@@ -132,7 +140,10 @@ export default function PodMember({
           </AttendanceLabel>
         )}
         <StatusBadgeWrapper
-          onClick={() => setIsBadgesVisible(!isBadgesVisible)}
+          onClick={(e) => {
+            e.stopPropagation(); // [추가] 상세페이지 이동 막기
+            setIsBadgesVisible(!isBadgesVisible);
+          }}
           style={{ cursor: isMe ? 'pointer' : 'default' }}
         >
           <Status
