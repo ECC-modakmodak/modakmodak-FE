@@ -53,8 +53,8 @@ const ContentWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  width: 355px;
-  height: 355px;
+  margin-top: 200px;
+  margin-bottom: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
