@@ -1,3 +1,4 @@
+import { api } from '../lib/api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -32,6 +33,11 @@ export default function Signup() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
+    // 입력이 시작되면 해당 필드의 에러 메시지를 지움
+    if (name === 'nickname' || name === 'username') {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+
     if (name === 'passwordConfirm') {
       if (value !== formData.password) {
         setErrors((prev) => ({
@@ -44,8 +50,15 @@ export default function Signup() {
     }
 
     if (name === 'password') {
-      if (value.length > 0 && value.length < 8) {
-        setErrors((prev) => ({ ...prev, password: '8자 이상 입력해주세요.' }));
+      const passwordRegex =
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+      if (value.length === 0) {
+        setErrors((prev) => ({ ...prev, password: '' }));
+      } else if (!passwordRegex.test(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          password: '영어, 숫자, 특수문자를 포함하여 8 ~ 20자로 입력해주세요.',
+        }));
       } else {
         setErrors((prev) => ({ ...prev, password: '' }));
       }
@@ -70,29 +83,136 @@ export default function Signup() {
 
   const checkDuplicate = async (type) => {
     const value = formData[type];
+
     if (!value) return alert('값을 입력해주세요.');
 
+    if (type === 'nickname') {
+      // 한글 또는 영어를 포함하는 2-10자
+      const nicknameRegex = /^[a-zA-Z가-힣]{2,10}$/;
+      if (!nicknameRegex.test(value)) {
+        return setErrors((prev) => ({
+          ...prev,
+          nickname: '한글 또는 영어 2~10자로 입력해주세요.',
+        }));
+      }
+    } else if (type === 'username') {
+      // 영어, 숫자를 포함하는 4-20자
+      const usernameRegex = /^[a-zA-Z0-9]{4,20}$/;
+      if (!usernameRegex.test(value)) {
+        return setErrors((prev) => ({
+          ...prev,
+          username: '영어 또는 숫자 4~20자로 입력해주세요.',
+        }));
+      }
+    }
+
+    const CHECK_URL =
+      type === 'nickname' ? `/users/check-nickname` : `/users/check-username`;
+
     try {
-      const isAvailable = true;
-      if (isAvailable) {
+      const response = await api.get(CHECK_URL, {
+        params: { [type]: value },
+      });
+
+      if (response.data.isAvailable) {
         setErrors((prev) => ({
           ...prev,
-          [type]: `사용 가능한 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
+          [type]:
+            response.data.message ||
+            `사용 가능한 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
         }));
       }
     } catch (err) {
-      setErrors((prev) => ({
-        ...prev,
-        [type]: `중복된 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
-      }));
+      const errorData = err.response?.data;
+
+      if (
+        errorData?.error === 'NICKNAME_ALREADY_EXISTS' ||
+        errorData?.error === 'USERNAME_ALREADY_EXISTS'
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          [type]:
+            errorData.message ||
+            `이미 사용 중인 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
+        }));
+      } else {
+        console.error(errorData);
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert('회원가입이 완료되었습니다.');
-    navigate('/login');
+    const requiredFields = [
+      'nickname',
+      'username',
+      'email',
+      'password',
+      'passwordConfirm',
+      'preferredType',
+      'preferredMethod',
+      'activityArea',
+      'targetMessage',
+    ];
+
+    const isAllFilled = requiredFields.every((field) => formData[field] !== '');
+
+    if (!isAllFilled) {
+      return alert('모든 항목을 입력해야 회원가입이 가능합니다.');
+    }
+
+    const hasError =
+      (errors.nickname && !errors.nickname.includes('가능')) ||
+      (errors.username && !errors.username.includes('가능')) ||
+      errors.password !== '' ||
+      errors.passwordConfirm !== '비밀번호가 일치합니다.';
+
+    if (hasError) {
+      return alert('입력 조건을 다시 확인해 주세요.');
+    }
+
+    const typeMap = {
+      조용히: 'QUIET',
+      도란도란: 'CHATTY',
+    };
+
+    const methodMap = {
+      대면: '대면',
+      비대면: '비대면',
+    };
+
+    try {
+      const response = await api.post('/users/signup', {
+        nickname: formData.nickname,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        preferredType: typeMap[formData.preferredType],
+        preferredMethod: methodMap[formData.preferredMethod],
+        activityArea: formData.activityArea,
+        targetMessage: formData.targetMessage,
+      });
+
+      if (response.status === 201) {
+        alert('회원가입 성공');
+        navigate('/login');
+      }
+    } catch (err) {
+      const errorData = err.response?.data;
+
+      if (
+        err.response?.status === 409 &&
+        errorData?.error === 'EMAIL_ALREADY_EXISTS'
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          email: errorData?.message || '이미 사용 중인 이메일입니다.',
+        }));
+      } else {
+        alert(errorData?.message || '회원가입 실패');
+      }
+    }
   };
 
   return (
@@ -147,6 +267,7 @@ export default function Signup() {
         <Input
           type="password"
           label="비밀번호"
+          helperText={errors.password}
           name="password"
           value={formData.password}
           onChange={handleChange}
