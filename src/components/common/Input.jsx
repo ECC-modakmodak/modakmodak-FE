@@ -26,8 +26,7 @@ const StyledInput = styled.input`
   /* 회원가입(13/20), 팟 만들기(14/23), 기타(11/19) */
   padding: ${(props) => props.padding || '13px 20px'};
 
-  border: 1px solid
-    ${(props) => (props.variant === 'black' ? '#000' : '#D9695C')};
+  border: 1px solid ${(props) => (props.hasHelperText ? '#D9695C' : '#000')};
   border-radius: 10px;
   box-sizing: border-box;
   outline: none;
@@ -43,7 +42,7 @@ const StyledInput = styled.input`
   }
 
   &:focus {
-    border: 1px solid #000;
+    border: 1px solid ${(props) => (props.hasHelperText ? '#D9695C' : '#000')};
   }
 `;
 
@@ -84,6 +83,7 @@ export default function Input({
         fontSize={fontSize}
         fontWeight={fontWeight}
         variant={variant}
+        hasHelperText={!!helperText}
         {...props}
       />
 
