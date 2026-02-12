@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { api } from '../lib/api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -15,18 +15,32 @@ export default function LoginPage() {
     password: '',
   });
 
+  const [errors, setErrors] = useState({ username: '', password: '' });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleFindIdLink = (e) => {
+    e.preventDefault();
+    navigate('/find-id');
+  };
+
+  const handleFindPwLink = (e) => {
+    e.preventDefault();
+    navigate('/find-pw');
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const API_URL = `${import.meta.env.VITE_API_URL}/api/users/login`;
-
     try {
-      const response = await axios.post(API_URL, {
+      const response = await api.post('/users/login', {
         username: formData.username,
         password: formData.password,
       });
@@ -52,16 +66,39 @@ export default function LoginPage() {
     navigate('/signup');
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google 로그인 시도');
-    // TODO: Google 로그인 로직 구현
+  const handleGoogleLogin = async (googleIdToken) => {
+    try {
+      const response = await api.post('/users/login/google', {
+        idToken: googleIdToken,
+      });
+
+      if (response.status === 200) {
+        const userData = response.data.user;
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        alert(`로그인 성공`);
+        navigate('/');
+      }
+    } catch (err) {
+      const errorData = err.response?.data;
+
+      if (
+        err.response?.status === 401 &&
+        errorData?.error === 'INVALID_TOKEN'
+      ) {
+        alert(
+          errorData.message || 'Google 로그인 실패: 유효하지 않은 토큰입니다.',
+        );
+      } else {
+        console.error('구글 로그인 통신 에러:', errorData);
+      }
+    }
   };
 
   return (
     <LoginContainer>
       <ContentWrapper>
         <LogoImage src={ModakLogo} alt="모닥모닥 로고" />
-
         <InputWrapper>
           <Input
             type="text"
@@ -83,8 +120,15 @@ export default function LoginPage() {
             showPasswordToggle
           />
         </InputWrapper>
-
-        <ForgotPasswordLink href="#">아이디 / 비밀번호 찾기</ForgotPasswordLink>
+        <FindLinksWrapper>
+          <ForgotLink href="#" onClick={handleFindIdLink}>
+            아이디
+          </ForgotLink>
+          <SeparatorText>/</SeparatorText>
+          <ForgotLink href="#" onClick={handleFindPwLink}>
+            비밀번호 찾기
+          </ForgotLink>
+        </FindLinksWrapper>
 
         <ButtonWrapper>
           <Button
@@ -128,7 +172,7 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-betwwen;
+  justify-content: space-between;
   min-height: 100vh;
   background-color: #fff;
   margin: 0 !important;
@@ -161,11 +205,27 @@ const InputWrapper = styled.div`
   margin-bottom: 4px;
 `;
 
-const ForgotPasswordLink = styled.a`
+const FindLinksWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 8px;
+`;
+
+const ForgotLink = styled.a`
   font-size: 16px;
   color: #a5a5a5;
-  align-self: flex-end;
   margin-bottom: 40px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const SeparatorText = styled.span`
+  font-size: 16px;
+  color: #a5a5a5;
+  user-select: none;
 `;
 
 const ButtonWrapper = styled.div`
