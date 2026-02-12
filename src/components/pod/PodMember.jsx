@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import Goal from '../common/tagChip/Goal';
 import Status from '../common/tagChip/Status';
 import { useState } from 'react';
+import usePodPermissions from '../../hooks/usePodPermissions';
+import { updateStatusBadge } from '../../api/PodDetailApi';
 
 const BADGE_TYPES = [
   'hi',
@@ -15,7 +17,7 @@ const BADGE_TYPES = [
   'goodJob',
 ];
 
-const Badges = ({ setStatus }) => {
+const Badges = ({ setReactionEmoji }) => {
   return (
     <BadgeContainer>
       {BADGE_TYPES.map((type) => (
@@ -25,7 +27,7 @@ const Badges = ({ setStatus }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setStatus(type);
+            setReactionEmoji(type);
           }}
         >
           <Status type={type} />
@@ -35,29 +37,23 @@ const Badges = ({ setStatus }) => {
   );
 };
 
-// [추가] 추가한 속성들 우선 넣어두었습니다.
 export default function PodMember({
-  id,
-  isMe,
-  profileImage,
-  name,
-  goal,
-  podGoal,
-  mainArea,
-  studyMood,
-  studyType,
-  isHost,
+  pod,
+  member,
   hostMention,
   onHostMentionChange,
-  status: initialStatus,
-  showAttendance,
-  attendenceChecked,
+  canCheckAttendance,
+  attendanceChecked,
   onToggleAttendance,
+  canChangeBadge,
+  onBadgeUpdated,
 }) {
   const [isBadgesVisible, setIsBadgesVisible] = useState(false);
-  const [status, setStatus] = useState(initialStatus);
   const [isUpdated, setIsUpdated] = useState(false); // 멘션 수정 상태
   const [originalMention, setOriginalMention] = useState('');
+
+  // 권한
+  const { isHost, canEditMention } = usePodPermissions(member.memberId, pod);
 
   const handleFocus = (e) => {
     setOriginalMention(e.target.value);
@@ -70,8 +66,16 @@ export default function PodMember({
     e.target.blur();
   };
 
-  const handleStatus = (nextStatus) => {
-    setStatus(nextStatus);
+  const handleReactionEmoji = (status) => {
+    async function updateBadge() {
+      try {
+        await updateStatusBadge(pod.meetingId, status);
+        onBadgeUpdated(member.memberId, status);
+      } catch (error) {
+        console.error('팟 멤버 상태 배지 변경 실패:', error);
+      }
+    }
+    updateBadge();
     setIsBadgesVisible(false);
   };
 
@@ -92,16 +96,16 @@ export default function PodMember({
         )}
         <img
           className="member-profile-image"
-          src={profileImage || '/images/img-placeholder.png'}
-          alt={`${name} 프로필 사진`}
+          src={member.profileImage || '/images/img-placeholder.png'}
+          alt={`${member.nickname} 프로필 사진`}
         />
       </MemberImageWrapper>
       <MemberInfoContainer>
-        <MemberName>{name}</MemberName>
+        <MemberName>{member.nickname}</MemberName>
         <Goal
           as="input"
           readOnly
-          value={podGoal}
+          value={member.goal}
           completed="true"
           style={{
             fontSize: '16px',
@@ -109,48 +113,48 @@ export default function PodMember({
             cursor: 'default',
           }}
         />
-        {isHost ? (
+        {canEditMention ? (
           <HostMention
             name="hostMention"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
             value={hostMention}
-            readOnly={!(isHost && isMe)}
+            readOnly={!canEditMention}
             onChange={onHostMentionChange}
             onFocus={handleFocus}
             onBlur={handleFinishEditing}
             onKeyDown={handleKeyDown}
-            $canEdit={isHost && isMe}
+            $canEdit={canEditMention}
             $isUpdated={isUpdated}
             onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
           />
         ) : (
           <Placeholder />
         )}
-        {showAttendance && (
+        {canCheckAttendance && (
           <AttendanceLabel
             onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
           >
             <HiddenCheckbox
               type="checkbox"
-              aria-label={`${id} 출석 체크`}
-              checked={attendenceChecked}
+              aria-label={`${member.memberId} 출석 체크`}
+              checked={attendanceChecked}
               onChange={onToggleAttendance}
             />
-            <CustomCheckbox $checked={attendenceChecked} aria-hidden />
+            <CustomCheckbox $checked={attendanceChecked} aria-hidden />
           </AttendanceLabel>
         )}
         <StatusBadgeWrapper
           onClick={(e) => {
             e.stopPropagation(); // [추가] 상세페이지 이동 막기
-            setIsBadgesVisible(!isBadgesVisible);
+            canChangeBadge && setIsBadgesVisible(!isBadgesVisible);
           }}
-          style={{ cursor: isMe ? 'pointer' : 'default' }}
+          style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
         >
           <Status
-            type={status}
-            style={{ cursor: isMe ? 'pointer' : 'default' }}
+            type={member.reactionEmoji}
+            style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
           />
-          {isMe && isBadgesVisible && (
+          {isBadgesVisible && (
             <>
               <Overlay
                 onClick={(e) => {
@@ -158,7 +162,7 @@ export default function PodMember({
                   setIsBadgesVisible(false);
                 }}
               />
-              <Badges setStatus={handleStatus} />
+              <Badges setReactionEmoji={handleReactionEmoji} />
             </>
           )}
         </StatusBadgeWrapper>
