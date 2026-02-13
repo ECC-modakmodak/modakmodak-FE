@@ -22,7 +22,7 @@ export default function App() {
           {/* 팟 상세페이지 */}
           <Route path="/pod/:podId" element={<PodDetail />} />
           <Route path="/create" element={<CreatePod />} />
-          <Route path="/create/detail" element={<CreatePod_detail />} />
+          <Route path="/create/detail:podId" element={<CreatePod_detail />} />
 
         </Route>
       </Routes>
