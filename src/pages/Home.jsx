@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { getTodayPod, getGroupPods } from '../api/pod';
 
 import StudyType from '../components/common/tagChip/StudyType';
 import StudyMood from '../components/common/tagChip/StudyMood';
@@ -11,15 +13,300 @@ import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
 
-// (임시) 팟 대표 이미지
-import podImg1 from '../assets/svg/podImg0.SVG';
+// (임시) 기본 팟 이미지
+import exImgPod from '../assets/svg/exPodImg.svg';
+
+// ===== [TODO] =====
+// 이미지 연결 링크 확인
+// 상태바 -> 개인 목표 연결
+// 상태바 -> 현재 - 팟 시간 비교 -> meetingNow ? 조건문
+// todayPod) id 받아서 확인하기 연결
+// todayPod) podGoal 받아서 연결
+// totalGroupData) location 연결
+
+// func.
+export default function Home() {
+  // 임시 데이터
+  const retrospect = {
+    name: '모각코_회고',
+  };
+
+  // API 연결
+  const [today, setToday] = useState(null);
+  const [pods, setPods] = useState([]);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        const todayData = await getTodayPod();
+        const groupData = await getGroupPods();
+
+        console.log('groupData:', groupData);
+
+        setToday(todayData);
+        setPods(groupData);
+      } catch (err) {
+        console.error('홈 데이터 불러오기 실패', err);
+      }
+    };
+
+    loadHomeData();
+  }, []);
+
+  const DisabledLink = (e) => {
+    e.preventDefault(); // Link 이동 막기
+    alert('준비 중인 페이지입니다.'); // 알림창 표시
+  };
+
+  // 모임 시간 아닐 때
+  const RandomEmoji = ['😴💤💤', '😵‍💫✨✨', '🤔💦💦'];
+  const [randomEmoji] = useState(
+    () => RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)],
+  );
+  // 모임 시간 중일 때
+  const RandomText = [
+    '불태우는 중 🔥🔥',
+    '오늘도 한 걸음 👣👣',
+    '꾸준히 달려요 🏃🏻🏃🏻',
+    '집중하고 있어요 🧐🧐',
+  ];
+  const [randomText] = useState(
+    () => RandomText[Math.floor(Math.random() * RandomText.length)],
+  );
+
+  // 을/를 이/가 구분
+  const getParticle = (word, type) => {
+    if (!word) return '';
+
+    const lastChar = word[word.length - 1];
+    const code = lastChar.charCodeAt(0);
+
+    if (code < 0xac00 || code > 0xd7a3) {
+      return type === 'subject' ? '가' : '를';
+    }
+
+    const hasBatchim = (code - 0xac00) % 28 !== 0;
+
+    if (type === 'subject') {
+      return hasBatchim ? '이' : '가';
+    }
+
+    if (type === 'object') {
+      return hasBatchim ? '을' : '를';
+    }
+
+    return '';
+  };
+  return (
+    <>
+      <Page>
+        {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
+        <StatusBar>
+          <span>{randomEmoji}</span>
+          {/*
+          {meetingNow ? (
+            <span>{today.goal}{getParticle(today.goal)} 위해 {randomText}</span>
+          ) : (
+            <span>{randomEmoji}</span>
+          )} */}
+        </StatusBar>
+
+        {/* === 메인 컨텐츠 === */}
+        <Container>
+          <TopGrid>
+            {/* === 2:1 좌측 === */}
+            <TodayCard>
+              <CardTitle>오늘의 팟</CardTitle>
+              {today ? (
+                /* 오늘 예정된 팟 o */
+                <>
+                  <CardDetail>
+                    오늘{' '}
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
+                      {today.time}
+                    </Phill>
+                    ,{' '}
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
+                      {today.place}
+                    </Phill>
+                    에서{' '}
+                    <Phill
+                      shape="chip"
+                      variant="outlined"
+                      size="large"
+                      style={{ marginLeft: '8px', marginRight: '3px' }}
+                    >
+                      {today.name}
+                    </Phill>
+                    {getParticle(today.name, 'subject')} 예정되어 있어요.
+                  </CardDetail>
+                  <Tag>
+                    <StudyMood type={today.mood} />
+                    <StudyType type={today.type} />
+                  </Tag>
+                  <Tag>
+                    <Phill
+                      shape="chip"
+                      variant="filled"
+                      backgroundColor="#d9695c"
+                      size="small"
+                    >
+                      {today.goal}
+                    </Phill>
+                  </Tag>
+                  <CheckBtn to="/">
+                    {' '}
+                    {/* [TODO] 팟 상세 페이지로 이동 <- id 필드 생기면 */}
+                    <Button
+                      shape="chip"
+                      variant="white"
+                      size="small"
+                      style={{ fontSize: '20px', width: 118, height: 39 }}
+                      data-target="#recommendPotList"
+                      // onclik='/pod/:${podId}' [TODO]
+                    >
+                      확인하기
+                    </Button>
+                  </CheckBtn>
+                </>
+              ) : (
+                <>
+                  <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
+                  <CheckBtn
+                    to="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const target =
+                        document.querySelector('#recommendPotList');
+                      if (!target) return;
+
+                      window.scrollTo({
+                        top: target.offsetTop,
+                        behavior: 'smooth',
+                      });
+                    }}
+                  >
+                    <Button
+                      shape="chip"
+                      variant="white"
+                      size="small"
+                      style={{ fontSize: '20px', width: 161, height: 39 }}
+                    >
+                      팟 찾으러 가기
+                    </Button>
+                  </CheckBtn>
+                </>
+              )}
+            </TodayCard>
+
+            {/* === 2:1 우측 === */}
+            <RightCard>
+              <SubCard>
+                {/* 우측 상단 */}
+                <SubText>
+                  <p>원하는 팟을</p>
+                  <p>직접 만들어 보세요!</p>
+                </SubText>
+                <TextLink to="/create">
+                  팟 만들러 가기
+                  <img src={ArrowBtn} alt="화살표" />
+                </TextLink>
+              </SubCard>
+              <SubCard>
+                {/* 우측 하단 */}
+                {retrospect ? (
+                  /* 회고할 팟 o */
+                  <>
+                    <SubText>
+                      <p>
+                        지난{' '}
+                        <span style={{ color: '#d9695c' }}>
+                          {retrospect.name}
+                        </span>
+                        의 회고를
+                      </p>
+                      <p>남겨 주세요!</p>
+                    </SubText>
+                    <TextLink to="/" onClick={DisabledLink}>
+                      회고하러 가기
+                      <img src={ArrowBtn} alt="화살표" />
+                    </TextLink>
+                  </>
+                ) : (
+                  /* 회고할 팟 x  */
+                  <>
+                    <SubText>
+                      <p>나의 회고를</p>
+                      <p>돌아볼까요?</p>
+                    </SubText>
+                    <TextLink to="/" onClick={DisabledLink}>
+                      회고보러 가기
+                      <img src={ArrowBtn} alt="화살표" />
+                    </TextLink>
+                  </>
+                )}
+              </SubCard>
+            </RightCard>
+          </TopGrid>
+
+          {/* === 추천 팟 영역 === */}
+          <Section id="recommendPotList">
+            <SectionTitle>함께할 팟 찾기</SectionTitle>
+            {/* 추천 팟 목록 grid 3*4 12개 */}
+            <Grid>
+              {pods.map((pod) => (
+                <PodCard key={pod.id} to={`/pod/:${pod.id}`}>
+                  {/* [TODO] 팟 이미지 연결 */}
+                  <PodImg src={pod.podImg || exImgPod} alt="팟 이미지" />
+                  <PodBody>
+                    <Tag>
+                      <StudyMood type={pod.mood} />
+                      <StudyType type={pod.type} />
+                    </Tag>
+
+                    <PodName>{pod.title}</PodName>
+
+                    <PodDetail>
+                      {pod.location ? (
+                        /* 위치 정보 o */
+                        <span>
+                          <PodSvg src={Location_S} alt="위치" />
+                          {pod.location}
+                        </span>
+                      ) : /* 위치 정보 x */
+                      null}
+                      <span>
+                        <PodSvg src={Profile_S} alt="참여인원" />
+                        {pod.people}
+                      </span>
+                    </PodDetail>
+                  </PodBody>
+                </PodCard>
+              ))}
+            </Grid>
+          </Section>
+        </Container>
+      </Page>
+    </>
+  );
+}
 
 // === 전체 큰 틀 ===
 
 // 1920*1024 비율 맞춰서 반응형 수정 필요
 const Page = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   overflow-y: auto;
   background: #fff;
   padding: 0px;
@@ -235,262 +522,3 @@ const PodSvg = styled.img`
 
   display: inline-block;
 `;
-
-// func.
-export default function Home() {
-  // === (임시) 덤 데이터 3set ===
-  /*
-  const retrospect = null;
-  const today = null;
-  */
-
-  const retrospect = {
-    name: '모각코_회고',
-  };
-  const today = {
-    time: '21:00',
-    place: '이화여대',
-    name: '모각코',
-    mood: 'chatty', // chatty / quiet
-    type: 'cafe', // cafe / zoom / other
-    goal: '소플의 리액트 7장 공부하기',
-  };
-
-  // [TODO]  - 팟 생성 일자 최신순으로 12개 정렬
-  const recommendPods = Array.from({ length: 12 }).map((_, i) => ({
-    id: i,
-    mood: i % 2 === 0 ? 'chatty' : 'quiet',
-    type: i % 3 === 0 ? 'cafe' : i % 3 === 1 ? 'zoom' : 'other',
-    title: i % 2 === 0 ? '모각코 할 사람~!' : '토익 같이 공부해요',
-    location: i % 2 === 0 ? '신촌' : null,
-    people: i % 2 === 0 ? '2/5' : '1/5', // 데이터 받을 땐 최대 인원, 참여 인원 나눠야 함.
-    //image:
-  }));
-
-  const DisabledLink = (e) => {
-    e.preventDefault(); // Link 이동 막기
-    alert('준비 중인 페이지입니다.'); // 알림창 표시
-  };
-
-  // 모임 시간 아닐 때
-  const RandomEmoji = ['😴💤💤', '😵‍💫✨✨', '🤔💦💦'];
-  // 이 3개 중 랜덤
-  const [randomEmoji] = useState(
-    () => RandomEmoji[Math.floor(Math.random() * RandomEmoji.length)],
-  );
-  // 모임 시간 중일 때
-  const RandomText = [
-    '불태우는 중 🔥🔥',
-    '오늘도 한 걸음 👣👣',
-    '꾸준히 달려요 🏃🏻🏃🏻',
-    '집중하고 있어요 🧐🧐',
-  ];
-  // 이 4개 중 랜덤
-  const [randomText] = useState(
-    () => RandomText[Math.floor(Math.random() * RandomText.length)],
-  );
-
-  return (
-    <>
-      <Page>
-        {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
-        <StatusBar>
-          {/* 현재 진행 중인 팟 x */}
-          <span>{randomEmoji}</span>
-          {/* 현재 진행 중인 팟 o */}
-          {/*
-          <span>{today.goal}를 위해 {randomText}</span>
-          [TODO] goal 마지막 글자 따라서 -> 을/를 구분
-          */}
-        </StatusBar>
-
-        {/* === 메인 컨텐츠 === */}
-        <Container>
-          {/* === 상단 그리드 영역 === */}
-          <TopGrid>
-            {/* === 2:1 좌측 === */}
-            <TodayCard>
-              <CardTitle>오늘의 팟</CardTitle>
-              {today ? (
-                /* 오늘 예정된 팟 o */
-                <>
-                  <CardDetail>
-                    오늘{' '}
-                    <Phill
-                      shape="chip"
-                      variant="outlined"
-                      size="large"
-                      style={{ marginLeft: '8px', marginRight: '3px' }}
-                    >
-                      {today.time}
-                    </Phill>
-                    ,{' '}
-                    <Phill
-                      shape="chip"
-                      variant="outlined"
-                      size="large"
-                      style={{ marginLeft: '8px', marginRight: '3px' }}
-                    >
-                      {today.place}
-                    </Phill>
-                    에서{' '}
-                    <Phill
-                      shape="chip"
-                      variant="outlined"
-                      size="large"
-                      style={{ marginLeft: '8px', marginRight: '3px' }}
-                    >
-                      {today.name}
-                    </Phill>
-                    가 예정되어 있어요.
-                    {/* [TODO] name 마지막 글자 따라서 -> 이/가 수정 필요 */}
-                  </CardDetail>
-                  <Tag>
-                    <StudyMood type={today.mood} />
-                    <StudyType type={today.type} />
-                  </Tag>
-                  <Tag>
-                    <Phill
-                      shape="chip"
-                      variant="filled"
-                      backgroundColor="#d9695c"
-                      size="small"
-                    >
-                      {today.goal}
-                    </Phill>
-                  </Tag>
-                  <CheckBtn to="/">
-                    {' '}
-                    {/* (임시) 예정된 팟 상세 페이지로 이동 */}
-                    <Button
-                      shape="chip"
-                      variant="white"
-                      size="small"
-                      style={{ fontSize: '20px', width: 118, height: 39 }}
-                      data-target="#recommendPotList"
-                    >
-                      확인하기
-                    </Button>
-                  </CheckBtn>
-                </>
-              ) : (
-                <>
-                  <CardDetail>오늘 예정된 팟이 없어요.</CardDetail>
-                  <CheckBtn
-                    to="/"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const target =
-                        document.querySelector('#recommendPotList');
-                      if (!target) return;
-
-                      window.scrollTo({
-                        top: target.offsetTop,
-                        behavior: 'smooth',
-                      });
-                    }}
-                  >
-                    <Button
-                      shape="chip"
-                      variant="white"
-                      size="small"
-                      style={{ fontSize: '20px', width: 161, height: 39 }}
-                    >
-                      팟 찾으러 가기
-                    </Button>
-                  </CheckBtn>
-                </>
-              )}
-            </TodayCard>
-
-            {/* === 2:1 우측 === */}
-            <RightCard>
-              <SubCard>
-                {/* 우측 상단 */}
-                <SubText>
-                  <p>원하는 팟을</p>
-                  <p>직접 만들어 보세요!</p>
-                </SubText>
-                <TextLink to="/create">
-                  팟 만들러 가기
-                  <img src={ArrowBtn} alt="화살표" />
-                </TextLink>
-              </SubCard>
-              <SubCard>
-                {/* 우측 하단 */}
-                {retrospect ? (
-                  /* 회고할 팟 o */
-                  <>
-                    <SubText>
-                      <p>
-                        지난{' '}
-                        <span style={{ color: '#d9695c' }}>
-                          {retrospect.name}
-                        </span>
-                        의 회고를
-                      </p>
-                      <p>남겨 주세요!</p>
-                    </SubText>
-                    <TextLink to="/" onClick={DisabledLink}>
-                      회고하러 가기
-                      <img src={ArrowBtn} alt="화살표" />
-                    </TextLink>
-                  </>
-                ) : (
-                  /* 회고할 팟 x  */
-                  <>
-                    <SubText>
-                      <p>나의 회고를</p>
-                      <p>돌아볼까요?</p>
-                    </SubText>
-                    <TextLink to="/" onClick={DisabledLink}>
-                      회고보러 가기
-                      <img src={ArrowBtn} alt="화살표" />
-                    </TextLink>
-                  </>
-                )}
-              </SubCard>
-            </RightCard>
-          </TopGrid>
-
-          {/* === 추천 팟 영역 === */}
-          <Section id="recommendPotList">
-            <SectionTitle>함께할 팟 찾기</SectionTitle>
-            {/* 추천 팟 목록 grid 3*4 12개 */}
-            <Grid>
-              {recommendPods.map((p) => (
-                <PodCard key={p.id} to={`/p/${p.id}`}>
-                  {/* (임시) 팟 상세 페이지로 이동 */}
-                  <PodImg src={podImg1} alt="팟 이미지" />
-                  <PodBody>
-                    <Tag>
-                      <StudyMood type={p.mood} />
-                      <StudyType type={p.type} />
-                    </Tag>
-
-                    <PodName>{p.title}</PodName>
-
-                    <PodDetail>
-                      {p.location ? (
-                        /* 위치 정보 o */
-                        <span>
-                          <PodSvg src={Location_S} alt="위치" />
-                          {p.location}
-                        </span>
-                      ) : /* 위치 정보 x */
-                      null}
-                      <span>
-                        <PodSvg src={Profile_S} alt="참여인원" />
-                        {p.people}
-                      </span>
-                    </PodDetail>
-                  </PodBody>
-                </PodCard>
-              ))}
-            </Grid>
-          </Section>
-        </Container>
-      </Page>
-    </>
-  );
-}
