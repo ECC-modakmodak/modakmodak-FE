@@ -13,14 +13,16 @@ import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 import Location_S from '../assets/svg/Location_S.svg';
 import Profile_S from '../assets/svg/Profile_S.svg';
 
-// (임시) 기본 팟 이미지 
-import exImgPod from '../assets/svg/exPodImg.svg'
+// (임시) 기본 팟 이미지
+import exImgPod from '../assets/svg/exPodImg.svg';
 
 // ===== [TODO] =====
 // 이미지 연결 링크 확인
-// todayPod id 받아서 확인하기 연결
-// todayPod podGoal 받아서 연결
-// totalGroupData location 연결
+// 상태바 -> 개인 목표 연결
+// 상태바 -> 현재 - 팟 시간 비교 -> meetingNow ? 조건문
+// todayPod) id 받아서 확인하기 연결
+// todayPod) podGoal 받아서 연결
+// totalGroupData) location 연결
 
 // func.
 export default function Home() {
@@ -39,18 +41,17 @@ export default function Home() {
         const todayData = await getTodayPod();
         const groupData = await getGroupPods();
 
-        console.log("groupData:", groupData);
+        console.log('groupData:', groupData);
 
         setToday(todayData);
         setPods(groupData);
       } catch (err) {
-        console.error("홈 데이터 불러오기 실패", err);
+        console.error('홈 데이터 불러오기 실패', err);
       }
     };
 
-
     loadHomeData();
-  }, [])
+  }, []);
 
   const DisabledLink = (e) => {
     e.preventDefault(); // Link 이동 막기
@@ -75,26 +76,26 @@ export default function Home() {
 
   // 을/를 이/가 구분
   const getParticle = (word, type) => {
-    if (!word) return "";
+    if (!word) return '';
 
     const lastChar = word[word.length - 1];
     const code = lastChar.charCodeAt(0);
 
     if (code < 0xac00 || code > 0xd7a3) {
-      return type === "subject" ? "가" : "를";
+      return type === 'subject' ? '가' : '를';
     }
 
     const hasBatchim = (code - 0xac00) % 28 !== 0;
 
-    if (type === "subject") {
-      return hasBatchim ? "이" : "가";
+    if (type === 'subject') {
+      return hasBatchim ? '이' : '가';
     }
 
-    if (type === "object") {
-      return hasBatchim ? "을" : "를";
+    if (type === 'object') {
+      return hasBatchim ? '을' : '를';
     }
 
-    return "";
+    return '';
   };
   return (
     <>
@@ -104,11 +105,10 @@ export default function Home() {
           <span>{randomEmoji}</span>
           {/*
           {meetingNow ? (
-            <span>{today.goal}를 위해 {randomText}</span>
+            <span>{today.goal}{getParticle(today.goal)} 위해 {randomText}</span>
           ) : (
             <span>{randomEmoji}</span>
-          )}
-          {/* [TODO] goal 마지막 글자 따라서 -> 을/를 구분 */}
+          )} */}
         </StatusBar>
 
         {/* === 메인 컨텐츠 === */}
@@ -148,7 +148,7 @@ export default function Home() {
                     >
                       {today.name}
                     </Phill>
-                    {getParticle(today.name, "subject")} 예정되어 있어요.
+                    {getParticle(today.name, 'subject')} 예정되어 있어요.
                   </CardDetail>
                   <Tag>
                     <StudyMood type={today.mood} />
@@ -267,7 +267,7 @@ export default function Home() {
               {pods.map((pod) => (
                 <PodCard key={pod.id} to={`/pod/:${pod.id}`}>
                   {/* [TODO] 팟 이미지 연결 */}
-                  <PodImg src={pod.podImg || exImgPod } alt="팟 이미지" />
+                  <PodImg src={pod.podImg || exImgPod} alt="팟 이미지" />
                   <PodBody>
                     <Tag>
                       <StudyMood type={pod.mood} />
