@@ -175,7 +175,7 @@ export default function CreatePod_detail() {
       placeGeneral: inputs.placeGeneral,
       placeDetail: inputs.placeDetail,
       detail: inputs.detail,
-      imageUrl: podImg, // ✅ 일단 string으로 보냄 (URL/키 여부는 백엔드 답 오면 확정)
+      imageUrl: podImg, 
     });
 
     // 성공 후 상세페이지로
