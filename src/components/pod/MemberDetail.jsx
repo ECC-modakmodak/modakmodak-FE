@@ -1,7 +1,7 @@
 import Goal from '../common/tagChip/Goal';
 import StudyMood from '../common/tagChip/StudyMood';
-import StudyType from '../common/tagChip/StudyType';
 import Button from '../common/Button';
+import Pill from '../common/tagChip/Pill'
 import Host from '/pod/pod-host.svg';
 import AreaSvg from '/pod/location.svg';
 import { useState } from 'react';
@@ -39,6 +39,7 @@ export default function MemberDetail({
   const [podGoalDraft, setPodGoalDraft] = useState(member?.podGoal ?? '');
   if (!member) return null;
   const isMe = member.id === myId;
+  const bgColor = member.studyType === '#대면' ? 'rgba(250, 48, 75, 0.55)' : 'rgba(38, 172, 255, 0.55)';
 
   return (
     <DetailWrapper>
@@ -117,7 +118,14 @@ export default function MemberDetail({
                 <StudyMood type={member.studyMood} size="medium" />
               </Tag>
               <Tag>
-                <StudyType type={member.studyType} size="medium" />
+                <Pill
+                  variant="filled"
+                  size="medium"
+                  backgroundColor={bgColor}
+                  style={{ cursor: 'default' }}
+                >
+                {member.studyType}
+                </Pill>
               </Tag>
             </Tags>
           </InfoRow>
