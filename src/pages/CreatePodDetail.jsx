@@ -5,12 +5,6 @@ import { postSetupPod2 } from '../api/CreatePod';
 
 import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 
-// [TODO] (임시) 팟 대표 이미지 4종 ==> 서버에서 받아서 쓰기
-import PodImg0 from '../assets/svg/PodImg0.svg';
-import PodImg1 from '../assets/svg/PodImg1.svg';
-import PodImg2 from '../assets/svg/PodImg2.svg';
-import PodImg3 from '../assets/svg/PodImg3.svg';
-
 // css
 import {
   Page,
@@ -32,7 +26,7 @@ import {
   ImgLink,
   TextLink_S,
   TextLink,
-} from "../styles/CreatePodDetail.style";
+} from '../styles/CreatePodDetail.style';
 
 // [TODO]
 // 1. 대표 이미지 키워드 받아서 연결 (검색 키워드 TODO)
@@ -121,7 +115,7 @@ export default function CreatePodDetail() {
   };
 
   // 팟 이미지 관리
-  const POD_IMAGES = [PodImg0, PodImg1, PodImg2, PodImg3]; // [TODO] 서버에서 받아올 이미지 4종
+  const POD_IMAGES = ['pod_1', 'pod_2', 'pod_3', 'pod_4'];
 
   const getRandomPodImage = () => {
     const index = Math.floor(Math.random() * POD_IMAGES.length);
@@ -178,7 +172,7 @@ export default function CreatePodDetail() {
       placeGeneral: inputs.placeGeneral,
       placeDetail: inputs.placeDetail,
       detail: inputs.detail,
-      imageUrl: podImg, // [TODO] 보내는 키워드
+      imageUrl: `${podImg}.png.representativeImage`,
     });
 
     // 성공 후 상세페이지로
@@ -302,7 +296,7 @@ export default function CreatePodDetail() {
             <Row>
               <InputTitle>팟 이미지</InputTitle>
               <PodCard>
-                <PodImg src={podImg} alt="팟 이미지" />
+                <PodImg src={`/images/${podImg}.png`} alt="팟 이미지" />
               </PodCard>
 
               {/* 누르면 '랜덤 이미지' = 이미지 4개 중 랜덤 1 택 해서 PodImg cover */}
@@ -326,4 +320,3 @@ export default function CreatePodDetail() {
     </>
   );
 }
-

@@ -49,15 +49,17 @@ export default function Home() {
   // API 연결
   const [today, setToday] = useState(null);
   const [pods, setPods] = useState([]);
+  const [goal, setGoal] = useState(null)
 
   useEffect(() => {
     const loadHomeData = async () => {
       try {
-        const { today: todayData, group: groupData } = await getHomeData();
+        const { today: todayData, group: groupData, podData } = await getHomeData();
 
         console.log('groupData:', groupData);
 
         setToday(todayData);
+        setGoal(podData);
         setPods(groupData);
       } catch (err) {
         console.error('홈 데이터 불러오기 실패', err);
@@ -114,7 +116,6 @@ export default function Home() {
   return (
     <>
       <Page>
-        {/* [TODO] - 현재 시간 / 예정된 팟 시간 비교  */}
         <StatusBar>
           {today ? (
             <span>
@@ -278,8 +279,7 @@ export default function Home() {
             <Grid>
               {pods.map((pod) => (
                 <PodCard key={pod.id} to={`/pod/:${pod.id}`}>
-                  {/* [TODO] 팟 이미지 연결 */}
-                  <PodImg src={pod.podImg} alt="팟 이미지" />
+                  <PodImg src={`/images/${pod.podImg}`} alt="팟 이미지" />
                   <PodBody>
                     <Tag>
                       <StudyMood type={pod.mood} />

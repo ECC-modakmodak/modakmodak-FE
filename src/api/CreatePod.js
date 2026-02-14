@@ -28,7 +28,7 @@ export const postSetupPod2 = async ({
     area: placeGeneral,
     locationDetail: placeDetail,
     description: detail,
-    imageUrl, // [TODO] 이미지 링크 확인
+    imageUrl,
   });
 
   return res.data;
