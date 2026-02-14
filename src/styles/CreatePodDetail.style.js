@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 
-// css
 export const Page = styled.div`
   width: 100%;
   height: 100%;
