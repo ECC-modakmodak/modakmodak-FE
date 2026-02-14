@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import PodPreview from '../components/pod/PodPreview';
 import Button from '../components/common/Button';
-import PodMember from '../components/pod/PodMemberCard';
+import PodMemberCard from '../components/pod/PodMemberCard';
 import MemberDetail from '../components/pod/MemberDetail';
 import ApplyPopup from '../components/popup/Apply';
 import { useEffect, useState } from 'react';
@@ -33,20 +33,8 @@ export default function PodDetail() {
     canCheckAttendance,
     canClosePod,
     canApplyPod,
+    canChangeBadge,
   } = usePodPermissions(myId, pod);
-
-  // Date 포맷팅 함수
-  function formatDateTime(dateTimeStr) {
-    if (!dateTimeStr) return '';
-    const date = new Date(dateTimeStr);
-
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-
-    return `${month}/${day} ${hour}:${minute}`;
-  }
 
   // 출석 체크 상태
   const [attendanceById, setAttendanceById] = useState({});
@@ -55,6 +43,7 @@ export default function PodDetail() {
   useEffect(() => {
     async function getPodDetail() {
       const podData = await fetchPodDetail(podId);
+      console.log('Fetched pod detail:', podData.participants.list);
       setPod(podData);
       // 출석 체크 상태 초기화
       if (podData?.participants?.list) {
@@ -68,7 +57,7 @@ export default function PodDetail() {
       }
       // 팟장이 편집 가능한 정보 초기화
       setEditablePodInfo({
-        date: formatDateTime(podData.date),
+        date: podData.date,
         locationDetail: podData.locationDetail,
         hostAnnouncement: podData.hostAnnouncement,
       });
@@ -89,7 +78,7 @@ export default function PodDetail() {
   const handleBadgeUpdated = (memberId, nextBadge) => {
     setPod((prev) => {
       const updatedList = prev.participants.list.map((m) =>
-        m.memberId === memberId ? { ...m, statusBadge: nextBadge } : m,
+        m.memberId === memberId ? { ...m, reactionEmoji: nextBadge } : m,
       );
 
       return {
@@ -129,13 +118,13 @@ export default function PodDetail() {
     }
   }, [isApplyPopupOpen, isConfirmPopupOpen]);
 
-  // [추가] 어떤 멤버를 클릭했는지 (null -> 리스트, 선택값o -> 상세페이지)
+  // 어떤 멤버를 클릭했는지 (null -> 리스트, 선택값o -> 상세페이지)
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const selectedMember =
     pod?.participants?.list.find((m) => m.memberId === selectedMemberId) ??
     null;
 
-  // [추가] podGoal 갱신
+  // podGoal 갱신
   const updateMemberPodGoal = (memberId, nextPodGoal) => {
     setPod((prev) => ({
       ...prev,
@@ -172,17 +161,19 @@ export default function PodDetail() {
               width="200px"
               onClick={() => {
                 pod.userStatus.isHost
-                  ? setIsClosePopupOpen(true)
-                  : setIsApplyPopupOpen(true);
+                  ? // 팟장이면 모집 종료 팝업
+                    setIsClosePopupOpen(true)
+                  : // 팟원이 아니면 참여 신청 팝업
+                    setIsApplyPopupOpen(true);
               }}
             >
+              {/* 로그인 유저가 팟장인 경우 */}
               {pod.userStatus.isHost ? '팟 모집 종료하기' : '참여 신청하기'}
             </Button>
           </ButtonWrapper>
         </PodPreviewContainer>
         <PodDetailInfoContainer>
-          {/* [추가] 선택 o -> 멤버 상세페이지*/}
-          {/* [추가] 선택 x -> 멤버 리스트 페이지*/}
+          {/* 팟원 카드 클릭 시 프로필로 이동 */}
           {selectedMember ? (
             <MemberDetail
               member={selectedMember}
@@ -194,24 +185,32 @@ export default function PodDetail() {
             />
           ) : (
             <>
+              {/* 팟원 리스트 */}
               {pod.participants.list.map((member) => (
                 <ClickableMemberWrapper
                   key={member.memberId}
                   onClick={() => setSelectedMemberId(member.memberId)}
                 >
-                  <PodMember
+                  <PodMemberCard
                     pod={pod}
                     member={member}
-                    hostMention={member.isHost ? pod.hostMention : ''}
+                    // (팟장) 멘션
+                    hostMention={member.isHost ? pod.hostAnnouncement : ''}
                     onHostMentionChange={handleUpdatedPodInfo}
-                    canCheckAttendance={canCheckAttendance}
+                    // 출석
                     attendanceChecked={!!attendanceById[member.memberId]}
                     onToggleAttendance={(e) => {
-                      e.stopPropagation(); // [추가] 출석체크 클릭할 때, 상세 페이지로 x
+                      e.stopPropagation();
                       onToggleAttendance(member.memberId);
                     }}
-                    canChangeBadge={myId === member.memberId}
-                    onBadgeUpdated={handleBadgeUpdated}
+                    // 배지
+                    onBadgeUpdated={(nextBadge) =>
+                      handleBadgeUpdated(member.memberId, nextBadge)
+                    }
+                    // 권한
+                    canEditMention={canEditMention && member.isHost}
+                    canCheckAttendance={canCheckAttendance}
+                    canChangeBadge={canChangeBadge && myId === member.memberId}
                   />
                 </ClickableMemberWrapper>
               ))}
@@ -219,6 +218,7 @@ export default function PodDetail() {
           )}
         </PodDetailInfoContainer>
       </PodDetailContainer>
+      {/* 참여 신청 팝업 */}
       {isApplyPopupOpen && (
         <>
           <Overlay onClick={() => setIsApplyPopupOpen(false)} />
@@ -233,6 +233,7 @@ export default function PodDetail() {
           />
         </>
       )}
+      {/* 신청 확인 팝업 */}
       {isConfirmPopupOpen && (
         <>
           <Overlay onClick={() => setIsConfirmPopupOpen(false)} />
@@ -243,6 +244,7 @@ export default function PodDetail() {
           />
         </>
       )}
+      {/* 팟 종료 팝업 */}
       {isClosePopupOpen && (
         <>
           <Overlay onClick={() => setIsClosePopupOpen(false)} />
@@ -299,7 +301,6 @@ const LoaderContainer = styled.div`
   height: 100vh;
 `;
 
-// [추가]
 const ClickableMemberWrapper = styled.div`
   cursor: pointer;
 `;

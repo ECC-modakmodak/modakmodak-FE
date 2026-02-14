@@ -6,6 +6,7 @@ export default function usePodPermissions(myId, pod) {
     ? pod.participants.list
     : [];
 
+  // 팟장 여부 판단: 팟의 userStatus가 isHost이고, 참가자 목록에서 내 아이디가 팟장으로 등록되어 있는지
   const isHost =
     pod?.userStatus?.isHost === true &&
     participants.some(
@@ -13,6 +14,7 @@ export default function usePodPermissions(myId, pod) {
         participant.memberId === myId && participant.isHost === true,
     );
 
+  // 팟원 여부 판단: 참가자 목록에서 내 아이디가 있는지
   const isParticipant = participants.some(
     (participant) => participant.memberId === myId,
   );
@@ -27,5 +29,6 @@ export default function usePodPermissions(myId, pod) {
     canCheckAttendance: isHost,
     canClosePod: isHost,
     canApplyPod: !isHost && !isParticipant,
+    canChangeBadge: isParticipant,
   };
 }

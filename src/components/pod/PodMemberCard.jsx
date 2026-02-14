@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import Goal from '../common/tagChip/Goal';
 import Status from '../common/tagChip/Status';
 import { useState } from 'react';
-import usePodPermissions from '../../hooks/usePodPermissions';
 import { updateStatusBadge } from '../../api/PodDetailApi';
 
 const BADGE_TYPES = [
@@ -17,6 +16,7 @@ const BADGE_TYPES = [
   'goodJob',
 ];
 
+// 배지 팝업
 const Badges = ({ setReactionEmoji }) => {
   return (
     <BadgeContainer>
@@ -37,48 +37,51 @@ const Badges = ({ setReactionEmoji }) => {
   );
 };
 
-export default function PodMember({
+export default function PodMemberCard({
   pod,
   member,
-  hostMention,
+  // 멘션
   onHostMentionChange,
-  canCheckAttendance,
+  // 출석
   attendanceChecked,
   onToggleAttendance,
-  canChangeBadge,
+  // 배지
   onBadgeUpdated,
-}) {
-  const [isBadgesVisible, setIsBadgesVisible] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false); // 멘션 수정 상태
-  const [originalMention, setOriginalMention] = useState('');
-
   // 권한
-  const { isHost, canEditMention } = usePodPermissions(member.memberId, pod);
+  canEditMention,
+  canCheckAttendance,
+  canChangeBadge,
+}) {
+  const [isBadgesVisible, setIsBadgesVisible] = useState(false); // 배지 팝업 노출 상태
+  const [isMentionUpdated, setIsMentionUpdated] = useState(false); // 멘션 수정 상태
 
+  // 멘션 입력 필드 focus
   const handleFocus = (e) => {
-    setOriginalMention(e.target.value);
+    pod.hostAnnouncement(e.target.value);
   };
 
+  // 멘션 입력 필드 blur
   const handleFinishEditing = (e) => {
-    if (originalMention !== e.target.value) {
-      setIsUpdated(true);
+    if (pod.hostAnnouncement !== e.target.value) {
+      setIsMentionUpdated(true);
     }
     e.target.blur();
   };
 
-  const handleReactionEmoji = (status) => {
-    async function updateBadge() {
-      try {
-        await updateStatusBadge(pod.meetingId, status);
-        onBadgeUpdated(member.memberId, status);
-      } catch (error) {
-        console.error('팟 멤버 상태 배지 변경 실패:', error);
-      }
-    }
-    updateBadge();
+  // 배지 클릭 시 상태 업데이트
+  const handleReactionEmoji = async (status) => {
+    onBadgeUpdated(status);
     setIsBadgesVisible(false);
+    try {
+      await updateStatusBadge(pod.meetingId, status);
+      onBadgeUpdated(status);
+    } catch (error) {
+      console.error('팟 멤버 상태 배지 변경 실패:', error);
+      throw error;
+    }
   };
 
+  // 엔터키 입력 시 멘션 수정
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();
@@ -89,7 +92,7 @@ export default function PodMember({
   return (
     <MemberContainer>
       <MemberImageWrapper>
-        {isHost && (
+        {member.isHost && (
           <HostIconWrapper>
             <img src="/pod/pod-host.svg" alt="팟장 아이콘" />
           </HostIconWrapper>
@@ -105,8 +108,8 @@ export default function PodMember({
         <Goal
           as="input"
           readOnly
-          value={member.goal}
-          completed="true"
+          value={member.displayedGoal}
+          completed={member.hasGoal}
           style={{
             fontSize: '16px',
             height: '25px',
@@ -117,23 +120,21 @@ export default function PodMember({
           <HostMention
             name="hostMention"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
-            value={hostMention}
-            readOnly={!canEditMention}
+            value={pod.hostAnnouncement}
             onChange={onHostMentionChange}
+            readOnly={!canEditMention}
             onFocus={handleFocus}
             onBlur={handleFinishEditing}
             onKeyDown={handleKeyDown}
             $canEdit={canEditMention}
-            $isUpdated={isUpdated}
-            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
+            $isUpdated={isMentionUpdated}
+            onClick={(e) => e.stopPropagation()}
           />
         ) : (
           <Placeholder />
         )}
         {canCheckAttendance && (
-          <AttendanceLabel
-            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
-          >
+          <AttendanceLabel onClick={(e) => e.stopPropagation()}>
             <HiddenCheckbox
               type="checkbox"
               aria-label={`${member.memberId} 출석 체크`}
@@ -145,7 +146,7 @@ export default function PodMember({
         )}
         <StatusBadgeWrapper
           onClick={(e) => {
-            e.stopPropagation(); // [추가] 상세페이지 이동 막기
+            e.stopPropagation();
             canChangeBadge && setIsBadgesVisible(!isBadgesVisible);
           }}
           style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
