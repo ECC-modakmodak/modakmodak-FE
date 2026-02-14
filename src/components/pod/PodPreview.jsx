@@ -8,7 +8,7 @@ export default function PodPreview({ podDetailInfo, onInputChange }) {
   const { canEditPodInfo } = usePodPermissions(
     podDetailInfo.meetingId,
     podDetailInfo,
-  ); // (임시) 내 아이디: 1
+  );
 
   const [updatedField, setUpdatedField] = useState({
     time: false,
@@ -60,7 +60,10 @@ export default function PodPreview({ podDetailInfo, onInputChange }) {
   return (
     <PodPreviewContainer>
       <ImageWrapper>
-        <img src={podDetailInfo.representativeImage} alt="팟 이미지" />
+        <img
+          src={`/images/${podDetailInfo.representativeImage}`}
+          alt="팟 이미지"
+        />
       </ImageWrapper>
       <div>
         <PodName>{podDetailInfo.title}</PodName>

@@ -78,7 +78,7 @@ export default function PodDetail() {
   const handleBadgeUpdated = (memberId, nextBadge) => {
     setPod((prev) => {
       const updatedList = prev.participants.list.map((m) =>
-        m.memberId === memberId ? { ...m, reactionEmoji: nextBadge } : m,
+        m.memberId === memberId ? { ...m, statusBadge: nextBadge } : m,
       );
 
       return {
@@ -192,6 +192,7 @@ export default function PodDetail() {
                   onClick={() => setSelectedMemberId(member.memberId)}
                 >
                   <PodMemberCard
+                    myId={myId}
                     pod={pod}
                     member={member}
                     // (팟장) 멘션

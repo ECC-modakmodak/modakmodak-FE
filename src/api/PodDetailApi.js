@@ -23,18 +23,14 @@ export async function fetchPodDetail(podId) {
     const rawData = res.data.data;
     const processedData = {
       ...rawData,
-      // 현재 이미지 출력이 없어 기본 이미지로 대체 (추후 API에서 이미지 URL 제공 시 수정 필요)
-      representativeImage: '/images/pod-1.png',
       // Date 포맷팅
       date: formatDateTime(rawData.date),
       participants: {
         ...rawData.participants,
         list: (rawData.participants.list || []).map((participant) => ({
           ...participant,
-          // 현재 이미지 출력이 없어 기본 이미지로 대체 (추후 API에서 이미지 URL 제공 시 수정 필요)
-          profileImage: '/images/profile-default.png',
-          // reactionEmoji 필드가 없는 경우 기본값으로 대체
-          reactionEmoji: participant.reactionEmoji || 'hi',
+          // statusBadge 필드가 없는 경우 기본값으로 대체
+          statusBadge: participant.statusBadge || 'hi',
           displayedGoal:
             participant.displayedGoal === null ? '' : participant.displayedGoal,
         })),
@@ -62,11 +58,17 @@ export async function updateAttendance(podId, participantId, attended) {
 }
 
 // 팟 멤버 상태 배지 변경
-export async function updateStatusBadge(podId, reactionEmoji) {
+export async function updateStatusBadge(myId, participantId, statusBadge) {
   try {
-    const res = await api.patch(`/api/meetings/${podId}/status`, {
-      statusBadge: reactionEmoji,
-    });
+    const res = await api.patch(
+      `/api/participants/${participantId}/reaction-emoji`,
+      {
+        statusBadge: statusBadge,
+      },
+      {
+        headers: { 'X-User-Id': myId },
+      },
+    );
     console.log('배지 변경 API 응답: ', res.data);
     return res.data.statusBadge;
   } catch (error) {

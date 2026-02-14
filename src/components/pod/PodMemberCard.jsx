@@ -17,7 +17,7 @@ const BADGE_TYPES = [
 ];
 
 // 배지 팝업
-const Badges = ({ setReactionEmoji }) => {
+const Badges = ({ setStatusBadge }) => {
   return (
     <BadgeContainer>
       {BADGE_TYPES.map((type) => (
@@ -27,7 +27,7 @@ const Badges = ({ setReactionEmoji }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setReactionEmoji(type);
+            setStatusBadge(type);
           }}
         >
           <Status type={type} />
@@ -38,6 +38,7 @@ const Badges = ({ setReactionEmoji }) => {
 };
 
 export default function PodMemberCard({
+  myId,
   pod,
   member,
   // 멘션
@@ -69,12 +70,11 @@ export default function PodMemberCard({
   };
 
   // 배지 클릭 시 상태 업데이트
-  const handleReactionEmoji = async (status) => {
+  const handleStatusBadge = async (status) => {
     onBadgeUpdated(status);
     setIsBadgesVisible(false);
     try {
-      await updateStatusBadge(pod.meetingId, status);
-      onBadgeUpdated(status);
+      await updateStatusBadge(myId, member.memberId, status);
     } catch (error) {
       console.error('팟 멤버 상태 배지 변경 실패:', error);
       throw error;
@@ -99,7 +99,7 @@ export default function PodMemberCard({
         )}
         <img
           className="member-profile-image"
-          src={member.profileImage || '/images/img-placeholder.png'}
+          src={`/images/${member.profileImage}`}
           alt={`${member.nickname} 프로필 사진`}
         />
       </MemberImageWrapper>
@@ -152,7 +152,7 @@ export default function PodMemberCard({
           style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
         >
           <Status
-            type={member.reactionEmoji}
+            type={member.statusBadge}
             style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
           />
           {isBadgesVisible && (
@@ -163,7 +163,7 @@ export default function PodMemberCard({
                   setIsBadgesVisible(false);
                 }}
               />
-              <Badges setReactionEmoji={handleReactionEmoji} />
+              <Badges setStatusBadge={handleStatusBadge} />
             </>
           )}
         </StatusBadgeWrapper>
