@@ -1,7 +1,5 @@
 import { api } from '../lib/api';
 
-// [todo] pod에 합치기
-
 // step 1
 export const postSetupPod1 = async ({ mood, type, otherText, maxPeople }) => {
   const res = await api.post('/api/meetings/setup', {
@@ -35,3 +33,5 @@ export const postSetupPod2 = async ({
 
   return res.data;
 };
+
+// 

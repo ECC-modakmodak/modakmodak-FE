@@ -1,15 +1,26 @@
 // import
-import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import { postSetupPod1 } from '../api/pod-create';
+import { postSetupPod1 } from '../api/CreatePod';
 
-import Input from '../components/common/Input';
 import ArrowBtn from '../assets/svg/ArrowBtn.svg';
 
-// [TODO]
-// 
+// css
+import {
+  Page,
+  Container,
+  Title,
+  Content,
+  Row,
+  OptionText,
+  Or,
+  OtherOptionWrapper,
+  OtherInputWrapper,
+  OtherInput,
+  SaveBtn,
+  TextLink,
+} from '../styles/CreatePod.style';
 
 // func.
 export default function CreatedPod() {
@@ -59,20 +70,21 @@ export default function CreatedPod() {
   // [POST]
   const handleSubmit = async () => {
     if (!isFormValid()) return;
-    const data = await postSetupPod1({
-      mood,
-      type,
-      otherText,
-      maxPeople,
-    });
 
-    const meetingId = data.meetingId;
-    if (!meetingId) {
-      console.error('setup 응답에 meetingId가 없음:', data);
-      return;
+    try {
+      const meetingId = await postSetupPod1({
+        mood,
+        type,
+        otherText,
+        maxPeople,
+      });
+
+      console.log('meetingId:', meetingId); // 50 찍혀야 정상
+
+      navigate(`/create/detail/${meetingId}`);
+    } catch (e) {
+      console.error('setup 실패:', e?.response?.data ?? e);
     }
-
-    navigate(`/create/detail/${meetingId}`);
   };
 
   // 3개 선택 확인
@@ -183,143 +195,3 @@ export default function CreatedPod() {
     </>
   );
 }
-
-// css emotion
-const Page = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 60px 0;
-  margin: 0;
-
-  box-sizing: border-box;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  display: flex;
-  position: relative;
-
-  background: #fff;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  margin-bottom: 41px;
-
-  color: #000;
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-
-  width: 500px;
-  height: 500px;
-
-  border-radius: 500px;
-  background: #fbf2f1;
-  box-shadow: 0 0 10px 0 #d9695c;
-
-  position: relative;
-`;
-
-// 내부 요소
-const Row = styled.div`
-  display: flex;
-  position: relative;
-  gap: 23px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-`;
-const OptionText = styled.span`
-  cursor: pointer;
-
-  color: ${(props) => (props.isSelected ? '#D9695C' : '#828282')};
-  font-size: ${(props) => (props.isSelected ? '28px' : '20px')};
-  font-weight: ${(props) => (props.isSelected ? '700' : '500')};
-`;
-
-const Or = styled.span`
-  color: #000;
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-// 기타 - input 박스
-const OtherOptionWrapper = styled.div`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-`;
-
-const OtherInputWrapper = styled.div`
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 15px;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 10;
-  white-space: nowrap;
-`;
-
-const OtherInput = styled(Input)`
-  width: 186px;
-  height: 40px;
-  padding: 11px 19px;
-
-  font-size: 16px;
-  color: #000;
-  background: #fff;
-
-  cursor: ${(props) => (props.readOnly ? 'pointer' : 'text')};
-`;
-
-const SaveBtn = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-
-  color: #000;
-  font-size: 16px;
-  font-weight: 400;
-  text-decoration-line: underline;
-  cursor: pointer;
-
-  justify-content: center;
-`;
-
-// 팟 만들기
-export const TextLink = styled(Link)`
-  position: absolute;
-  bottom: 0;
-  right: -150px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  gap: 5px;
-
-  color: #000;
-  font-size: 20px;
-  font-weight: 500;
-
-  cursor: pointer;
-`;

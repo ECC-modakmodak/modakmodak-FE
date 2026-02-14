@@ -1,32 +1,51 @@
 // import
-import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { postSetupPod2 } from '../api/pod-create';
-import Input from '../components/common/Input';
-import Button from '../components/common/Button';
+import { postSetupPod2 } from '../api/CreatePod';
+
 import ArrowBtn from '../assets/svg/ArrowBtn.svg';
-// (임시) 팟 대표 이미지 4종
-import PodImg0 from '../assets/svg/PodImg0.SVG';
-import PodImg1 from '../assets/svg/PodImg1.SVG';
-import PodImg2 from '../assets/svg/PodImg2.SVG';
-import PodImg3 from '../assets/svg/PodImg3.SVG';
+
+// [TODO] (임시) 팟 대표 이미지 4종 ==> 서버에서 받아서 쓰기
+import PodImg0 from '../assets/svg/PodImg0.svg';
+import PodImg1 from '../assets/svg/PodImg1.svg';
+import PodImg2 from '../assets/svg/PodImg2.svg';
+import PodImg3 from '../assets/svg/PodImg3.svg';
+
+// css
+import {
+  Page,
+  Grid,
+  TitleWrapper,
+  Title,
+  Left,
+  Right,
+  Row,
+  InputTitle,
+  InputWrapper,
+  Input_SS,
+  Input_S,
+  Input_M,
+  Input_L,
+  SaveBtn,
+  PodCard,
+  PodImg,
+  ImgLink,
+  TextLink_S,
+  TextLink,
+} from "../styles/CreatePodDetail.style";
 
 // [TODO]
-// 1. 이미지 post 링크 확인
-// 기본 이미지 키워드-백엔드 체크
-// 랜덤 이미지 링크 확인
+// 1. 대표 이미지 키워드 받아서 연결 (검색 키워드 TODO)
 // 2. test
-// 특히, meetingId, imageURl, date 잘 넘어가는지
+// 특히, imageURl, date 잘 넘어가는지 -> 추천 팟 리스트 상단에 뜨는지도 확인
 
-export default function CreatePod_detail() {
+export default function CreatePodDetail() {
   // === status ===
   const [inputs, setInputs] = useState({
     name: '',
     dateTime: '', // UI 입력용 (오류 방지)
-    date: '', // 최종 저장 데이터 (분리)
-    time: '', // 최종 저장 데이터 (분리)
+    date: '', // 저장 데이터 (분리)
+    time: '', // 저장 데이터 (분리)
     placeGeneral: '',
     placeDetail: '',
     detail: '',
@@ -102,7 +121,7 @@ export default function CreatePod_detail() {
   };
 
   // 팟 이미지 관리
-  const POD_IMAGES = [PodImg0, PodImg1, PodImg2, PodImg3];
+  const POD_IMAGES = [PodImg0, PodImg1, PodImg2, PodImg3]; // [TODO] 서버에서 받아올 이미지 4종
 
   const getRandomPodImage = () => {
     const index = Math.floor(Math.random() * POD_IMAGES.length);
@@ -110,7 +129,6 @@ export default function CreatePod_detail() {
   };
 
   const [podImg, setPodImg] = useState(getRandomPodImage);
-  const fileInputRef = useRef(null);
 
   const handleRandomImage = () => {
     setPodImg((prev) => {
@@ -120,21 +138,6 @@ export default function CreatePod_detail() {
       } while (next === prev);
       return next;
     });
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPodImg(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   // ISO 형식 변환
@@ -175,7 +178,7 @@ export default function CreatePod_detail() {
       placeGeneral: inputs.placeGeneral,
       placeDetail: inputs.placeDetail,
       detail: inputs.detail,
-      imageUrl: podImg, 
+      imageUrl: podImg, // [TODO] 보내는 키워드
     });
 
     // 성공 후 상세페이지로
@@ -303,22 +306,10 @@ export default function CreatePod_detail() {
               </PodCard>
 
               {/* 누르면 '랜덤 이미지' = 이미지 4개 중 랜덤 1 택 해서 PodImg cover */}
-              {/* 누르면 '이미지 가져오기' = 사용자 로컬 라이브러리에서 선택 가능 */}
+              {/* [ 파일 업로드 기능은 삭제됨] */}
               <ImgLink>
                 <TextLink_S onClick={handleRandomImage}>랜덤 이미지</TextLink_S>
-                <TextLink_S onClick={handleUploadClick}>
-                  이미지 가져오기
-                </TextLink_S>
               </ImgLink>
-
-              {/* 실제 파일 입력 버튼은 숨김 처리 */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
-                onChange={handleFileChange}
-              />
             </Row>
 
             {/* 모든 SaveBtn 눌려있고 이미지 적용되어 있을 때 생김 */}
@@ -336,195 +327,3 @@ export default function CreatePod_detail() {
   );
 }
 
-// css
-const Page = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 71px 200px 60px 200px;
-  background: #fff;
-
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 34px 92px;
-
-  width: fit-content;
-  margin: 0 auto;
-  align-items: start;
-`;
-
-const TitleWrapper = styled.div`
-  grid-column: 1 / -1;
-`;
-
-const Title = styled.h1`
-  color: #000;
-  font-size: 28px;
-  font-weight: 700;
-  text-align: left;
-
-  margin: 0;
-`;
-
-const Left = styled.div`
-  display: flex;
-  width: 500px;
-  flex-direction: column;
-  gap: 25px;
-`;
-
-const Right = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const InputTitle = styled.span`
-  color: #000;
-  font-size: 20px;
-  font-weight: 500;
-
-  marign-top: 10px;
-`;
-
-const InputWrapper = styled.div`
-  display: inline-flex;
-  gap: 10px;
-`;
-
-const BaseInput = styled(Input)`
-  padding: 13px 20px;
-  font-size: 20px;
-  font-weight: 500;
-
-  border: 1px solid #000;
-`;
-
-const Input_SS = styled(BaseInput)`
-  display: inline-flex;
-  width: 193px;
-  height: 50px;
-
-  padding: 13px 20px;
-
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const Input_S = styled(BaseInput)`
-  display: inline-flex;
-  width: 293px;
-  height: 50px;
-  padding: 13px 20px;
-
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const Input_M = styled(BaseInput)`
-  display: inline-flex;
-  width: 500px;
-  height: 50px;
-  padding: 13px 20px;
-
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const Input_L = styled(BaseInput)`
-  width: 500px;
-  height: 140px;
-  padding: 13px 20px;
-
-  font-size: 20px;
-  font-weight: 500;
-
-  text-align: left;
-  resize: none;
-`;
-
-const SaveBtn = styled(Button)`
-  display: inline-flex;
-  height: 50px;
-  padding: 12px 30px;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const PodCard = styled.div`
-  width: 300px;
-  height: 275px;
-  background: #fff;
-  border-radius: 30px;
-  position: relative;
-  box-shadow: 0 0 10px 0 rgba(0, 2, 0, 0.15);
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 4px solid #d9695c;
-    pointer-events: none;
-
-    -webkit-mask: linear-gradient(#000 0 0) top / 100% 22px no-repeat;
-    mask: linear-gradient(#000 0 0) top / 100% 33px no-repeat;
-  }
-`;
-
-const PodImg = styled.img`
-  margin: 33px 0 0 0;
-  width: 100%;
-  height: 47%;
-  object-fit: cover;
-  display: block;
-`;
-const ImgLink = styled.div`
-  margin-top: 27px;
-  display: flex;
-  gap: 11px;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const TextLink_S = styled(Link)`
-  text-decoration: underline;
-  color: #000;
-  font-size: 16px;
-  font-weight: 400;
-  cursor: pointer;
-`;
-
-const TextLink = styled(Link)`
-  display: inline-flex;
-  align-self: flex-end;
-  align-items: center;
-  justify-content: center;
-  margin-top: auto;
-
-  text-decoration: none;
-  gap: 5px;
-
-  color: #000;
-  font-size: 20px;
-  font-weight: 500;
-
-  cursor: pointer;
-`;

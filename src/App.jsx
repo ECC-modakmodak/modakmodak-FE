@@ -6,7 +6,7 @@ import LoginPage from './pages/Login';
 import OnboardingPage from './pages/Onboarding';
 import Signup from './pages/Signup';
 import CreatePod from './pages/CreatePod'
-import CreatePod_detail from './pages/CreatePod_detail';
+import CreatePodDetail from './pages/CreatePodDetail';
 import Home from './pages/Home';
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
           {/* 팟 상세페이지 */}
           <Route path="/pod/:podId" element={<PodDetail />} />
           <Route path="/create" element={<CreatePod />} />
-          <Route path="/create/detail:podId" element={<CreatePod_detail />} />
+          <Route path="/create/detail/:meetingId" element={<CreatePodDetail />} />
 
         </Route>
       </Routes>
