@@ -1,7 +1,29 @@
 import styled from '@emotion/styled';
 import Toggle from './toggle';
+import NotificationItem from './NotificationItem';
+import { getNotifications } from '../../api/NotificationApi';
+import { useEffect, useState } from 'react';
 
-export default function NotificationContainer({ children }) {
+export default function NotificationContainer({ onNotificationRead }) {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const data = await getNotifications();
+      setNotifications(data);
+    })();
+  }, []);
+
+  // 알림 읽음 처리
+  const handleMarkedRead = (notificationId) => {
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.notificationId === notificationId ? { ...n, isRead: true } : n,
+      ),
+    );
+    onNotificationRead(notificationId);
+  };
+
   return (
     <Container>
       <Toggle />
@@ -9,7 +31,15 @@ export default function NotificationContainer({ children }) {
         <NextPod>내일 21시, 모각코가 예정되어 있어요.</NextPod>
         <Label>알림</Label>
         <Divider />
-        {children}
+        <Notifications>
+          {notifications.map((item) => (
+            <NotificationItem
+              key={item.notificationId}
+              notification={item}
+              onMarkedRead={handleMarkedRead}
+            />
+          ))}
+        </Notifications>
       </ContentArea>
     </Container>
   );
@@ -89,4 +119,13 @@ const Divider = styled.div`
   height: 0.5px;
   background-color: #000000;
   margin: 10px 0;
+`;
+
+const Notifications = styled.div`
+  height: calc(100% - 80px);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;

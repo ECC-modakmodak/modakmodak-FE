@@ -1,24 +1,30 @@
 import styled from '@emotion/styled';
+import { markNotificationAsRead } from '../../api/NotificationApi';
 
-export default function NotificationItem() {
+export default function NotificationItem({ notification, onMarkedRead }) {
+  const handleRead = async () => {
+    await markNotificationAsRead(notification.notificationId);
+    onMarkedRead(notification.notificationId);
+  };
+
   return (
     <ItemContainer>
-      <ProfileImg src="/images/profile_default.png" alt="프로필 이미지" />
-      <UnreadDot />
+      <ProfileImg src={`/images/profile_default.png`} alt="프로필 이미지" />
+      {!notification.isRead && <UnreadDot />}
       <NotificationInfo>
         <Content>
-          <SenderNickname>모다기</SenderNickname>
+          <SenderNickname>{notification.senderNickname}</SenderNickname>
           <Message>
-            회원님의 모각코에
+            회원님의 {notification.podName}에
             <br />
             참여 신청을 보냈어요!
           </Message>
           <ButtonWrapper>
-            <AcceptButton>승인</AcceptButton>
-            <RejectButton>거절</RejectButton>
+            <AcceptButton onClick={() => handleRead()}>승인</AcceptButton>
+            <RejectButton onClick={() => handleRead()}>거절</RejectButton>
           </ButtonWrapper>
         </Content>
-        <Date>1월 24일</Date>
+        <Date>{notification.date}</Date>
       </NotificationInfo>
     </ItemContainer>
   );
@@ -30,6 +36,7 @@ const ItemContainer = styled.div`
   align-items: flex-start;
   padding-bottom: 10px;
   border-bottom: 1px solid #c0c0c0;
+  margin-bottom: 10px;
 `;
 
 const ProfileImg = styled.img`

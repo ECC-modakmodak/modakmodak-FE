@@ -7,8 +7,9 @@ import alarmSvg from '../../assets/svg/alarm.svg';
 import { useState } from 'react';
 
 // 알림창
-import NotificationContainer from '../notification/notificationContainer';
-import NotificationItem from '../notification/NotificationItem';
+import NotificationContainer from '../notification/NotificationContainer';
+import { getUnreadNotificationCount } from '../../api/NotificationApi';
+import { useEffect } from 'react';
 
 /* 네비 바 전체 */
 const NavWrap = styled.nav`
@@ -124,6 +125,18 @@ export default function NavBar() {
   };
 
   const [showNotification, setShowNotification] = useState(false);
+  const [notificationsCount, setNotificationsCount] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const data = await getUnreadNotificationCount();
+      setNotificationsCount(data);
+    })();
+  }, []);
+
+  const handleNotificationRead = () => {
+    setNotificationsCount((prev) => Math.max(0, prev - 1));
+  };
 
   return (
     <NavWrap>
@@ -148,9 +161,9 @@ export default function NavBar() {
       <Right>
         <RightBox onClick={() => setShowNotification(!showNotification)}>
           <RightImg src={alarmSvg} alt="alarm" />
-          <UnreadDot />
+          {notificationsCount > 0 && <UnreadDot />}
           <NotificationLabel>
-            알림 <span>1</span>
+            알림 <span>{notificationsCount || 0}</span>
           </NotificationLabel>
         </RightBox>
         <RightBox to="/" onClick={DisabledLink}>
@@ -162,9 +175,7 @@ export default function NavBar() {
 
       {/* 알림창 */}
       {showNotification && (
-        <NotificationContainer>
-          <NotificationItem />
-        </NotificationContainer>
+        <NotificationContainer onNotificationRead={handleNotificationRead} />
       )}
     </NavWrap>
   );

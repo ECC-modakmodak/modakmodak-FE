@@ -1,6 +1,3 @@
-// ===================================================================================
-// 팟 상세페이지 API
-// ===================================================================================
 import { api } from '../lib/api';
 
 // Date 포맷팅 함수
@@ -142,21 +139,21 @@ export async function applyToPod(podId, myId) {
     );
     return res.data;
   } catch (error) {
-    console.log('status:', error.response?.status);
-    console.log('data:', error.response?.data);
-    console.log('headers:', error.response?.headers);
-    console.log('config:', error.config);
+    console.error('Error applying to pod:', error);
     throw error;
   }
 }
 
 // 팟 참여 신청 수락/거절
-export async function respondToApplication(podId, participantId, status) {
+export async function respondToApplication(myId, podId, applicationId, status) {
   try {
     const res = await api.patch(
-      `/api/meetings/${podId}/approve/${participantId}`,
+      `/api/meetings/${podId}/approve/${applicationId}`,
       {
         status: status,
+      },
+      {
+        headers: { 'X-User-Id': myId },
       },
     );
     return res.data;

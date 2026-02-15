@@ -58,8 +58,8 @@ const ApplyPopup = ({
           size="medium"
           width="80px"
           disabled={!(timeChecked && placeChecked)}
-          onClick={() => {
-            applyToPod(podInfo.meetingId, myId);
+          onClick={async () => {
+            await applyToPod(podInfo.meetingId, myId);
             setIsApplyPopupOpen(false);
             onConfirm();
           }}
