@@ -125,3 +125,43 @@ export async function closePod(podId) {
     throw error;
   }
 }
+
+// 팟 참여 신청
+export async function applyToPod(podId, myId) {
+  try {
+    const res = await api.post(
+      `/api/meetings/${podId}/apply`,
+      {
+        agreedToRules: true,
+        agreedToNoShow: true,
+        agreedToPrivacy: true,
+      },
+      {
+        headers: { 'X-User-Id': myId },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.log('status:', error.response?.status);
+    console.log('data:', error.response?.data);
+    console.log('headers:', error.response?.headers);
+    console.log('config:', error.config);
+    throw error;
+  }
+}
+
+// 팟 참여 신청 수락/거절
+export async function respondToApplication(podId, participantId, status) {
+  try {
+    const res = await api.patch(
+      `/api/meetings/${podId}/approve/${participantId}`,
+      {
+        status: status,
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.error('Error responding to application:', error);
+    throw error;
+  }
+}

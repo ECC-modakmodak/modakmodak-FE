@@ -17,7 +17,7 @@ import CloseConfirmPopup from '../components/popup/CloseConfirm';
 
 export default function PodDetail() {
   const { podId } = useParams();
-  const myId = 2; // (임시) 내 아이디
+  const myId = 4; // (임시) 내 아이디
 
   // 팟 상세 정보
   const [pod, setPod] = useState(null);
@@ -195,7 +195,7 @@ export default function PodDetail() {
               size="slim"
               width="200px"
               onClick={() => {
-                pod.userStatus.isHost
+                pod.userStatus.isHost && canClosePod
                   ? // 팟장이면 모집 종료 팝업
                     setIsClosePopupOpen(true)
                   : // 팟원이 아니면 참여 신청 팝업
@@ -206,8 +206,7 @@ export default function PodDetail() {
               {pod.userStatus.isHost && canClosePod
                 ? '팟 모집 종료하기'
                 : // 로그인 유저가 팟원이 아닌 경우
-                  pod.userStatus.participantStatus === 'BEFORE_APPLY' &&
-                    canApplyPod
+                  canApplyPod
                   ? '참여 신청하기'
                   : pod.userStatus.participantStatus === 'PENDING' &&
                       canApplyPod
@@ -268,12 +267,13 @@ export default function PodDetail() {
         <>
           <Overlay onClick={() => setIsApplyPopupOpen(false)} />
           <ApplyPopup
+            myId={myId}
             setIsApplyPopupOpen={setIsApplyPopupOpen}
             timeChecked={timeChecked}
             setTimeChecked={setTimeChecked}
             placeChecked={placeChecked}
             setPlaceChecked={setPlaceChecked}
-            podInfo={{ ...pod, ...editablePodInfo }}
+            podInfo={pod}
             onConfirm={() => setIsApplyConfirmPopupOpen(true)}
           />
         </>

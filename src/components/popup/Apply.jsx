@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { PopupContainer, CloseButton, PopupMainText } from './style';
 import Button from '../common/Button';
+import { applyToPod } from '../../api/PodDetailApi';
 
 const ApplyPopup = ({
+  myId,
   setIsApplyPopupOpen,
   timeChecked,
   setTimeChecked,
@@ -20,7 +22,7 @@ const ApplyPopup = ({
         <img src="/pod/close.svg" alt="닫기 아이콘" />
       </CloseButton>
       <PopupMainText>
-        <span>모닥모닥코</span> 팟에 참여하시겠습니까?
+        <span>{podInfo.title}</span> 팟에 참여하시겠습니까?
       </PopupMainText>
       <CheckList>
         <CheckItem>
@@ -33,7 +35,7 @@ const ApplyPopup = ({
             <CustomCheckbox checked={timeChecked} />
           </Label>
           <PopupSubText>
-            <span>{podInfo.time}</span> 시간을 확인했습니다.
+            <span>{podInfo.date}</span> 시간을 확인했습니다.
           </PopupSubText>
         </CheckItem>
         <CheckItem>
@@ -46,7 +48,7 @@ const ApplyPopup = ({
             <CustomCheckbox checked={placeChecked} />
           </Label>
           <PopupSubText>
-            <span>{podInfo.place}</span> 장소를 확인했습니다.
+            <span>{podInfo.locationDetail}</span> 장소를 확인했습니다.
           </PopupSubText>
         </CheckItem>
       </CheckList>
@@ -57,6 +59,7 @@ const ApplyPopup = ({
           width="80px"
           disabled={!(timeChecked && placeChecked)}
           onClick={() => {
+            applyToPod(podInfo.meetingId, myId);
             setIsApplyPopupOpen(false);
             onConfirm();
           }}
