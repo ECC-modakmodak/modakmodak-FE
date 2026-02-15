@@ -114,3 +114,14 @@ export async function updatePodInfo(podId, key, updatedValue) {
     }
   }
 }
+
+// 팟 모집 종료
+export async function closePod(podId) {
+  try {
+    const res = await api.patch(`/api/meetings/${podId}/complete`);
+    return res.data;
+  } catch (error) {
+    console.error('Error closing pod:', error);
+    throw error;
+  }
+}

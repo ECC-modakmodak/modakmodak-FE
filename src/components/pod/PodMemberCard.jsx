@@ -39,7 +39,6 @@ const Badges = ({ setStatusBadge }) => {
 
 export default function PodMemberCard({
   myId,
-  pod,
   member,
   // 멘션
   editablePodInfo,
@@ -56,19 +55,6 @@ export default function PodMemberCard({
   canChangeBadge,
 }) {
   const [isBadgesVisible, setIsBadgesVisible] = useState(false); // 배지 팝업 노출 상태
-  const [isMentionUpdated, setIsMentionUpdated] = useState(false); // 멘션 수정 상태
-
-  // 멘션 입력 필드 focus
-  const handleFocus = () => {
-    setIsMentionUpdated(false);
-  };
-
-  // 멘션 입력 필드 blur
-  const handleFinishEditing = (e) => {
-    if (pod.hostAnnouncement !== e.target.value) {
-      setIsMentionUpdated(true);
-    }
-  };
 
   // 배지 클릭 시 상태 업데이트
   const handleStatusBadge = async (status) => {
@@ -86,7 +72,6 @@ export default function PodMemberCard({
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();
-      handleFinishEditing(e);
     }
   };
 
@@ -117,15 +102,18 @@ export default function PodMemberCard({
             cursor: 'default',
           }}
         />
-        {canEditMention ? (
+        {member.isHost ? (
           <HostMention
             name="hostAnnouncement"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
             value={member.isHost ? editablePodInfo.hostAnnouncement : ''}
             onChange={onHostMentionChange}
             readOnly={!canEditMention}
-            onFocus={handleFocus}
-            onBlur={(e) => onHostMentionUpdate(e.target.name, e.target.value)}
+            onBlur={
+              canEditMention
+                ? (e) => onHostMentionUpdate(e.target.name, e.target.value)
+                : undefined
+            }
             onKeyDown={handleKeyDown}
             onClick={(e) => e.stopPropagation()}
           />

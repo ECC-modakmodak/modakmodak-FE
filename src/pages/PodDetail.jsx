@@ -13,10 +13,11 @@ import { useParams } from 'react-router-dom';
 import usePodPermissions from '../hooks/usePodPermissions';
 import { updateAttendance } from '../api/PodDetailApi';
 import { updatePodInfo } from '../api/PodDetailApi';
+import CloseConfirmPopup from '../components/popup/CloseConfirm';
 
 export default function PodDetail() {
   const { podId } = useParams();
-  const myId = 1; // (임시) 내 아이디
+  const myId = 2; // (임시) 내 아이디
 
   // 팟 상세 정보
   const [pod, setPod] = useState(null);
@@ -110,8 +111,9 @@ export default function PodDetail() {
 
   // 팝업
   const [isClosePopupOpen, setIsClosePopupOpen] = useState(false);
+  const [isCloseConfirmPopupOpen, setIsCloseConfirmPopupOpen] = useState(false);
   const [isApplyPopupOpen, setIsApplyPopupOpen] = useState(false);
-  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
+  const [isApplyConfirmPopupOpen, setIsApplyConfirmPopupOpen] = useState(false);
 
   // 팝업 내 체크박스
   const [timeChecked, setTimeChecked] = useState(false);
@@ -131,12 +133,22 @@ export default function PodDetail() {
 
   // 팝업 뜨면 스크롤 제어
   useEffect(() => {
-    if (isApplyPopupOpen || isConfirmPopupOpen) {
+    if (
+      isApplyPopupOpen ||
+      isApplyConfirmPopupOpen ||
+      isClosePopupOpen ||
+      isCloseConfirmPopupOpen
+    ) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isApplyPopupOpen, isConfirmPopupOpen]);
+  }, [
+    isApplyPopupOpen,
+    isApplyConfirmPopupOpen,
+    isClosePopupOpen,
+    isCloseConfirmPopupOpen,
+  ]);
 
   // 어떤 멤버를 클릭했는지 (null -> 리스트, 선택값o -> 상세페이지)
   const [selectedMemberId, setSelectedMemberId] = useState(null);
@@ -191,7 +203,16 @@ export default function PodDetail() {
               }}
             >
               {/* 로그인 유저가 팟장인 경우 */}
-              {pod.userStatus.isHost ? '팟 모집 종료하기' : '참여 신청하기'}
+              {pod.userStatus.isHost && canClosePod
+                ? '팟 모집 종료하기'
+                : // 로그인 유저가 팟원이 아닌 경우
+                  pod.userStatus.participantStatus === 'BEFORE_APPLY' &&
+                    canApplyPod
+                  ? '참여 신청하기'
+                  : pod.userStatus.participantStatus === 'PENDING' &&
+                      canApplyPod
+                    ? '신청 완료'
+                    : '참여 중'}
             </Button>
           </ButtonWrapper>
         </PodPreviewContainer>
@@ -216,7 +237,6 @@ export default function PodDetail() {
                 >
                   <PodMemberCard
                     myId={myId}
-                    pod={pod}
                     member={member}
                     // (팟장) 멘션
                     editablePodInfo={editablePodInfo}
@@ -254,18 +274,18 @@ export default function PodDetail() {
             placeChecked={placeChecked}
             setPlaceChecked={setPlaceChecked}
             podInfo={{ ...pod, ...editablePodInfo }}
-            onConfirm={() => setIsConfirmPopupOpen(true)}
+            onConfirm={() => setIsApplyConfirmPopupOpen(true)}
           />
         </>
       )}
       {/* 신청 확인 팝업 */}
-      {isConfirmPopupOpen && (
+      {isApplyConfirmPopupOpen && (
         <>
-          <Overlay onClick={() => setIsConfirmPopupOpen(false)} />
+          <Overlay onClick={() => setIsApplyConfirmPopupOpen(false)} />
           <ApplyConfirmPopup
-            setIsConfirmPopupOpen={setIsConfirmPopupOpen}
-            isOpen={isConfirmPopupOpen}
-            onClose={() => setIsConfirmPopupOpen(false)}
+            setIsApplyConfirmPopupOpen={setIsApplyConfirmPopupOpen}
+            isOpen={isApplyConfirmPopupOpen}
+            onClose={() => setIsApplyConfirmPopupOpen(false)}
           />
         </>
       )}
@@ -274,9 +294,24 @@ export default function PodDetail() {
         <>
           <Overlay onClick={() => setIsClosePopupOpen(false)} />
           <PodClosePopup
+            podId={podId}
             setIsClosePopupOpen={setIsClosePopupOpen}
             isOpen={isClosePopupOpen}
             onClose={() => setIsClosePopupOpen(false)}
+            onCompleted={() => {
+              setIsCloseConfirmPopupOpen(true);
+            }}
+          />
+        </>
+      )}
+      {/* 팟 종료 확인 팝업 */}
+      {isCloseConfirmPopupOpen && (
+        <>
+          <Overlay onClick={() => setIsCloseConfirmPopupOpen(false)} />
+          <CloseConfirmPopup
+            setIsCloseConfirmPopupOpen={setIsCloseConfirmPopupOpen}
+            isOpen={isCloseConfirmPopupOpen}
+            onClose={() => setIsCloseConfirmPopupOpen(false)}
           />
         </>
       )}
