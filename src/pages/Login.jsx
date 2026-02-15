@@ -1,3 +1,4 @@
+import { GoogleLogin } from '@react-oauth/google';
 import { api } from '../lib/api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -40,18 +41,17 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await api.post('/users/login', {
+      const response = await api.post('api/users/login', {
         username: formData.username,
         password: formData.password,
       });
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         console.log('로그인 성공 응답 데이터:', response.data);
-
         const token = response.data.token;
         if (token) localStorage.setItem('userToken', token);
-
-        navigate('/home');
+        alert(`로그인 성공`);
+        navigate('/');
       }
     } catch (err) {
       console.error('로그인 에러: ', err.response?.data);
@@ -68,19 +68,21 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async (googleIdToken) => {
     try {
-      const response = await api.post('/users/login/google', {
+      const response = await api.post('api/users/login/google', {
         idToken: googleIdToken,
       });
 
       if (response.status === 200) {
-        const userData = response.data.user;
-        localStorage.setItem('user', JSON.stringify(userData));
+        console.log('구글 로그인 성공:', response.data);
+        const token = response.data.token;
+        if (token) localStorage.setItem('userToken', token);
 
         alert(`로그인 성공`);
         navigate('/');
       }
     } catch (err) {
       const errorData = err.response?.data;
+      console.error('구글 로그인 에러:', errorData);
 
       if (
         err.response?.status === 401 &&
@@ -148,18 +150,17 @@ export default function LoginPage() {
             회원가입
           </Button>
           <Separator>또는</Separator>
-          <Button
-            shape="rect"
-            size="full"
-            variant="gray"
-            onClick={handleGoogleLogin}
-          >
-            <GoogleLogo
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
-              alt="Google 로고"
-            />
-            Google로 로그인하기
-          </Button>
+
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              handleGoogleLogin(credentialResponse.credential);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+            width="380"
+            use_fedcm_for_prompt={true}
+          />
         </ButtonWrapper>
       </ContentWrapper>
 
@@ -184,8 +185,9 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   max-width: 400px;
-  padding: 60px 20px;
+  padding: 60px 10px;
   flex-grow: 1;
+  box-sizing: border-box;
 `;
 
 const LogoImage = styled.img`
@@ -233,6 +235,22 @@ const ButtonWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  align-items: center;
+
+  & > button {
+    width: 100%;
+  }
+
+  & > div {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+
+    iframe {
+      width: 100% !important;
+      margin: 0 auto !important;
+    }
+  }
 `;
 
 const Separator = styled.div`
@@ -241,11 +259,4 @@ const Separator = styled.div`
   color: #000;
   margin: 0;
   position: relative;
-`;
-
-const GoogleLogo = styled.img`
-  width: 30px;
-  height: 30px;
-  aspect-ratio: 1 / 1;
-  margin-right: 16px;
 `;
