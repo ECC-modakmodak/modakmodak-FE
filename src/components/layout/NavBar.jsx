@@ -146,7 +146,7 @@ export default function NavBar() {
       </Center>
 
       <Right>
-        <RightBox to="/" onClick={() => setShowNotification(!showNotification)}>
+        <RightBox onClick={() => setShowNotification(!showNotification)}>
           <RightImg src={alarmSvg} alt="alarm" />
           <UnreadDot />
           <NotificationLabel>
