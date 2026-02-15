@@ -42,7 +42,9 @@ export default function PodMemberCard({
   pod,
   member,
   // 멘션
+  editablePodInfo,
   onHostMentionChange,
+  onHostMentionUpdate,
   // 출석
   attendanceChecked,
   onToggleAttendance,
@@ -57,8 +59,8 @@ export default function PodMemberCard({
   const [isMentionUpdated, setIsMentionUpdated] = useState(false); // 멘션 수정 상태
 
   // 멘션 입력 필드 focus
-  const handleFocus = (e) => {
-    pod.hostAnnouncement(e.target.value);
+  const handleFocus = () => {
+    setIsMentionUpdated(false);
   };
 
   // 멘션 입력 필드 blur
@@ -66,7 +68,6 @@ export default function PodMemberCard({
     if (pod.hostAnnouncement !== e.target.value) {
       setIsMentionUpdated(true);
     }
-    e.target.blur();
   };
 
   // 배지 클릭 시 상태 업데이트
@@ -118,16 +119,14 @@ export default function PodMemberCard({
         />
         {canEditMention ? (
           <HostMention
-            name="hostMention"
+            name="hostAnnouncement"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
-            value={pod.hostAnnouncement}
+            value={member.isHost ? editablePodInfo.hostAnnouncement : ''}
             onChange={onHostMentionChange}
             readOnly={!canEditMention}
             onFocus={handleFocus}
-            onBlur={handleFinishEditing}
+            onBlur={(e) => onHostMentionUpdate(e.target.name, e.target.value)}
             onKeyDown={handleKeyDown}
-            $canEdit={canEditMention}
-            $isUpdated={isMentionUpdated}
             onClick={(e) => e.stopPropagation()}
           />
         ) : (

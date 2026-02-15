@@ -76,3 +76,41 @@ export async function updateStatusBadge(myId, participantId, statusBadge) {
     throw error;
   }
 }
+
+// 팟 정보 수정
+export async function updatePodInfo(podId, key, updatedValue) {
+  // 팟장 멘션 수정
+  if (key === 'hostAnnouncement') {
+    try {
+      const res = await api.patch(`/api/meetings/${podId}/host-announcement`, {
+        hostAnnouncement: updatedValue,
+      });
+      return res.data;
+    } catch (error) {
+      console.error('Error updating host announcement:', error);
+      throw error;
+    }
+  } else if (key === 'date') {
+    // 팟 날짜 수정
+    try {
+      const res = await api.patch(`/api/meetings/${podId}/date`, {
+        date: updatedValue,
+      });
+      return res.data;
+    } catch (error) {
+      console.error('Error updating pod date:', error);
+      throw error;
+    }
+  } else if (key === 'locationDetail') {
+    // 팟 장소 수정
+    try {
+      const res = await api.patch(`/api/meetings/${podId}/location-detail`, {
+        locationDetail: updatedValue,
+      });
+      return res.data;
+    } catch (error) {
+      console.error('Error updating pod location detail:', error);
+      throw error;
+    }
+  }
+}

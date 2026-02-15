@@ -12,6 +12,7 @@ import { BounceLoader } from 'react-spinners';
 import { useParams } from 'react-router-dom';
 import usePodPermissions from '../hooks/usePodPermissions';
 import { updateAttendance } from '../api/PodDetailApi';
+import { updatePodInfo } from '../api/PodDetailApi';
 
 export default function PodDetail() {
   const { podId } = useParams();
@@ -65,13 +66,32 @@ export default function PodDetail() {
     getPodDetail();
   }, [podId]);
 
-  // 팟 정보 편집
-  const handleUpdatedPodInfo = (e) => {
+  // 팟 정보 수정 (입력 중)
+  const handlePodInfoChange = (e) => {
     const { name, value } = e.target;
     setEditablePodInfo((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  // 팟 정보 수정 (완료)
+  const handleUpdatedPodInfo = async (name, value) => {
+    try {
+      await updatePodInfo(pod.meetingId, name, value);
+      setPod((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setEditablePodInfo((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } catch (error) {
+      console.error('Failed to update pod info:', error);
+      // 롤백
+      setEditablePodInfo((prev) => ({ ...prev, [name]: prev[name] }));
+    }
   };
 
   // 상태 배지 변경
@@ -152,7 +172,10 @@ export default function PodDetail() {
         <PodPreviewContainer>
           <PodPreview
             podDetailInfo={pod}
-            onInputChange={handleUpdatedPodInfo}
+            editablePodInfo={editablePodInfo}
+            onChange={handlePodInfoChange}
+            onUpdate={handleUpdatedPodInfo}
+            canEditPodInfo={canEditPodInfo}
           />
           <ButtonWrapper>
             <Button
@@ -196,8 +219,9 @@ export default function PodDetail() {
                     pod={pod}
                     member={member}
                     // (팟장) 멘션
-                    hostMention={member.isHost ? pod.hostAnnouncement : ''}
-                    onHostMentionChange={handleUpdatedPodInfo}
+                    editablePodInfo={editablePodInfo}
+                    onHostMentionChange={handlePodInfoChange}
+                    onHostMentionUpdate={handleUpdatedPodInfo}
                     // 출석
                     attendanceChecked={!!attendanceById[member.memberId]}
                     onToggleAttendance={(e) => {
