@@ -1,0 +1,63 @@
+import { api } from '../lib/api';
+
+export const loginUser = async (username, password) => {
+  const response = await api.post('api/users/login', { username, password });
+  console.log('서버 응답 확인용:', response.data);
+
+  if (response.status === 200 || response.status === 201) return response.data;
+  throw new Error('Login Failed');
+};
+
+export const loginWithGoogle = async (idToken) => {
+  const response = await api.post('api/users/login/google', { idToken });
+  console.log('구글 로그인 서버 응답:', response.data);
+
+  if (response.status === 200 || response.status === 201) {
+    return response.data;
+  }
+  throw new Error('Google Login Failed');
+};
+
+export const checkDuplicateApi = async (type, value) => {
+  const CHECK_URL =
+    type === 'nickname'
+      ? `api/users/check-nickname`
+      : `api/users/check-username`;
+
+  const response = await api.get(CHECK_URL, {
+    params: { [type]: value },
+  });
+
+  const { isAvailable, message } = response.data;
+  const typeName = type === 'nickname' ? '닉네임' : '아이디';
+
+  const finalMessage =
+    message ||
+    (isAvailable
+      ? `사용 가능한 ${typeName}입니다.`
+      : `이미 존재하는 ${typeName}입니다.`);
+  return {
+    isAvailable,
+    message: finalMessage,
+  };
+};
+
+export const signupUser = async (formData) => {
+  const typeMap = { 조용히: 'QUIET', 도란도란: 'CHATTY' };
+
+  const response = await api.post('api/users/signup', {
+    nickname: formData.nickname,
+    username: formData.username,
+    email: formData.email,
+    password: formData.password,
+    preferredType: typeMap[formData.preferredType],
+    preferredMethod: formData.preferredMethod,
+    activityArea: formData.activityArea,
+    targetMessage: formData.targetMessage,
+  });
+
+  if (response.status === 201 || response.status === 200) {
+    return response.data;
+  }
+  throw response;
+};

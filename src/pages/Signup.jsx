@@ -1,4 +1,3 @@
-import { api } from '../lib/api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -6,6 +5,7 @@ import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Footer from '../components/layout/Footer';
 import ModakLogo from '../assets/svg/logo.svg';
+import { signupUser, checkDuplicateApi } from '../api/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -104,31 +104,13 @@ export default function Signup() {
       }
     }
 
-    const CHECK_URL =
-      type === 'nickname'
-        ? `api/users/check-nickname`
-        : `api/users/check-username`;
-
     try {
-      const response = await api.get(CHECK_URL, {
-        params: { [type]: value },
-      });
+      const data = await checkDuplicateApi(type, value);
 
-      if (response.data.isAvailable) {
-        setErrors((prev) => ({
-          ...prev,
-          [type]:
-            response.data.message ||
-            `사용 가능한 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
-        }));
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          [type]:
-            response.data.message ||
-            `이미 존재하는 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
-        }));
-      }
+      setErrors((prev) => ({
+        ...prev,
+        [type]: data.message,
+      }));
     } catch (err) {
       console.error(err);
       alert('중복 확인 중 오류가 발생했습니다.');
@@ -167,47 +149,27 @@ export default function Signup() {
       return alert('입력 조건을 다시 확인해 주세요.');
     }
 
-    const typeMap = {
-      조용히: 'QUIET',
-      도란도란: 'CHATTY',
-    };
-
-    const methodMap = {
-      대면: '대면',
-      비대면: '비대면',
-    };
-
     try {
-      const response = await api.post('api/users/signup', {
-        nickname: formData.nickname,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        preferredType: typeMap[formData.preferredType],
-        preferredMethod: methodMap[formData.preferredMethod],
-        activityArea: formData.activityArea,
-        targetMessage: formData.targetMessage,
-      });
+      const data = await signupUser(formData);
 
-      if (response.status === 201 || response.status === 200) {
-        alert('회원가입 성공');
-        navigate('/login');
-      }
+      alert(data.message || '회원가입 성공');
+      navigate('/login');
     } catch (err) {
       const errorData = err.response?.data;
+      const errorMsg = errorData?.message || '회원가입 실패';
+
       console.log('에러 이유:', errorData);
+
       if (
         errorData?.error === 'EMAIL_ALREADY_EXISTS' ||
-        errorData?.message?.includes('이메일')
+        errorMsg.includes('이메일')
       ) {
         setErrors((prev) => ({
           ...prev,
-          email: errorData?.message,
+          email: errorMsg,
         }));
-        alert(errorData?.message);
-      } else {
-        alert(errorData?.message || '회원가입 실패');
       }
+      alert(errorMsg);
     }
   };
 

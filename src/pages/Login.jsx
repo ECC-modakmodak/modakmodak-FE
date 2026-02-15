@@ -1,5 +1,5 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { api } from '../lib/api';
+import { loginUser, loginWithGoogle } from '../api/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -41,20 +41,13 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await api.post('api/users/login', {
-        username: formData.username,
-        password: formData.password,
-      });
+      const data = await loginUser(formData.username, formData.password);
 
-      if (response.status === 200 || response.status === 201) {
-        console.log('로그인 성공 응답 데이터:', response.data);
-        const token = response.data.token;
-        if (token) localStorage.setItem('userToken', token);
-        alert(`로그인 성공`);
-        navigate('/');
-      }
+      localStorage.setItem('userToken', data.token);
+
+      alert(`로그인 성공`);
+      navigate('/');
     } catch (err) {
-      console.error('로그인 에러: ', err.response?.data);
       const errorMsg =
         err.response?.data?.message || '아이디 또는 비밀번호가 틀렸습니다.';
       alert(errorMsg);
@@ -68,15 +61,10 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async (googleIdToken) => {
     try {
-      const response = await api.post('api/users/login/google', {
-        idToken: googleIdToken,
-      });
+      const data = await loginWithGoogle(googleIdToken);
 
-      if (response.status === 200) {
-        console.log('구글 로그인 성공:', response.data);
-        const token = response.data.token;
-        if (token) localStorage.setItem('userToken', token);
-
+      if (data.token) {
+        localStorage.setItem('userToken', data.token);
         alert(`로그인 성공`);
         navigate('/');
       }
