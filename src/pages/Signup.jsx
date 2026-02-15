@@ -38,46 +38,44 @@ export default function Signup() {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
 
-    if (name === 'passwordConfirm') {
-      if (value !== formData.password) {
-        setErrors((prev) => ({
-          ...prev,
-          passwordConfirm: '다시 입력해 주세요.',
-        }));
-      } else {
-        setErrors((prev) => ({ ...prev, passwordConfirm: '' }));
-      }
-    }
-
     if (name === 'password') {
       const passwordRegex =
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-      if (value.length === 0) {
-        setErrors((prev) => ({ ...prev, password: '' }));
-      } else if (!passwordRegex.test(value)) {
-        setErrors((prev) => ({
-          ...prev,
-          password: '영어, 숫자, 특수문자를 포함하여 8 ~ 20자로 입력해주세요.',
-        }));
-      } else {
-        setErrors((prev) => ({ ...prev, password: '' }));
+
+      let passwordError = '';
+      if (value.length > 0 && !passwordRegex.test(value)) {
+        passwordError =
+          '영어, 숫자, 특수문자를 포함하여 8 ~ 20자로 입력해주세요.';
       }
+
+      let confirmError = '';
+      if (formData.passwordConfirm) {
+        confirmError =
+          value === formData.passwordConfirm
+            ? '비밀번호가 일치합니다.'
+            : '다시 입력해주세요.';
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        password: passwordError,
+        passwordConfirm: formData.passwordConfirm
+          ? confirmError
+          : prev.passwordConfirm,
+      }));
     }
 
     if (name === 'passwordConfirm') {
+      let confirmError = '';
       if (value === '') {
-        setErrors((prev) => ({ ...prev, passwordConfirm: '' }));
-      } else if (value !== formData.password) {
-        setErrors((prev) => ({
-          ...prev,
-          passwordConfirm: '다시 입력해 주세요',
-        }));
+        confirmError = '';
       } else {
-        setErrors((prev) => ({
-          ...prev,
-          passwordConfirm: '비밀번호가 일치합니다.',
-        }));
+        confirmError =
+          value === formData.password
+            ? '비밀번호가 일치합니다.'
+            : '다시 입력해주세요.';
       }
+      setErrors((prev) => ({ ...prev, passwordConfirm: confirmError }));
     }
   };
 
@@ -107,7 +105,9 @@ export default function Signup() {
     }
 
     const CHECK_URL =
-      type === 'nickname' ? `/users/check-nickname` : `/users/check-username`;
+      type === 'nickname'
+        ? `api/users/check-nickname`
+        : `api/users/check-username`;
 
     try {
       const response = await api.get(CHECK_URL, {
@@ -121,23 +121,17 @@ export default function Signup() {
             response.data.message ||
             `사용 가능한 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
         }));
-      }
-    } catch (err) {
-      const errorData = err.response?.data;
-
-      if (
-        errorData?.error === 'NICKNAME_ALREADY_EXISTS' ||
-        errorData?.error === 'USERNAME_ALREADY_EXISTS'
-      ) {
+      } else {
         setErrors((prev) => ({
           ...prev,
           [type]:
-            errorData.message ||
-            `이미 사용 중인 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
+            response.data.message ||
+            `이미 존재하는 ${type === 'nickname' ? '닉네임' : '아이디'}입니다.`,
         }));
-      } else {
-        console.error(errorData);
       }
+    } catch (err) {
+      console.error(err);
+      alert('중복 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -166,7 +160,8 @@ export default function Signup() {
       (errors.nickname && !errors.nickname.includes('가능')) ||
       (errors.username && !errors.username.includes('가능')) ||
       errors.password !== '' ||
-      errors.passwordConfirm !== '비밀번호가 일치합니다.';
+      formData.password !== formData.passwordConfirm ||
+      (errors.passwordConfirm && errors.passwordConfirm.includes('다시'));
 
     if (hasError) {
       return alert('입력 조건을 다시 확인해 주세요.');
@@ -183,7 +178,7 @@ export default function Signup() {
     };
 
     try {
-      const response = await api.post('/users/signup', {
+      const response = await api.post('api/users/signup', {
         nickname: formData.nickname,
         username: formData.username,
         email: formData.email,
@@ -194,21 +189,22 @@ export default function Signup() {
         targetMessage: formData.targetMessage,
       });
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         alert('회원가입 성공');
         navigate('/login');
       }
     } catch (err) {
       const errorData = err.response?.data;
-
+      console.log('에러 이유:', errorData);
       if (
-        err.response?.status === 409 &&
-        errorData?.error === 'EMAIL_ALREADY_EXISTS'
+        errorData?.error === 'EMAIL_ALREADY_EXISTS' ||
+        errorData?.message?.includes('이메일')
       ) {
         setErrors((prev) => ({
           ...prev,
-          email: errorData?.message || '이미 사용 중인 이메일입니다.',
+          email: errorData?.message,
         }));
+        alert(errorData?.message);
       } else {
         alert(errorData?.message || '회원가입 실패');
       }
@@ -231,6 +227,7 @@ export default function Signup() {
             placeholder="한글 또는 영어를 포함하는 2-10자"
           />
           <SideButton
+            type="button"
             variant="secondary"
             size="large"
             onClick={() => checkDuplicate('nickname')}
@@ -250,6 +247,7 @@ export default function Signup() {
             placeholder="영어, 숫자를 포함하는 4-20자"
           />
           <SideButton
+            type="button"
             variant="secondary"
             size="large"
             onClick={() => checkDuplicate('username')}
@@ -388,6 +386,8 @@ const FormWrapper = styled.div`
   max-width: 450px;
   display: flex;
   flex-direction: column;
+  padding: 0 10px;
+  box-sizing: border-box;
 `;
 
 const RowWrapper = styled.div`
