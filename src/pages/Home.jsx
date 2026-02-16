@@ -184,7 +184,7 @@ export default function Home() {
                       {podGoal}
                     </Phill>
                   </Tag>
-                  <CheckBtn to={`/pod/:${today.podId}`}>
+                  <CheckBtn to={`/pod/${today.podId}`}>
                     <Button
                       shape="chip"
                       variant="white"
@@ -282,7 +282,7 @@ export default function Home() {
             {/* 추천 팟 목록 grid 3*4 12개 */}
             <Grid>
               {pods.map((pod) => (
-                <PodCard key={pod.id} to={`/pod/:${pod.id}`}>
+                <PodCard key={pod.id} to={`/pod/${pod.id}`}>
                   <PodImg src={`/images/${pod.podImg}`} alt="팟 이미지" />
                   <PodBody>
                     <Tag>
