@@ -37,7 +37,7 @@ import {
   PodSvg,
 } from '../styles/Home.style';
 
-// === [TODO] user의 goal 받아오기
+// === [TODO] 상태바, user의 goal 받아오기 <-- userId 알아야 id 받고 memberId로 접근 가능.....
 
 // func.
 export default function Home() {
@@ -116,11 +116,11 @@ export default function Home() {
   return (
     <>
       <Page>
-        <StatusBar>
+        <StatusBar>  {/* [TODO] today.goal -> id의 goal로 변경 */}
           {today ? (
             <span>
               {today.goal}
-              {getParticle(today.goal)} 위해 {randomText}
+              {getParticle(today.goal)} 위해 {randomText} 
             </span>
           ) : (
             <span>{randomEmoji}</span>

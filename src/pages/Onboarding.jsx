@@ -50,6 +50,8 @@ const ContentWrapper = styled.div`
   align-items: center;
   flex-grow: 1;
   gap: 9px;
+  width: 100%;
+  max-width: 450px;
 `;
 
 const LogoWrapper = styled.div`
