@@ -47,7 +47,6 @@ export default function LoginPage() {
 
       localStorage.setItem('userToken', data.token);
 
-      alert(`로그인 성공`);
       navigate('/');
     } catch (err) {
       const errorMsg =
