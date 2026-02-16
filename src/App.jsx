@@ -5,9 +5,10 @@ import PodDetail from './pages/PodDetail';
 import LoginPage from './pages/Login';
 import OnboardingPage from './pages/Onboarding';
 import Signup from './pages/Signup';
-import CreatePod from './pages/CreatePod'
+import CreatePod from './pages/CreatePod';
 import CreatePod_detail from './pages/CreatePod_detail';
 import Home from './pages/Home';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 export default function App() {
   return (
@@ -20,10 +21,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           {/* 다른 라우트들은 여기에 추가 */}
           {/* 팟 상세페이지 */}
-          <Route path="/pod/:podId" element={<PodDetail />} />
-          <Route path="/create" element={<CreatePod />} />
-          <Route path="/create/detail:podId" element={<CreatePod_detail />} />
-
+          <Route element={<ProtectedRoute />}>
+            <Route path="/pod/:podId" element={<PodDetail />} />
+            <Route path="/create" element={<CreatePod />} />
+            <Route path="/create/detail:podId" element={<CreatePod_detail />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
