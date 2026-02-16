@@ -1,10 +1,34 @@
 import styled from '@emotion/styled';
 import { markNotificationAsRead } from '../../api/NotificationApi';
+import { respondToApplication } from '../../api/PodDetailApi';
 
 export default function NotificationItem({ notification, onMarkedRead }) {
+  const myId = 1; // 임시 로그인 유저 ID
+
+  // 알림 읽음 처리
   const handleRead = async () => {
     await markNotificationAsRead(notification.notificationId);
     onMarkedRead(notification.notificationId);
+  };
+
+  // 참여 신청 승인
+  const handleAccept = async () => {
+    await respondToApplication(
+      myId,
+      notification.relatedId,
+      notification.applicationId,
+      'APPROVED',
+    );
+  };
+
+  // 참여 신청 거절
+  const handleReject = async () => {
+    await respondToApplication(
+      myId,
+      notification.relatedId,
+      notification.applicationId,
+      'REJECTED',
+    );
   };
 
   return (
@@ -20,8 +44,22 @@ export default function NotificationItem({ notification, onMarkedRead }) {
             참여 신청을 보냈어요!
           </Message>
           <ButtonWrapper>
-            <AcceptButton onClick={() => handleRead()}>승인</AcceptButton>
-            <RejectButton onClick={() => handleRead()}>거절</RejectButton>
+            <AcceptButton
+              onClick={() => {
+                handleRead();
+                handleAccept();
+              }}
+            >
+              승인
+            </AcceptButton>
+            <RejectButton
+              onClick={() => {
+                handleRead();
+                handleReject();
+              }}
+            >
+              거절
+            </RejectButton>
           </ButtonWrapper>
         </Content>
         <Date>{notification.date}</Date>
@@ -37,10 +75,10 @@ const ItemContainer = styled.div`
   padding-bottom: 10px;
   border-bottom: 1px solid #c0c0c0;
   margin-bottom: 10px;
+  position: relative;
 `;
 
 const ProfileImg = styled.img`
-  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;

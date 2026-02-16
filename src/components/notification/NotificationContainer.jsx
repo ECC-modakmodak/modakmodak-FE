@@ -32,13 +32,15 @@ export default function NotificationContainer({ onNotificationRead }) {
         <Label>알림</Label>
         <Divider />
         <Notifications>
-          {notifications.map((item) => (
-            <NotificationItem
-              key={item.notificationId}
-              notification={item}
-              onMarkedRead={handleMarkedRead}
-            />
-          ))}
+          {notifications
+            .filter((item) => !item.isRead)
+            .map((item) => (
+              <NotificationItem
+                key={item.notificationId}
+                notification={item}
+                onMarkedRead={handleMarkedRead}
+              />
+            ))}
         </Notifications>
       </ContentArea>
     </Container>

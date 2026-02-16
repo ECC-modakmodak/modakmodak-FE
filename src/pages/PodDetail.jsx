@@ -17,7 +17,7 @@ import CloseConfirmPopup from '../components/popup/CloseConfirm';
 
 export default function PodDetail() {
   const { podId } = useParams();
-  const myId = 1; // (임시) 내 아이디
+  const myId = 6; // (임시) 내 아이디
 
   // 팟 상세 정보
   const [pod, setPod] = useState(null);
