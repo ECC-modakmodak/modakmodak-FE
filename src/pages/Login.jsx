@@ -20,7 +20,9 @@ export default function LoginPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const noSpaceValue = value.replace(/\s/g, '');
+
+    setFormData((prev) => ({ ...prev, [name]: noSpaceValue }));
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));

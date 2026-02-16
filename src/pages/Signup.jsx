@@ -31,7 +31,20 @@ export default function Signup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    const noSpaceFields = [
+      'nickname',
+      'username',
+      'email',
+      'password',
+      'passwordConfirm',
+    ];
+
+    const finalValue = noSpaceFields.includes(name)
+      ? value.replace(/\s/g, '')
+      : value;
+
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
 
     // 입력이 시작되면 해당 필드의 에러 메시지를 지움
     if (name === 'nickname' || name === 'username') {
@@ -43,7 +56,8 @@ export default function Signup() {
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
       let passwordError = '';
-      if (value.length > 0 && !passwordRegex.test(value)) {
+
+      if (finalValue.length > 0 && !passwordRegex.test(finalValue)) {
         passwordError =
           '영어, 숫자, 특수문자를 포함하여 8 ~ 20자로 입력해주세요.';
       }
@@ -51,7 +65,7 @@ export default function Signup() {
       let confirmError = '';
       if (formData.passwordConfirm) {
         confirmError =
-          value === formData.passwordConfirm
+          finalValue === formData.passwordConfirm
             ? '비밀번호가 일치합니다.'
             : '다시 입력해주세요.';
       }
@@ -67,11 +81,11 @@ export default function Signup() {
 
     if (name === 'passwordConfirm') {
       let confirmError = '';
-      if (value === '') {
+      if (finalValue === '') {
         confirmError = '';
       } else {
         confirmError =
-          value === formData.password
+          finalValue === formData.password
             ? '비밀번호가 일치합니다.'
             : '다시 입력해주세요.';
       }
