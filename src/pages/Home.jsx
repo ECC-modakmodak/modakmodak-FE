@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { getHomeData } from '../api/Home';
+import { getHomeData, getPodGoal } from '../api/Home';
+import { getMyProfile } from '../api/user';
 
 import StudyType from '../components/common/tagChip/StudyType';
 import StudyMood from '../components/common/tagChip/StudyMood';
@@ -37,7 +38,7 @@ import {
   PodSvg,
 } from '../styles/Home.style';
 
-// === [TODO] 상태바, user의 goal 받아오기 <-- userId 알아야 id 받고 memberId로 접근 가능.....
+// === [TODO] podGoal 받아오기
 
 // func.
 export default function Home() {
@@ -49,18 +50,21 @@ export default function Home() {
   // API 연결
   const [today, setToday] = useState(null);
   const [pods, setPods] = useState([]);
-  const [goal, setGoal] = useState(null)
+  const [podGoal, setPodGoal] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     const loadHomeData = async () => {
       try {
-        const { today: todayData, group: groupData, podData } = await getHomeData();
-
-        console.log('groupData:', groupData);
+        const [{ today: todayData, group: groupData }, myProfile] =
+          await Promise.all([getHomeData(), getMyProfile()]);
 
         setToday(todayData);
-        setGoal(podData);
         setPods(groupData);
+        setProfile(myProfile);
+
+        const podGoal = await getPodGoal(todayData.podId, myProfile.id);
+        setPodGoal(podGoal);
       } catch (err) {
         console.error('홈 데이터 불러오기 실패', err);
       }
@@ -116,11 +120,11 @@ export default function Home() {
   return (
     <>
       <Page>
-        <StatusBar>  {/* [TODO] today.goal -> id의 goal로 변경 */}
+        <StatusBar>
           {today ? (
             <span>
-              {today.goal}
-              {getParticle(today.goal)} 위해 {randomText} 
+              {profile.targetMessage}
+              {getParticle(profile.targetMessage)} 위해 {randomText} 
             </span>
           ) : (
             <span>{randomEmoji}</span>
@@ -177,7 +181,7 @@ export default function Home() {
                       backgroundColor="#d9695c"
                       size="small"
                     >
-                      {today.goal}
+                      {podGoal}
                     </Phill>
                   </Tag>
                   <CheckBtn to={`/pod/:${today.podId}`}>

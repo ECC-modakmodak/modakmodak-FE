@@ -33,7 +33,12 @@ export const getHomeData = async () => {
 
 export const getPodGoal = async (meetingId, myId) => {
   const res = await api.get(`/api/meetings/${meetingId}`);
-  const podData = {
-    goal: res.data.data.participants.list.displayedGoal,
-  }
-}
+
+  const participants = res.data?.data?.participants?.list ?? [];
+
+  const me = participants.find(
+    (p) => Number(p.memberId) === Number(myId)
+  );
+
+  return me?.displayedGoal ?? null;
+};
