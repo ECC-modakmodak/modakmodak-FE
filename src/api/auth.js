@@ -36,8 +36,15 @@ export const loginWithGoogle = async (idToken) => {
   console.log('구글 로그인 서버 응답:', response.data);
 
   if (response.status === 200 || response.status === 201) {
-    return response.data;
+    const uname = response.data.username;
+    localStorage.setItem('username', uname);
+
+    const myId = await fetchMyIdByUsername(uname);
+    localStorage.setItem('myId', String(myId));
+
+    return { ...response.data, memberId: myId };
   }
+
   throw new Error('Google Login Failed');
 };
 
