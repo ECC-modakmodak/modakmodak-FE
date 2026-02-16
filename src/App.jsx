@@ -17,11 +17,15 @@ export default function App() {
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<LoginPage />} />
+
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          {/* 다른 라우트들은 여기에 추가 */}
-          {/* 팟 상세페이지 */}
-          <Route element={<ProtectedRoute />}>
+        </Route>
+
+        {/* 다른 라우트들은 여기에 추가 */}
+        {/* 팟 상세페이지 */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
             <Route path="/pod/:podId" element={<PodDetail />} />
             <Route path="/create" element={<CreatePod />} />
             <Route path="/create/detail:podId" element={<CreatePod_detail />} />

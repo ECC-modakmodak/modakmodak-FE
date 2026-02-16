@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logoSvg from '../../assets/svg/logo.svg';
@@ -93,9 +93,18 @@ const Button = styled.button`
 
 /* 미완성된 페이지 처리 */
 export default function NavBar() {
+  const navigate = useNavigate();
+
   const DisabledLink = (e) => {
     e.preventDefault(); // Link 이동 막기
     alert('준비 중인 페이지입니다.'); // 알림창 표시
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+
+    alert('로그아웃 되었습니다.');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -127,7 +136,9 @@ export default function NavBar() {
           <RightImg src={profileSvg} alt="profile" />
           <span>닉네임</span>
         </RightBox>
-        <Button type="button">로그아웃</Button>
+        <Button type="button" onClick={handleLogout}>
+          로그아웃
+        </Button>
       </Right>
     </NavWrap>
   );
