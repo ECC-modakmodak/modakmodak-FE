@@ -3,7 +3,7 @@ import { markNotificationAsRead } from '../../api/NotificationApi';
 import { respondToApplication } from '../../api/PodDetailApi';
 
 export default function NotificationItem({ notification, onMarkedRead }) {
-  const myId = 1; // 임시 로그인 유저 ID
+  const myId = Number(localStorage.getItem('myId'));
 
   // 알림 읽음 처리
   const handleRead = async () => {

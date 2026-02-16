@@ -13,6 +13,26 @@ function formatDateTime(dateTimeStr) {
   return `${month}/${day} ${hour}:${minute}`;
 }
 
+// Date 포맷팅 함수 - 서버 전송용
+function toServerDateTime(input) {
+  // input 예: "2/16 22:00"
+  const m = String(input)
+    .trim()
+    .match(/^(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})$/);
+  if (!m) throw new Error('날짜 형식이 올바르지 않아요. 예) 2/16 22:00');
+
+  const month = Number(m[1]);
+  const day = Number(m[2]);
+  const hour = Number(m[3]);
+  const minute = Number(m[4]);
+
+  const year = new Date().getFullYear();
+
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  return `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00.000000`;
+}
+
 // 팟 상세 정보 조회
 export async function fetchPodDetail(podId) {
   try {
@@ -91,7 +111,7 @@ export async function updatePodInfo(podId, key, updatedValue) {
     // 팟 날짜 수정
     try {
       const res = await api.patch(`/api/meetings/${podId}/date`, {
-        date: updatedValue,
+        date: toServerDateTime(updatedValue),
       });
       return res.data;
     } catch (error) {

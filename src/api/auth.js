@@ -1,10 +1,33 @@
 import { api } from '../lib/api';
 
+export const fetchMyIdByUsername = async (username) => {
+  try {
+    const res = await api.get('/api/users/me/id', {
+      params: { username },
+    });
+    return Number(res.data);
+  } catch (error) {
+    console.error('Error fetching my ID:', error);
+    throw error;
+  }
+};
+
 export const loginUser = async (username, password) => {
   const response = await api.post('api/users/login', { username, password });
   console.log('서버 응답 확인용:', response.data);
+  localStorage.setItem('username', response.data.username);
 
-  if (response.status === 200 || response.status === 201) return response.data;
+  if (response.status === 200 || response.status === 201) {
+    const uname = response.data.username ?? username;
+
+    localStorage.setItem('username', uname);
+
+    const myId = await fetchMyIdByUsername(uname);
+    localStorage.setItem('myId', String(myId));
+
+    return { ...response.data, memberId: myId };
+  }
+
   throw new Error('Login Failed');
 };
 

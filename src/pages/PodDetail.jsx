@@ -16,8 +16,9 @@ import { updatePodInfo } from '../api/PodDetailApi';
 import CloseConfirmPopup from '../components/popup/CloseConfirm';
 
 export default function PodDetail() {
+  const myId = Number(localStorage.getItem('myId'));
+  console.log('내 ID 확인용:', myId);
   const { podId } = useParams();
-  const myId = 6; // (임시) 내 아이디
 
   // 팟 상세 정보
   const [pod, setPod] = useState(null);
