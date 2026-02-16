@@ -4,6 +4,12 @@ import styled from '@emotion/styled';
 import logoSvg from '../../assets/svg/logo.svg';
 import profileSvg from '../../assets/svg/profile.svg';
 import alarmSvg from '../../assets/svg/alarm.svg';
+import { useState } from 'react';
+
+// 알림창
+import NotificationContainer from '../notification/NotificationContainer';
+import { getUnreadNotificationCount } from '../../api/NotificationApi';
+import { useEffect } from 'react';
 
 /* 네비 바 전체 */
 const NavWrap = styled.nav`
@@ -73,6 +79,7 @@ const RightBox = styled(Link)`
   font-size: clamp(15px, 2.5vw, 25px);
   font-weight: 400;
   color: #000;
+  position: relative;
 `;
 const RightImg = styled.img`
   width: clamp(20px, 6vw, 50px);
@@ -91,6 +98,25 @@ const Button = styled.button`
   font-weight: 500;
 `;
 
+// 알림
+const UnreadDot = styled.div`
+  width: 15px;
+  height: 15px;
+  background-color: #d9695c;
+  position: absolute;
+  border-radius: 50%;
+  top: 10px;
+  left: 5px;
+`;
+const NotificationLabel = styled.div`
+  font-weight: 400;
+
+  span {
+    color: #d9695c;
+    font-weight: 600;
+  }
+`;
+
 /* 미완성된 페이지 처리 */
 export default function NavBar() {
   const navigate = useNavigate();
@@ -100,11 +126,18 @@ export default function NavBar() {
     alert('준비 중인 페이지입니다.'); // 알림창 표시
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('userToken');
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationsCount, setNotificationsCount] = useState(null);
 
-    alert('로그아웃 되었습니다.');
-    navigate('/login', { replace: true });
+  useEffect(() => {
+    (async () => {
+      const data = await getUnreadNotificationCount();
+      setNotificationsCount(data);
+    })();
+  }, []);
+
+  const handleNotificationRead = () => {
+    setNotificationsCount((prev) => Math.max(0, prev - 1));
   };
 
   return (
@@ -128,9 +161,12 @@ export default function NavBar() {
       </Center>
 
       <Right>
-        <RightBox to="/" onClick={DisabledLink}>
+        <RightBox onClick={() => setShowNotification(!showNotification)}>
           <RightImg src={alarmSvg} alt="alarm" />
-          <span>알림 0</span>
+          {notificationsCount > 0 && <UnreadDot />}
+          <NotificationLabel>
+            알림 <span>{notificationsCount || 0}</span>
+          </NotificationLabel>
         </RightBox>
         <RightBox to="/" onClick={DisabledLink}>
           <RightImg src={profileSvg} alt="profile" />
@@ -140,6 +176,11 @@ export default function NavBar() {
           로그아웃
         </Button>
       </Right>
+
+      {/* 알림창 */}
+      {showNotification && (
+        <NotificationContainer onNotificationRead={handleNotificationRead} />
+      )}
     </NavWrap>
   );
 }
