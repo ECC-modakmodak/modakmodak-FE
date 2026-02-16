@@ -140,6 +140,13 @@ export default function NavBar() {
     setNotificationsCount((prev) => Math.max(0, prev - 1));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+
+    alert('로그아웃 되었습니다.');
+    navigate('/login', { replace: true });
+  };
+
   return (
     <NavWrap>
       <Left>
