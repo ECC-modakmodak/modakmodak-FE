@@ -14,12 +14,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/" element={<OnboardingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
         </Route>
 
         {/* 다른 라우트들은 여기에 추가 */}
@@ -29,7 +29,7 @@ export default function App() {
             <Route path="/pod/:podId" element={<PodDetail />} />
             <Route path="/create" element={<CreatePod />} />
             <Route
-              path="/create/detail/:meeetingId"
+              path="/create/detail/:meetingId"
               element={<CreatePodDetail />}
             />
           </Route>

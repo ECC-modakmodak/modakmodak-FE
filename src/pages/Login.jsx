@@ -50,7 +50,7 @@ export default function LoginPage() {
       localStorage.setItem('username', data.username);
       localStorage.setItem('nickname', data.nickname);
 
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       const errorMsg =
         err.response?.data?.message || '아이디 또는 비밀번호가 틀렸습니다.';
@@ -70,7 +70,7 @@ export default function LoginPage() {
       if (data.token) {
         localStorage.setItem('userToken', data.token);
         alert(`로그인 성공`);
-        navigate('/');
+        navigate('/home');
       }
     } catch (err) {
       const errorData = err.response?.data;
