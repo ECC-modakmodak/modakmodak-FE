@@ -222,3 +222,10 @@ export const PodSvg = styled.img`
 
   display: inline-block;
 `;
+
+export const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
