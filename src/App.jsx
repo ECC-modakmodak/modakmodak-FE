@@ -6,7 +6,7 @@ import LoginPage from './pages/Login';
 import OnboardingPage from './pages/Onboarding';
 import Signup from './pages/Signup';
 import CreatePod from './pages/CreatePod';
-import CreatePod_detail from './pages/CreatePod_detail';
+import CreatePodDetail from './pages/CreatePodDetail';
 import Home from './pages/Home';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -28,7 +28,10 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/pod/:podId" element={<PodDetail />} />
             <Route path="/create" element={<CreatePod />} />
-            <Route path="/create/detail:podId" element={<CreatePod_detail />} />
+            <Route
+              path="/create/detail/:meeetingId"
+              element={<CreatePodDetail />}
+            />
           </Route>
         </Route>
       </Routes>

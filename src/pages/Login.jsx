@@ -47,6 +47,9 @@ export default function LoginPage() {
 
       localStorage.setItem('userToken', data.token);
 
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('nickname', data.nickname);
+
       navigate('/');
     } catch (err) {
       const errorMsg =
