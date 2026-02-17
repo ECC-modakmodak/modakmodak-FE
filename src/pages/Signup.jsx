@@ -25,16 +25,30 @@ export default function Signup() {
   const [errors, setErrors] = useState({
     nickname: '',
     username: '',
+    email: '',
     password: '',
     passwordConfirm: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    const noSpaceFields = [
+      'nickname',
+      'username',
+      'email',
+      'password',
+      'passwordConfirm',
+    ];
+
+    const finalValue = noSpaceFields.includes(name)
+      ? value.replace(/\s/g, '')
+      : value;
+
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
 
     // 입력이 시작되면 해당 필드의 에러 메시지를 지움
-    if (name === 'nickname' || name === 'username') {
+    if (name === 'nickname' || name === 'username' || name === 'email') {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
 
@@ -43,7 +57,8 @@ export default function Signup() {
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
       let passwordError = '';
-      if (value.length > 0 && !passwordRegex.test(value)) {
+
+      if (finalValue.length > 0 && !passwordRegex.test(finalValue)) {
         passwordError =
           '영어, 숫자, 특수문자를 포함하여 8 ~ 20자로 입력해주세요.';
       }
@@ -51,7 +66,7 @@ export default function Signup() {
       let confirmError = '';
       if (formData.passwordConfirm) {
         confirmError =
-          value === formData.passwordConfirm
+          finalValue === formData.passwordConfirm
             ? '비밀번호가 일치합니다.'
             : '다시 입력해주세요.';
       }
@@ -67,11 +82,11 @@ export default function Signup() {
 
     if (name === 'passwordConfirm') {
       let confirmError = '';
-      if (value === '') {
+      if (finalValue === '') {
         confirmError = '';
       } else {
         confirmError =
-          value === formData.password
+          finalValue === formData.password
             ? '비밀번호가 일치합니다.'
             : '다시 입력해주세요.';
       }
@@ -100,6 +115,14 @@ export default function Signup() {
         return setErrors((prev) => ({
           ...prev,
           username: '영어 또는 숫자 4~20자로 입력해주세요.',
+        }));
+      }
+    } else if (type === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        return setErrors((prev) => ({
+          ...prev,
+          email: '올바른 이메일 형식이 아닙니다.',
         }));
       }
     }
@@ -141,6 +164,7 @@ export default function Signup() {
     const hasError =
       (errors.nickname && !errors.nickname.includes('가능')) ||
       (errors.username && !errors.username.includes('가능')) ||
+      (errors.email && !errors.email.includes('가능')) ||
       errors.password !== '' ||
       formData.password !== formData.passwordConfirm ||
       (errors.passwordConfirm && errors.passwordConfirm.includes('다시'));
@@ -160,7 +184,8 @@ export default function Signup() {
 
       console.log('에러 이유:', errorData);
 
-      if (
+      {
+        /*if (
         errorData?.error === 'EMAIL_ALREADY_EXISTS' ||
         errorMsg.includes('이메일')
       ) {
@@ -168,6 +193,7 @@ export default function Signup() {
           ...prev,
           email: errorMsg,
         }));
+      }*/
       }
       alert(errorMsg);
     }
@@ -217,13 +243,26 @@ export default function Signup() {
             중복 확인
           </SideButton>
         </RowWrapper>
+        <RowWrapper style={{ alignItems: 'flex-start' }}>
+          <Input
+            label="이메일"
+            helperText={errors.email}
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            width="80%"
+            placeholder="예) example@email.com"
+          />
+          <SideButton
+            type="button"
+            variant="secondary"
+            size="large"
+            onClick={() => checkDuplicate('email')}
+          >
+            중복 확인
+          </SideButton>
+        </RowWrapper>
 
-        <Input
-          label="이메일"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
         <Input
           type="password"
           label="비밀번호"

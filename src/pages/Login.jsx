@@ -20,7 +20,9 @@ export default function LoginPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const noSpaceValue = value.replace(/\s/g, '');
+
+    setFormData((prev) => ({ ...prev, [name]: noSpaceValue }));
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -45,11 +47,9 @@ export default function LoginPage() {
 
       localStorage.setItem('userToken', data.token);
 
-      // [추가] username/nickname
       localStorage.setItem('username', data.username);
       localStorage.setItem('nickname', data.nickname);
 
-      alert(`로그인 성공`);
       navigate('/');
     } catch (err) {
       const errorMsg =
