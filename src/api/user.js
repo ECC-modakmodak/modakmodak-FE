@@ -19,17 +19,3 @@ export const getMyProfile = async () => {
     targetMessage: data.targetMessage,
   };
 };
-
-// export const getMyGoal = async () => {
-//   const username = localStorage.getItem('username');
-//   const res = await getProfileByUsername(username);
-
-//   return res.data?.targetMessage ?? null;
-// };
-
-// export const getMyId = async () => {
-//   const username = localStorage.getItem('username');
-//   const res = await getProfileByUsername(username);
-
-//   return res.data?.id ?? null;
-// }
