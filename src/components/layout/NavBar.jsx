@@ -96,6 +96,9 @@ const Button = styled.button`
   color: #d9695c;
   font-size: clamp(16px, 2.4vw, 25px);
   font-weight: 500;
+
+  cursor: pointer;
+  transition: transform 0.1s ease;
 `;
 
 // 알림
