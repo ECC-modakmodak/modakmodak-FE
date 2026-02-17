@@ -4,7 +4,8 @@ import Button from '../common/Button';
 import Pill from '../common/tagChip/Pill'
 import Host from '/pod/pod-host.svg';
 import AreaSvg from '/pod/location.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getMemberProfile } from '../../api/user';
 
 // css
 import {
@@ -36,10 +37,28 @@ export default function MemberDetail({
   onClose,
   onChangePodGoal,
 }) {
+  const [details, setDetails] = useState(null);
   const [podGoalDraft, setPodGoalDraft] = useState(member?.podGoal ?? '');
+  
+  useEffect(() => {
+    const fetchDetails = async () => {
+      // username이 없으면 못 가져옴
+      if (!member || !member.username) return; 
+
+      const data = await getMemberProfile(member.username);
+      setDetails(data);
+    };
+
+    fetchDetails();
+  }, [member]);
+  
   if (!member) return null;
-  const isMe = member.id === myId;
-  const bgColor = member.studyType === '#대면' ? 'rgba(250, 48, 75, 0.55)' : 'rgba(38, 172, 255, 0.55)';
+
+  const finalMember = { ...member, ...details };
+  console.log("memeber 확인: ", finalMember)
+
+  const isMe = Number(finalMember.memberId) === Number(myId);
+  const bgColor = member.studyType === '대면' ? 'rgba(250, 48, 75, 0.55)' : 'rgba(38, 172, 255, 0.55)';
 
   return (
     <DetailWrapper>
@@ -47,16 +66,16 @@ export default function MemberDetail({
         {/* 왼쪽 */}
         <ProfileSection>
           <ProfileWrapper>
-            {member.isHost && <HostIcon src={Host} alt="팟장" />}
-            <ProfileImg src={member.profileImage} />
+            {finalMember.nickname && <HostIcon src={Host} alt="팟장" />}
+            <ProfileImg src={`/images/${finalMember.profileImage}`} />
           </ProfileWrapper>
           <ProfileInfoWrapper>
-            <Name>{member.name}</Name>
+            <Name>{finalMember.name}</Name>
             <PodGoal>
-              {member.podGoal ? (
+              {finalMember.podGoal ? (
                 <Goal
                   completed={true}
-                  value={member.podGoal}
+                  value={finalMember.podGoal}
                   readOnly
                   style={{
                     cursor: 'default',
@@ -77,7 +96,7 @@ export default function MemberDetail({
                 <Goal
                   completed={false}
                   readOnly
-                  value={member.podGoal || '어떤 목표를 이루어볼까요?'}
+                  value={finalMember.podGoal || '어떤 목표를 이루어볼까요?'}
                   style={{
                     padding: '8px 20px',
                     fontSize: '20px',
@@ -96,7 +115,7 @@ export default function MemberDetail({
             <InfoLabel>목표</InfoLabel>
             <Goal
               completed={true}
-              value={member.goal}
+              value={finalMember.goal}
               readOnly
               style={{
                 color: '#fafafa',
@@ -108,14 +127,14 @@ export default function MemberDetail({
                 lineHeight: '1.8', // textarea라서 수동 조절
               }}
             >
-              {member.goal}
+              {finalMember.goal}
             </Goal>
           </InfoRow>
           <InfoRow>
             <InfoLabel>선호 유형</InfoLabel>
             <Tags>
               <Tag>
-                <StudyMood type={member.studyMood} size="medium" />
+                <StudyMood type={finalMember.studyMood} size="medium" />
               </Tag>
               <Tag>
                 <Pill
@@ -124,7 +143,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                {member.studyType}
+                {finalMember.studyType}
                 </Pill>
               </Tag>
             </Tags>
@@ -137,20 +156,20 @@ export default function MemberDetail({
                 alt="주요 활동 지역"
                 style={{ alignSelf: 'center' }}
               />
-              <p>{member.mainArea}</p>
+              <p>{finalMember.mainArea}</p>
             </AreaSection>
           </InfoRow>
           <InfoRow>
             <InfoLabel>팟 참여율</InfoLabel>
             <ProgressContainer>
-              <ProgressBar width={member.attendanceRate} />
+              <ProgressBar width={finalMember.attendanceRate} />
             </ProgressContainer>
           </InfoRow>
         </InfoSection>
       </DetailContent>
       {/* 디자인 체크 */}
       <ButtonWrapper>
-        {isMe && !member.podGoal ? (
+        {isMe && !finalMember.podGoal ? (
           <Button
             shape="chip"
             variant="filled"
