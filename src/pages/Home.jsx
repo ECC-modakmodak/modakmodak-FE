@@ -74,8 +74,6 @@ export default function Home() {
           // 오늘의 팟이 없으면 -> 목표도 없음(null) 처리
           setPodGoal(null);
         }
-        // const podGoal = await getPodGoal(todayData.podId, myProfile.id);
-        // setPodGoal(podGoal);
       } catch (err) {
         console.error('홈 데이터 불러오기 실패', err);
       }

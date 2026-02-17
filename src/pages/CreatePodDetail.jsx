@@ -28,11 +28,6 @@ import {
   TextLink,
 } from '../styles/CreatePodDetail.style';
 
-// [TODO]
-// 1. 대표 이미지 키워드 받아서 연결 (검색 키워드 TODO)
-// 2. test
-// 특히, imageURl, date 잘 넘어가는지 -> 추천 팟 리스트 상단에 뜨는지도 확인
-
 export default function CreatePodDetail() {
   // === status ===
   const [inputs, setInputs] = useState({

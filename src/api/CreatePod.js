@@ -33,5 +33,3 @@ export const postSetupPod2 = async ({
 
   return res.data;
 };
-
-//

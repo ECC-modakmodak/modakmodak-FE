@@ -101,7 +101,7 @@ export const OtherInput = styled(Input)`
   width: 186px;
   height: 40px;
   padding: 11px 19px;
-  
+
   margin-top: 10px;
   font-size: 16px;
   color: #000;
