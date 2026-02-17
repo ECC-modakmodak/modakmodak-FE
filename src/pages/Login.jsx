@@ -45,6 +45,10 @@ export default function LoginPage() {
 
       localStorage.setItem('userToken', data.token);
 
+      // [추가] username/nickname
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('nickname', data.nickname);
+
       alert(`로그인 성공`);
       navigate('/');
     } catch (err) {

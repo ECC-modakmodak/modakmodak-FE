@@ -1,7 +1,5 @@
 import { api } from '../lib/api';
 
-// [todo] pod에 합치기
-
 // step 1
 export const postSetupPod1 = async ({ mood, type, otherText, maxPeople }) => {
   const res = await api.post('/api/meetings/setup', {
@@ -30,7 +28,7 @@ export const postSetupPod2 = async ({
     area: placeGeneral,
     locationDetail: placeDetail,
     description: detail,
-    imageUrl, // [TODO] 이미지 링크 확인
+    imageUrl,
   });
 
   return res.data;
