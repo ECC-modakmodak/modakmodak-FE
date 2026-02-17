@@ -172,7 +172,7 @@ export default function CreatePodDetail() {
       placeGeneral: inputs.placeGeneral,
       placeDetail: inputs.placeDetail,
       detail: inputs.detail,
-      imageUrl: `${podImg}.png.representativeImage`,
+      imageUrl: `${podImg}.png`,
     });
 
     // 성공 후 상세페이지로

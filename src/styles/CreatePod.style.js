@@ -91,6 +91,7 @@ export const OtherInputWrapper = styled.div`
 
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   z-index: 10;
   white-space: nowrap;
@@ -100,7 +101,8 @@ export const OtherInput = styled(Input)`
   width: 186px;
   height: 40px;
   padding: 11px 19px;
-
+  
+  margin-top: 10px;
   font-size: 16px;
   color: #000;
   background: #fff;

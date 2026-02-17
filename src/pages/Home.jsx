@@ -58,13 +58,24 @@ export default function Home() {
       try {
         const [{ today: todayData, group: groupData }, myProfile] =
           await Promise.all([getHomeData(), getMyProfile()]);
+        
+        console.log("새로고침 데이터 확인:", { todayData, myProfile }); // test
+        console.log("추천팟 데이터 확인:", { groupData }); // test
 
         setToday(todayData);
         setPods(groupData);
         setProfile(myProfile);
 
-        const podGoal = await getPodGoal(todayData.podId, myProfile.id);
-        setPodGoal(podGoal);
+        if (todayData) {
+          // 오늘의 팟이 존재하면 -> podId로 목표 조회
+          const goal = await getPodGoal(todayData.podId, myProfile.id);
+          setPodGoal(goal);
+        } else {
+          // 오늘의 팟이 없으면 -> 목표도 없음(null) 처리
+          setPodGoal(null);
+        }
+        // const podGoal = await getPodGoal(todayData.podId, myProfile.id);
+        // setPodGoal(podGoal);
       } catch (err) {
         console.error('홈 데이터 불러오기 실패', err);
       }

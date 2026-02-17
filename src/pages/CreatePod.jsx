@@ -72,6 +72,7 @@ export default function CreatedPod() {
     if (!isFormValid()) return;
 
     try {
+      console.log("보낼 것", {mood,type,otherText,maxPeople}); // test
       const meetingId = await postSetupPod1({
         mood,
         type,
@@ -79,7 +80,8 @@ export default function CreatedPod() {
         maxPeople,
       });
 
-      console.log('meetingId:', meetingId); // 50 찍혀야 정상
+      console.log('meetingId:', meetingId);
+      console.log("서버", {mood,type,otherText,maxPeople}); // test
 
       navigate(`/create/detail/${meetingId}`);
     } catch (e) {
@@ -153,7 +155,6 @@ export default function CreatedPod() {
                 {type === 'OTHER' && (
                   <OtherInputWrapper>
                     <OtherInput
-                      label="OTHER.text"
                       placeholder="예) 공간 대여"
                       value={otherText}
                       onChange={(e) => setOtherText(e.target.value)}
