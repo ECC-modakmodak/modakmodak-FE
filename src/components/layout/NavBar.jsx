@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logoSvg from '../../assets/svg/logo.svg';
+import profileSvg from '../../assets/svg/profile.svg';
 import alarmSvg from '../../assets/svg/alarm.svg';
 import { useState } from 'react';
 
@@ -177,7 +178,10 @@ export default function NavBar() {
           </NotificationLabel>
         </RightBox>
         <RightBox to="/" onClick={DisabledLink}>
-          <RightImg src={`/images/${profile?.profileImage}`} alt="profile" />
+          <RightImg
+            src={`/images/${profile?.profileImage || profileSvg}`}
+            alt="profile"
+          />
           <span>{profile?.nickname || '닉네임'}</span>
         </RightBox>
         <Button type="button">로그아웃</Button>
