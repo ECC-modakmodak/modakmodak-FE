@@ -49,17 +49,27 @@ export const loginWithGoogle = async (idToken) => {
 };
 
 export const checkDuplicateApi = async (type, value) => {
-  const CHECK_URL =
-    type === 'nickname'
-      ? `api/users/check-nickname`
-      : `api/users/check-username`;
+  let CHECK_URL = '';
+
+  if (type === 'nickname') {
+    CHECK_URL = `api/users/check-nickname`;
+  } else if (type === 'username') {
+    CHECK_URL = `api/users/check-username`;
+  } else if (type === 'email') {
+    CHECK_URL = `api/users/check-email`;
+  }
 
   const response = await api.get(CHECK_URL, {
     params: { [type]: value },
   });
 
   const { isAvailable, message } = response.data;
-  const typeName = type === 'nickname' ? '닉네임' : '아이디';
+  const typeMap = {
+    nickname: '닉네임',
+    username: '아이디',
+    email: '이메일',
+  };
+  const typeName = typeMap[type];
 
   const finalMessage =
     message ||
