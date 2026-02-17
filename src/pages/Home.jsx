@@ -58,9 +58,9 @@ export default function Home() {
       try {
         const [{ today: todayData, group: groupData }, myProfile] =
           await Promise.all([getHomeData(), getMyProfile()]);
-        
-        console.log("새로고침 데이터 확인:", { todayData, myProfile }); // test
-        console.log("추천팟 데이터 확인:", { groupData }); // test
+
+        console.log('새로고침 데이터 확인:', { todayData, myProfile }); // test
+        console.log('추천팟 데이터 확인:', { groupData }); // test
 
         setToday(todayData);
         setPods(groupData);
@@ -135,7 +135,7 @@ export default function Home() {
           {today ? (
             <span>
               {profile.targetMessage}
-              {getParticle(profile.targetMessage)} 위해 {randomText} 
+              {getParticle(profile.targetMessage)} 위해 {randomText}
             </span>
           ) : (
             <span>{randomEmoji}</span>

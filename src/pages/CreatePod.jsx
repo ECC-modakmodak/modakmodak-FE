@@ -72,7 +72,7 @@ export default function CreatedPod() {
     if (!isFormValid()) return;
 
     try {
-      console.log("보낼 것", {mood,type,otherText,maxPeople}); // test
+      console.log('보낼 것', { mood, type, otherText, maxPeople }); // test
       const meetingId = await postSetupPod1({
         mood,
         type,
@@ -81,7 +81,7 @@ export default function CreatedPod() {
       });
 
       console.log('meetingId:', meetingId);
-      console.log("서버", {mood,type,otherText,maxPeople}); // test
+      console.log('서버', { mood, type, otherText, maxPeople }); // test
 
       navigate(`/create/detail/${meetingId}`);
     } catch (e) {

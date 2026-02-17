@@ -1,6 +1,5 @@
 import { api } from '../lib/api';
 
-// ✅ 구분할 키워드 리스트 정의
 const MOOD_LIST = ['CHATTY', 'QUIET'];
 const TYPE_LIST = ['CAFE', 'ZOOM', 'OTHER'];
 
@@ -11,7 +10,7 @@ export const getHomeData = async () => {
   const rawToday = payload?.todayData;
 
   let todayData = null;
-  
+
   if (rawToday && rawToday.meetingId) {
     const tags = rawToday.hashtags || [];
     todayData = {
@@ -36,8 +35,8 @@ export const getHomeData = async () => {
       return {
         id: item.meetingId,
         title: item.title,
-        mood: moodVal, 
-        type: typeVal, 
+        mood: moodVal,
+        type: typeVal,
         people: `${item.currentParticipants}/${item.maxParticipants}`,
         podImg: item.representativeImage,
       };

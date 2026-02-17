@@ -21,7 +21,6 @@ export const postSetupPod2 = async ({
   placeDetail,
   detail,
   imageUrl,
-  
 }) => {
   const res = await api.post(`/api/meetings/${meetingId}/details`, {
     title: name,
@@ -35,4 +34,4 @@ export const postSetupPod2 = async ({
   return res.data;
 };
 
-// 
+//
