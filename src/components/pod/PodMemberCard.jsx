@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import Goal from '../common/tagChip/Goal';
 import Status from '../common/tagChip/Status';
 import { useState } from 'react';
-import { updateStatusBadge } from '../../api/PodDetailApi';
+import { updateStatusBadge } from '../../api/pod-detail';
 
 const BADGE_TYPES = [
   'hi',
