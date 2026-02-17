@@ -121,6 +121,11 @@ const NotificationLabel = styled.div`
 export default function NavBar() {
   const navigate = useNavigate();
 
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const user = localStorage.getItem('username');
+    return !!(user && user !== 'null' && user !== 'undefined');
+  });
+
   const DisabledLink = (e) => {
     e.preventDefault(); // Link 이동 막기
     alert('준비 중인 페이지입니다.'); // 알림창 표시
@@ -141,10 +146,10 @@ export default function NavBar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
+    localStorage.clear();
 
     alert('로그아웃 되었습니다.');
-    navigate('/login', { replace: true });
+    setIsLoggedIn(false);
   };
 
   return (
@@ -179,8 +184,11 @@ export default function NavBar() {
           <RightImg src={profileSvg} alt="profile" />
           <span>닉네임</span>
         </RightBox>
-        <Button type="button" onClick={handleLogout}>
-          로그아웃
+        <Button
+          type="button"
+          onClick={isLoggedIn ? handleLogout : () => navigate('/login')}
+        >
+          {isLoggedIn ? '로그아웃' : '로그인'}
         </Button>
       </Right>
 
