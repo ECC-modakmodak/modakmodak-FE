@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logoSvg from '../../assets/svg/logo.svg';
@@ -99,6 +99,9 @@ const Button = styled.button`
   color: #d9695c;
   font-size: clamp(16px, 2.4vw, 25px);
   font-weight: 500;
+
+  cursor: pointer;
+  transition: transform 0.1s ease;
 `;
 
 // 알림
@@ -122,6 +125,13 @@ const NotificationLabel = styled.div`
 
 /* 미완성된 페이지 처리 */
 export default function NavBar() {
+  const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const user = localStorage.getItem('username');
+    return !!(user && user !== 'null' && user !== 'undefined');
+  });
+
   const DisabledLink = (e) => {
     e.preventDefault(); // Link 이동 막기
     alert('준비 중인 페이지입니다.'); // 알림창 표시
@@ -148,6 +158,13 @@ export default function NavBar() {
       setProfile(data);
     })();
   }, []);
+  
+  const handleLogout = () => {
+    localStorage.clear();
+
+    alert('로그아웃 되었습니다.');
+    setIsLoggedIn(false);
+  };
 
   return (
     <NavWrap>
@@ -184,7 +201,12 @@ export default function NavBar() {
           />
           <span>{profile?.nickname || '닉네임'}</span>
         </RightBox>
-        <Button type="button">로그아웃</Button>
+        <Button
+          type="button"
+          onClick={isLoggedIn ? handleLogout : () => navigate('/login')}
+        >
+          {isLoggedIn ? '로그아웃' : '로그인'}
+        </Button>
       </Right>
 
       {/* 알림창 */}
