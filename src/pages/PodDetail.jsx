@@ -7,12 +7,12 @@ import ApplyPopup from '../components/popup/Apply';
 import { useEffect, useState } from 'react';
 import ApplyConfirmPopup from '../components/popup/ApplyConfirm';
 import PodClosePopup from '../components/popup/PodClose';
-import { fetchPodDetail } from '../api/PodDetailApi';
+import { fetchPodDetail } from '../api/pod-detail';
 import { BounceLoader } from 'react-spinners';
 import { useParams } from 'react-router-dom';
 import usePodPermissions from '../hooks/usePodPermissions';
-import { updateAttendance } from '../api/PodDetailApi';
-import { updatePodInfo } from '../api/PodDetailApi';
+import { updateAttendance } from '../api/pod-detail';
+import { updatePodInfo } from '../api/pod-detail';
 import CloseConfirmPopup from '../components/popup/CloseConfirm';
 
 export default function PodDetail() {

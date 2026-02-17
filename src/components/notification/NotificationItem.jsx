@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { markNotificationAsRead } from '../../api/NotificationApi';
-import { respondToApplication } from '../../api/PodDetailApi';
+import { markNotificationAsRead } from '../../api/notification';
+import { respondToApplication } from '../../api/pod-detail';
 
 export default function NotificationItem({ notification, onMarkedRead }) {
   const myId = Number(localStorage.getItem('myId'));

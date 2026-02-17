@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { PopupContainer, CloseButton, PopupMainText } from './style';
 import Button from '../common/Button';
-import { applyToPod } from '../../api/PodDetailApi';
+import { applyToPod } from '../../api/pod-detail';
 
 const ApplyPopup = ({
   myId,

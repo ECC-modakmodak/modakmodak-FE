@@ -2,14 +2,16 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logoSvg from '../../assets/svg/logo.svg';
-import profileSvg from '../../assets/svg/profile.svg';
 import alarmSvg from '../../assets/svg/alarm.svg';
 import { useState } from 'react';
 
 // 알림창
 import NotificationContainer from '../notification/NotificationContainer';
-import { getUnreadNotificationCount } from '../../api/NotificationApi';
+import { getUnreadNotificationCount } from '../../api/notification';
 import { useEffect } from 'react';
+
+// 프로필
+import { getProfile } from '../../api/nav';
 
 /* 네비 바 전체 */
 const NavWrap = styled.nav`
@@ -126,6 +128,7 @@ export default function NavBar() {
 
   const [showNotification, setShowNotification] = useState(false);
   const [notificationsCount, setNotificationsCount] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -137,6 +140,13 @@ export default function NavBar() {
   const handleNotificationRead = () => {
     setNotificationsCount((prev) => Math.max(0, prev - 1));
   };
+
+  useEffect(() => {
+    (async () => {
+      const data = await getProfile();
+      setProfile(data);
+    })();
+  }, []);
 
   return (
     <NavWrap>
@@ -167,8 +177,8 @@ export default function NavBar() {
           </NotificationLabel>
         </RightBox>
         <RightBox to="/" onClick={DisabledLink}>
-          <RightImg src={profileSvg} alt="profile" />
-          <span>닉네임</span>
+          <RightImg src={`/images/${profile?.profileImage}`} alt="profile" />
+          <span>{profile?.nickname || '닉네임'}</span>
         </RightBox>
         <Button type="button">로그아웃</Button>
       </Right>
