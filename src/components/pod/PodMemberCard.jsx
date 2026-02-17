@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import Goal from '../common/tagChip/Goal';
 import Status from '../common/tagChip/Status';
 import { useState } from 'react';
-import usePodPermissions from '../../hooks/usePodPermissions';
 import { updateStatusBadge } from '../../api/PodDetailApi';
 
 const BADGE_TYPES = [
@@ -17,7 +16,8 @@ const BADGE_TYPES = [
   'goodJob',
 ];
 
-const Badges = ({ setReactionEmoji }) => {
+// 배지 팝업
+const Badges = ({ setStatusBadge }) => {
   return (
     <BadgeContainer>
       {BADGE_TYPES.map((type) => (
@@ -27,7 +27,7 @@ const Badges = ({ setReactionEmoji }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setReactionEmoji(type);
+            setStatusBadge(type);
           }}
         >
           <Status type={type} />
@@ -37,66 +37,55 @@ const Badges = ({ setReactionEmoji }) => {
   );
 };
 
-export default function PodMember({
-  pod,
+export default function PodMemberCard({
+  myId,
   member,
-  hostMention,
+  // 멘션
+  editablePodInfo,
   onHostMentionChange,
-  canCheckAttendance,
+  onHostMentionUpdate,
+  // 출석
   attendanceChecked,
   onToggleAttendance,
-  canChangeBadge,
+  // 배지
   onBadgeUpdated,
-}) {
-  const [isBadgesVisible, setIsBadgesVisible] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false); // 멘션 수정 상태
-  const [originalMention, setOriginalMention] = useState('');
-
   // 권한
-  const { isHost, canEditMention } = usePodPermissions(member.memberId, pod);
+  canEditMention,
+  canCheckAttendance,
+  canChangeBadge,
+}) {
+  const [isBadgesVisible, setIsBadgesVisible] = useState(false); // 배지 팝업 노출 상태
 
-  const handleFocus = (e) => {
-    setOriginalMention(e.target.value);
-  };
-
-  const handleFinishEditing = (e) => {
-    if (originalMention !== e.target.value) {
-      setIsUpdated(true);
-    }
-    e.target.blur();
-  };
-
-  const handleReactionEmoji = (status) => {
-    async function updateBadge() {
-      try {
-        await updateStatusBadge(pod.meetingId, status);
-        onBadgeUpdated(member.memberId, status);
-      } catch (error) {
-        console.error('팟 멤버 상태 배지 변경 실패:', error);
-      }
-    }
-    updateBadge();
+  // 배지 클릭 시 상태 업데이트
+  const handleStatusBadge = async (status) => {
+    onBadgeUpdated(status);
     setIsBadgesVisible(false);
+    try {
+      await updateStatusBadge(myId, member.memberId, status);
+    } catch (error) {
+      console.error('팟 멤버 상태 배지 변경 실패:', error);
+      throw error;
+    }
   };
 
+  // 엔터키 입력 시 멘션 수정
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();
-      handleFinishEditing(e);
     }
   };
 
   return (
     <MemberContainer>
       <MemberImageWrapper>
-        {isHost && (
+        {member.isHost && (
           <HostIconWrapper>
             <img src="/pod/pod-host.svg" alt="팟장 아이콘" />
           </HostIconWrapper>
         )}
         <img
           className="member-profile-image"
-          src={member.profileImage || '/images/img-placeholder.png'}
+          src={`/images/${member.profileImage}`}
           alt={`${member.nickname} 프로필 사진`}
         />
       </MemberImageWrapper>
@@ -105,35 +94,34 @@ export default function PodMember({
         <Goal
           as="input"
           readOnly
-          value={member.goal}
-          completed="true"
+          value={member.displayedGoal}
+          completed={member.hasGoal}
           style={{
             fontSize: '16px',
             height: '25px',
             cursor: 'default',
           }}
         />
-        {canEditMention ? (
+        {member.isHost ? (
           <HostMention
-            name="hostMention"
+            name="hostAnnouncement"
             placeholder="팟원들에게 전할 말을 입력해주세요!"
-            value={hostMention}
-            readOnly={!canEditMention}
+            value={member.isHost ? editablePodInfo.hostAnnouncement : ''}
             onChange={onHostMentionChange}
-            onFocus={handleFocus}
-            onBlur={handleFinishEditing}
+            readOnly={!canEditMention}
+            onBlur={
+              canEditMention
+                ? (e) => onHostMentionUpdate(e.target.name, e.target.value)
+                : undefined
+            }
             onKeyDown={handleKeyDown}
-            $canEdit={canEditMention}
-            $isUpdated={isUpdated}
-            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
+            onClick={(e) => e.stopPropagation()}
           />
         ) : (
           <Placeholder />
         )}
         {canCheckAttendance && (
-          <AttendanceLabel
-            onClick={(e) => e.stopPropagation()} // [추가] 상세페이지 이동 막기
-          >
+          <AttendanceLabel onClick={(e) => e.stopPropagation()}>
             <HiddenCheckbox
               type="checkbox"
               aria-label={`${member.memberId} 출석 체크`}
@@ -145,13 +133,13 @@ export default function PodMember({
         )}
         <StatusBadgeWrapper
           onClick={(e) => {
-            e.stopPropagation(); // [추가] 상세페이지 이동 막기
+            e.stopPropagation();
             canChangeBadge && setIsBadgesVisible(!isBadgesVisible);
           }}
           style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
         >
           <Status
-            type={member.reactionEmoji}
+            type={member.statusBadge}
             style={{ cursor: canChangeBadge ? 'pointer' : 'default' }}
           />
           {isBadgesVisible && (
@@ -162,7 +150,7 @@ export default function PodMember({
                   setIsBadgesVisible(false);
                 }}
               />
-              <Badges setReactionEmoji={handleReactionEmoji} />
+              <Badges setStatusBadge={handleStatusBadge} />
             </>
           )}
         </StatusBadgeWrapper>

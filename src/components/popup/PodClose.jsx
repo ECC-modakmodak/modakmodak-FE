@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { PopupContainer, PopupMainText, CloseButton } from './style';
 import Button from '../common/Button';
+import { closePod } from '../../api/PodDetailApi';
 
-const PodClosePopup = ({ setIsClosePopupOpen }) => {
+const PodClosePopup = ({ setIsClosePopupOpen, podId, onCompleted }) => {
   return (
     <PopupContainer
       onClick={(e) => e.stopPropagation()}
@@ -20,7 +21,15 @@ const PodClosePopup = ({ setIsClosePopupOpen }) => {
           shape="chip"
           size="medium"
           width="80px"
-          onClick={() => setIsClosePopupOpen(false)}
+          onClick={async () => {
+            try {
+              await closePod(podId);
+              setIsClosePopupOpen(false);
+              onCompleted(true);
+            } catch (error) {
+              console.error('Failed to close pod:', error);
+            }
+          }}
         >
           확인
         </Button>
