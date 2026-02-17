@@ -66,7 +66,7 @@ export default function MemberDetail({
         {/* 왼쪽 */}
         <ProfileSection>
           <ProfileWrapper>
-            {finalMember.nickname && <HostIcon src={Host} alt="팟장" />}
+            {finalMember.isHost && <HostIcon src={Host} alt="팟장" />}
             <ProfileImg src={`/images/${finalMember.profileImage}`} />
           </ProfileWrapper>
           <ProfileInfoWrapper>

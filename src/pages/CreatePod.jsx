@@ -84,8 +84,8 @@ export default function CreatedPod() {
       console.log('서버', { mood, type, otherText, maxPeople }); // test
 
       navigate(`/create/detail/${meetingId}`, { state: { type } });
-    } catch (e) {
-      console.error('팟 만들기(step1) 실패:', e?.response?.data ?? e);
+    } catch (error) {
+      console.error('팟 만들기(step1) 실패:', error);
     }
   };
 
