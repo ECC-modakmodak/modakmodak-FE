@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { PopupContainer, PopupMainText, CloseButton } from './style';
 import Button from '../common/Button';
-import { closePod } from '../../api/PodDetailApi';
+import { closePod } from '../../api/pod-detail';
 
 const PodClosePopup = ({ setIsClosePopupOpen, podId, onCompleted }) => {
   return (

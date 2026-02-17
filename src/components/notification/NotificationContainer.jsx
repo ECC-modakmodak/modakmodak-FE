@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import Toggle from './toggle';
 import NotificationItem from './NotificationItem';
-import { getNotifications } from '../../api/NotificationApi';
+import { getNotifications } from '../../api/notification';
 import { useEffect, useState } from 'react';
 
 export default function NotificationContainer({ onNotificationRead }) {
