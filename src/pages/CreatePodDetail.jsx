@@ -311,9 +311,7 @@ export default function CreatePodDetail() {
               {/* 누르면 '랜덤 이미지' = 이미지 4개 중 랜덤 1 택 해서 PodImg cover */}
               {/* [ 파일 업로드 기능은 삭제됨] */}
               <ImgLink>
-                <RandomImgBtn
-                  onClick={handleRandomImage}
-                >
+                <RandomImgBtn onClick={handleRandomImage}>
                   랜덤 이미지
                 </RandomImgBtn>
               </ImgLink>
