@@ -171,7 +171,9 @@ export default function Home() {
                       {today.time}
                     </Phill>
                     ,{' '}
-                    <Phill
+                    { today.place !== "미정" && (
+                      <>
+                      <Phill
                       shape="chip"
                       variant="outlined"
                       size="large"
@@ -180,6 +182,8 @@ export default function Home() {
                       {today.place}
                     </Phill>
                     에서{' '}
+                    </>
+                    )}
                     <Phill
                       shape="chip"
                       variant="outlined"
