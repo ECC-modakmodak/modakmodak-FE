@@ -53,8 +53,18 @@ export default function MemberDetail({
   }, [member]);
   
   if (!member) return null;
+  console.log('member:', member);
+  console.log('details:', details);
 
-  const finalMember = { ...member, ...details };
+  const mergePreferDefined = (base, extra) => {
+  if (!extra) return base;
+  const cleaned = Object.fromEntries(
+    Object.entries(extra).filter(([, v]) => v !== undefined && v !== null)
+  );
+  return { ...base, ...cleaned };
+  };
+
+  const finalMember = mergePreferDefined(member, details);
   console.log("memeber 확인: ", finalMember)
 
   const isMe = Number(finalMember.memberId) === Number(myId);
@@ -70,7 +80,7 @@ export default function MemberDetail({
             <ProfileImg src={`/images/${finalMember.profileImage}`} />
           </ProfileWrapper>
           <ProfileInfoWrapper>
-            <Name>{finalMember.name}</Name>
+            <Name>{finalMember.nickname}</Name>
             <PodGoal>
               {finalMember.podGoal ? (
                 <Goal
@@ -115,7 +125,7 @@ export default function MemberDetail({
             <InfoLabel>목표</InfoLabel>
             <Goal
               completed={true}
-              value={finalMember.goal}
+              value={finalMember.targetMessage}
               readOnly
               style={{
                 color: '#fafafa',
@@ -127,14 +137,14 @@ export default function MemberDetail({
                 lineHeight: '1.8', // textarea라서 수동 조절
               }}
             >
-              {finalMember.goal}
+              {finalMember.targetMessage}
             </Goal>
           </InfoRow>
           <InfoRow>
             <InfoLabel>선호 유형</InfoLabel>
             <Tags>
               <Tag>
-                <StudyMood type={finalMember.studyMood} size="medium" />
+                <StudyMood type={finalMember.hashtags[0]} size="medium" />
               </Tag>
               <Tag>
                 <Pill
@@ -143,7 +153,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                {finalMember.studyType}
+                #{finalMember.hashtags[1]}
                 </Pill>
               </Tag>
             </Tags>
