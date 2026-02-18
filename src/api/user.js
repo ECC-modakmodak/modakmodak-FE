@@ -30,18 +30,12 @@ export const getMemberProfile = async (username) => {
 
   try {
     const res = await api.get(`/api/users/profile/${username}`);
-    const data = res.data
-    const tags = res.hashtags || [];
+    const payload = res.data?.data;  
+
+    if (!payload) return null;
 
     return {
-      id: data.id,
-      nickname: data.nickname,
-      targetMessage: data.targetMessage,
-      // 배열 순서 상관없이 키워드로 찾아내기
-      mood: tags.find((tag) => MOOD_LIST.includes(tag)) ?? null,
-      type: tags.find((tag) => TYPE_LIST.includes(tag)) ?? null,
-      mainArea: data.activityArea,
-      profileImage: data.profileImage,
+      mainArea: payload.activityArea,
     }
   } catch (e) {
     console.error("멤버 프로필 조회 실패:", e);
