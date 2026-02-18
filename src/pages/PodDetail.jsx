@@ -112,6 +112,9 @@ export default function PodDetail() {
     });
   };
 
+  // 팟 종료
+  const [isPodClosed, setIsPodClosed] = useState(false);
+
   // 팝업
   const [isClosePopupOpen, setIsClosePopupOpen] = useState(false);
   const [isCloseConfirmPopupOpen, setIsCloseConfirmPopupOpen] = useState(false);
@@ -203,13 +206,15 @@ export default function PodDetail() {
                   : !pod.userStatus && setIsApplyPopupOpen(true);
               }}
             >
-              {pod.userStatus?.isHost && canClosePod
-                ? '팟 모집 종료하기'
-                : !pod.userStatus && canApplyPod
-                  ? '참여 신청하기'
-                  : pod.userStatus?.participationStatus === 'PENDING'
-                    ? '신청 완료'
-                    : '참여 중'}
+              {isPodClosed
+                ? '파이팅'
+                : pod.userStatus?.isHost && canClosePod
+                  ? '팟 모집 종료하기'
+                  : !pod.userStatus && canApplyPod
+                    ? '참여 신청하기'
+                    : pod.userStatus?.participationStatus === 'PENDING'
+                      ? '신청 완료'
+                      : '참여 중'}
             </Button>
           </ButtonWrapper>
         </PodPreviewContainer>
@@ -297,6 +302,7 @@ export default function PodDetail() {
             isOpen={isClosePopupOpen}
             onClose={() => setIsClosePopupOpen(false)}
             onCompleted={() => {
+              setIsPodClosed(true);
               setIsCloseConfirmPopupOpen(true);
             }}
           />

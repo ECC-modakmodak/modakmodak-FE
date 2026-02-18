@@ -44,6 +44,7 @@ export async function fetchPodDetail(podId) {
       ...rawData,
       // Date 포맷팅
       date: formatDateTime(rawData.date),
+      hostAnnouncement: '',
       participants: {
         ...rawData.participants,
         list: (rawData.participants.list || []).map((participant) => ({
@@ -161,9 +162,13 @@ export async function updatePodInfo(podId, key, updatedValue) {
 // 팟 모집 종료
 export async function closePod(podId) {
   try {
-    const res = await api.patch(`/api/meetings/${podId}/complete`, {
-      headers: { 'X-User-Id': localStorage.getItem('myId') },
-    });
+    const res = await api.patch(
+      `/api/meetings/${podId}/complete`,
+      {},
+      {
+        headers: { 'X-User-Id': localStorage.getItem('myId') },
+      },
+    );
     return res.data;
   } catch (error) {
     console.error('Error closing pod:', error);
