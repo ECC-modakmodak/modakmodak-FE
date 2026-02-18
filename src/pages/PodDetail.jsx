@@ -218,8 +218,8 @@ export default function PodDetail() {
               member={selectedMember} // 선택 멤버 배열
               myId={myId}
               onClose={() => setSelectedMemberId(null)}
-              onChangePodGoal={(nextPodGoal) =>
-                updateMemberPodGoal(selectedMember.memberId, nextPodGoal)
+              onChangePodGoal={(next) =>
+                updateMemberPodGoal(selectedMember.memberId, next)
               }
             />
           ) : (

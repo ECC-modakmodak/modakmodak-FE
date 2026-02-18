@@ -210,3 +210,22 @@ export async function respondToApplication(myId, podId, applicationId, status) {
     throw error;
   }
 }
+
+// 팟 목표 수정
+export async function updatePodGoal(myId, participantId, displayedGoal) {
+  try {
+    const res = await api.patch(
+      `/api/participants/${participantId}/goal`,
+      {
+        goal: displayedGoal,
+      },
+      {
+        headers: { 'X-User-Id': myId },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.error('팟 목표 수정 실패', error);
+    throw error;
+  }
+}

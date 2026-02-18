@@ -1,8 +1,5 @@
 import { api } from '../lib/api';
 
-const MOOD_LIST = ['CHATTY', 'QUIET'];
-const TYPE_LIST = ['대면', '비대면'];
-
 export const getProfileByUsername = async (username) => {
   const res = await api.get(`/api/users/profile/${username}`);
   return res.data;
