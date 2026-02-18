@@ -220,11 +220,11 @@ export default function PodDetail() {
           {/* 팟원 카드 클릭 시 프로필로 이동 */}
           {selectedMember ? (
             <MemberDetail
-              member={selectedMember}
+              member={selectedMember} // 선택 멤버 배열
               myId={myId}
               onClose={() => setSelectedMemberId(null)}
               onChangePodGoal={(nextPodGoal) =>
-                updateMemberPodGoal(selectedMember.id, nextPodGoal)
+                updateMemberPodGoal(selectedMember.memberId, nextPodGoal)
               }
             />
           ) : (
