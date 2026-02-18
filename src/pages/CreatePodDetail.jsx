@@ -1,6 +1,6 @@
 // import
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { postSetupPod2 } from '../api/CreatePod';
 
 import ArrowBtn from '../assets/svg/ArrowBtn.svg';
@@ -24,8 +24,8 @@ import {
   PodCard,
   PodImg,
   ImgLink,
-  TextLink_S,
-  TextLink,
+  RandomImgBtn,
+  CreateBtn,
 } from '../styles/CreatePodDetail.style';
 
 export default function CreatePodDetail() {
@@ -49,6 +49,10 @@ export default function CreatePodDetail() {
 
   const { meetingId } = useParams();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const type = location.state?.type;
+  const isZoom = type === 'ZOOM'; // ZOOM 여부 확인용 변수
 
   // === 핸들러 ===
   const handleChange = (e) => {
@@ -142,10 +146,13 @@ export default function CreatePodDetail() {
 
   // 값 저장 확인
   const isFormValid = () => {
+    // ZOOM이면 OK, 아니면 저장버튼 눌렀는지 확인
+    const isPlaceReady = isZoom ? true : status.isPlaceSaved;
+
     return (
       status.isNameSaved &&
       status.isTimeSaved &&
-      status.isPlaceSaved &&
+      isPlaceReady &&
       status.isDetailSaved &&
       podImg !== null
     );
@@ -159,19 +166,22 @@ export default function CreatePodDetail() {
     if (!isFormValid()) return;
 
     const dateTimeIso = buildIsoDateTime(inputs.date, inputs.time);
-
-    await postSetupPod2({
-      meetingId,
-      name: inputs.name,
-      date: dateTimeIso,
-      placeGeneral: inputs.placeGeneral,
-      placeDetail: inputs.placeDetail,
-      detail: inputs.detail,
-      imageUrl: `${podImg}.png`,
-    });
-
-    // 성공 후 상세페이지로
-    navigate(`/pod/${meetingId}`);
+    try {
+      await postSetupPod2({
+        meetingId,
+        name: inputs.name,
+        date: dateTimeIso,
+        // ZOOM이면 장소 정보(area)를 null로 보냄
+        placeGeneral: isZoom ? null : inputs.placeGeneral,
+        placeDetail: inputs.placeDetail,
+        detail: inputs.detail,
+        imageUrl: `${podImg}.png`,
+      });
+      // 성공 후 상세페이지로
+      navigate(`/pod/${meetingId}`);
+    } catch (error) {
+      console.error('팟 만들기(step2) 실패', error);
+    }
   };
   return (
     <>
@@ -231,19 +241,23 @@ export default function CreatePodDetail() {
             <Row>
               <InputTitle>팟 장소</InputTitle>
               <InputWrapper>
-                <Input_SS
-                  name="placeGeneral"
-                  placeholder="예) 신촌, 홍대"
-                  value={inputs.placeGeneral}
-                  onChange={handleChange}
-                  readOnly={status.isPlaceSaved}
-                  onClick={() =>
-                    status.isPlaceSaved && handleEdit('isPlaceSaved')
-                  }
-                />
+                {!isZoom && (
+                  <Input_SS
+                    name="placeGeneral"
+                    placeholder="예) 신촌, 홍대"
+                    value={inputs.placeGeneral}
+                    onChange={handleChange}
+                    readOnly={status.isPlaceSaved}
+                    onClick={() =>
+                      status.isPlaceSaved && handleEdit('isPlaceSaved')
+                    }
+                  />
+                )}
                 <Input_S
                   name="placeDetail"
-                  placeholder="예) 스타벅스 홍대역점"
+                  placeholder={
+                    isZoom ? '줌 링크 또는 접속 방법' : '예) 스타벅스 홍대역점'
+                  }
                   value={inputs.placeDetail}
                   onChange={handleChange}
                   readOnly={status.isPlaceSaved}
@@ -251,7 +265,7 @@ export default function CreatePodDetail() {
                     status.isPlaceSaved && handleEdit('isPlaceSaved')
                   }
                 />
-                {!status.isPlaceSaved && (
+                {!isZoom && !status.isPlaceSaved && (
                   <SaveBtn
                     variant="secondary"
                     onClick={() => handleSave('isPlaceSaved')}
@@ -297,17 +311,19 @@ export default function CreatePodDetail() {
               {/* 누르면 '랜덤 이미지' = 이미지 4개 중 랜덤 1 택 해서 PodImg cover */}
               {/* [ 파일 업로드 기능은 삭제됨] */}
               <ImgLink>
-                <TextLink_S onClick={handleRandomImage}>랜덤 이미지</TextLink_S>
+                <RandomImgBtn onClick={handleRandomImage}>
+                  랜덤 이미지
+                </RandomImgBtn>
               </ImgLink>
             </Row>
 
             {/* 모든 SaveBtn 눌려있고 이미지 적용되어 있을 때 생김 */}
             {isFormValid() && (
-              <TextLink as="button" onClick={handleSubmitDetail}>
+              <CreateBtn onClick={handleSubmitDetail}>
                 {/* 팟 상세 페이지로 연결 */}
                 팟 만들기
                 <img src={ArrowBtn} alt="화살표" />
-              </TextLink>
+              </CreateBtn>
             )}
           </Right>
         </Grid>

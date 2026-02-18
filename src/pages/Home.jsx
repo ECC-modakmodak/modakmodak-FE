@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BounceLoader } from 'react-spinners';
 
 import { getHomeData, getPodGoal } from '../api/Home';
 import { getMyProfile } from '../api/user';
@@ -36,9 +37,8 @@ import {
   PodName,
   PodDetail,
   PodSvg,
+  LoaderContainer,
 } from '../styles/Home.style';
-
-// === [TODO] podGoal 받아오기
 
 // func.
 export default function Home() {
@@ -126,6 +126,17 @@ export default function Home() {
 
     return '';
   };
+
+  // 로딩 화면
+  if (!profile) {
+    return (
+      <LoaderContainer>
+        <BounceLoader color="#D9695C" loading={true} size={60} />
+      </LoaderContainer>
+    );
+  }
+
+
   return (
     <>
       <Page>

@@ -39,6 +39,7 @@ export const getHomeData = async () => {
         type: typeVal,
         people: `${item.currentParticipants}/${item.maxParticipants}`,
         podImg: item.representativeImage,
+        location: item.location,
       };
     });
 
