@@ -158,7 +158,7 @@ export default function NavBar() {
       setProfile(data);
     })();
   }, []);
-  
+
   const handleLogout = () => {
     localStorage.clear();
 
@@ -169,7 +169,7 @@ export default function NavBar() {
   return (
     <NavWrap>
       <Left>
-        <TextLink_Red to="/">팟</TextLink_Red> {/* 팟 페이지 링크 연결 */}
+        <TextLink_Red to="/home">팟</TextLink_Red> {/* 팟 페이지 링크 연결 */}
         <TextLink_Blk to="/" onClick={DisabledLink}>
           팟메이트
         </TextLink_Blk>
@@ -179,7 +179,7 @@ export default function NavBar() {
       </Left>
 
       <Center>
-        <LogoLink to="/">
+        <LogoLink to="/home">
           {' '}
           {/* 홈 페이지 연결 필요*/}
           <LogoImg src={logoSvg} alt="logo" />
