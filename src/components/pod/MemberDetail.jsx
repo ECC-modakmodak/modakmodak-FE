@@ -153,7 +153,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                {finalMember.hashtags[1]}
+                #{finalMember.hashtags[1]}
                 </Pill>
               </Tag>
             </Tags>
