@@ -70,7 +70,10 @@ export default function CreatePodDetail() {
   };
 
   const isValidDateTimeFormat = (date, time) => {
-    return /^\d{1,2}\/\d{1,2}$/.test(date) && /^\d{2}:\d{2}$/.test(time);
+    const dateRegex = /^\d{1,2}\/\d{1,2}$/; // M/D 또는 MM/DD
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/; // 00:00 ~ 23:59 (24시간제)
+    
+    return dateRegex.test(date) && timeRegex.test(time);
   };
 
   const handleSave = (key) => {
@@ -133,15 +136,19 @@ export default function CreatePodDetail() {
     });
   };
 
-  // ISO 형식 변환
   const buildIsoDateTime = (md, time) => {
     // md: "1/23", time: "23:00"
     const [m, d] = md.split('/').map(Number);
     const [hh, mm] = time.split(':').map(Number);
+    
+    // 현재 연도만
     const year = new Date().getFullYear();
-    const dt = new Date(year, m - 1, d, hh, mm);
-    // "2026-02-20T19:00" 형태로 만들기
-    return dt.toISOString().slice(0, 16);
+
+    // 1 -> 01 로 맞춤
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    // 결과 형식: "2026-01-23T23:00"
+    return `${year}-${pad(m)}-${pad(d)}T${pad(hh)}:${pad(mm)}`;
   };
 
   // 값 저장 확인
