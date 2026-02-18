@@ -1,8 +1,7 @@
 import Goal from '../common/tagChip/Goal';
 import StudyMood from '../common/tagChip/StudyMood';
 import Button from '../common/Button';
-import Pill from '../common/tagChip/Pill'
-import Host from '/pod/pod-host.svg';
+import Pill from '../common/tagChip/Pill';
 import AreaSvg from '/pod/location.svg';
 import { useState, useEffect } from 'react';
 import { getMemberProfile } from '../../api/user';
@@ -39,11 +38,11 @@ export default function MemberDetail({
 }) {
   const [details, setDetails] = useState(null);
   const [podGoalDraft, setPodGoalDraft] = useState(member?.podGoal ?? '');
-  
+
   useEffect(() => {
     const fetchDetails = async () => {
       // username이 없으면 못 가져옴
-      if (!member || !member.username) return; 
+      if (!member || !member.username) return;
 
       const data = await getMemberProfile(member.username);
       setDetails(data);
@@ -51,24 +50,27 @@ export default function MemberDetail({
 
     fetchDetails();
   }, [member]);
-  
+
   if (!member) return null;
   console.log('member:', member);
   console.log('details:', details);
 
   const mergePreferDefined = (base, extra) => {
-  if (!extra) return base;
-  const cleaned = Object.fromEntries(
-    Object.entries(extra).filter(([, v]) => v !== undefined && v !== null)
-  );
-  return { ...base, ...cleaned };
+    if (!extra) return base;
+    const cleaned = Object.fromEntries(
+      Object.entries(extra).filter(([, v]) => v !== undefined && v !== null),
+    );
+    return { ...base, ...cleaned };
   };
 
   const finalMember = mergePreferDefined(member, details);
-  console.log("memeber 확인: ", finalMember)
+  console.log('memeber 확인: ', finalMember);
 
   const isMe = Number(finalMember.memberId) === Number(myId);
-  const bgColor = member.studyType === '대면' ? 'rgba(250, 48, 75, 0.55)' : 'rgba(38, 172, 255, 0.55)';
+  const bgColor =
+    member.studyType === '대면'
+      ? 'rgba(250, 48, 75, 0.55)'
+      : 'rgba(38, 172, 255, 0.55)';
 
   return (
     <DetailWrapper>
@@ -76,7 +78,9 @@ export default function MemberDetail({
         {/* 왼쪽 */}
         <ProfileSection>
           <ProfileWrapper>
-            {finalMember.isHost && <HostIcon src={Host} alt="팟장" />}
+            {finalMember.isHost && (
+              <HostIcon src="/pod/pod-host.svg" alt="팟장" />
+            )}
             <ProfileImg src={`/images/${finalMember.profileImage}`} />
           </ProfileWrapper>
           <ProfileInfoWrapper>
@@ -153,7 +157,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                #{finalMember.hashtags[1]}
+                  #{finalMember.hashtags[1]}
                 </Pill>
               </Tag>
             </Tags>

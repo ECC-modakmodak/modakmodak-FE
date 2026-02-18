@@ -196,21 +196,16 @@ export default function PodDetail() {
               size="slim"
               width="200px"
               onClick={() => {
-                pod.userStatus.isHost && canClosePod
-                  ? // 팟장이면 모집 종료 팝업
-                    setIsClosePopupOpen(true)
-                  : // 팟원이 아니면 참여 신청 팝업
-                    setIsApplyPopupOpen(true);
+                pod.userStatus?.isHost && canClosePod
+                  ? setIsClosePopupOpen(true)
+                  : !pod.userStatus && setIsApplyPopupOpen(true);
               }}
             >
-              {/* 로그인 유저가 팟장인 경우 */}
-              {pod.userStatus.isHost && canClosePod
+              {pod.userStatus?.isHost && canClosePod
                 ? '팟 모집 종료하기'
-                : // 로그인 유저가 팟원이 아닌 경우
-                  canApplyPod
+                : !pod.userStatus && canApplyPod
                   ? '참여 신청하기'
-                  : pod.userStatus.participantStatus === 'PENDING' &&
-                      canApplyPod
+                  : pod.userStatus?.participationStatus === 'PENDING'
                     ? '신청 완료'
                     : '참여 중'}
             </Button>
