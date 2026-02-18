@@ -16,11 +16,9 @@ export const getMyProfile = async () => {
 
   if (!data) return null;
 
-
   return {
     id: data.id,
     targetMessage: data.targetMessage,
-
   };
 };
 
@@ -30,16 +28,15 @@ export const getMemberProfile = async (username) => {
 
   try {
     const res = await api.get(`/api/users/profile/${username}`);
-    const payload = res.data?.data;  
+    const payload = res.data?.data;
 
     if (!payload) return null;
 
     return {
       mainArea: payload.activityArea,
-    }
+    };
   } catch (e) {
-    console.error("멤버 프로필 조회 실패:", e);
+    console.error('멤버 프로필 조회 실패:', e);
     return null;
   }
- 
 };
