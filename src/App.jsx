@@ -29,7 +29,7 @@ export default function App() {
             <Route path="/pod/:podId" element={<PodDetail />} />
             <Route path="/create" element={<CreatePod />} />
             <Route
-              path="/create/detail/:meetingId"
+              path="/create/detail/:meeetingId"
               element={<CreatePodDetail />}
             />
           </Route>
