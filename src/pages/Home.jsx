@@ -136,7 +136,6 @@ export default function Home() {
     );
   }
 
-
   return (
     <>
       <Page>
@@ -144,7 +143,7 @@ export default function Home() {
           {today ? (
             <span>
               {profile.targetMessage}
-              {getParticle(profile.targetMessage)} 위해 {randomText}
+              {getParticle(profile.targetMessage, 'object')} 위해 {randomText}
             </span>
           ) : (
             <span>{randomEmoji}</span>
@@ -171,18 +170,18 @@ export default function Home() {
                       {today.time}
                     </Phill>
                     ,{' '}
-                    { today.place !== "미정" && (
+                    {today.place !== '미정' && (
                       <>
-                      <Phill
-                      shape="chip"
-                      variant="outlined"
-                      size="large"
-                      style={{ marginLeft: '8px', marginRight: '3px' }}
-                    >
-                      {today.place}
-                    </Phill>
-                    에서{' '}
-                    </>
+                        <Phill
+                          shape="chip"
+                          variant="outlined"
+                          size="large"
+                          style={{ marginLeft: '8px', marginRight: '3px' }}
+                        >
+                          {today.place}
+                        </Phill>
+                        에서{' '}
+                      </>
                     )}
                     <Phill
                       shape="chip"
@@ -205,8 +204,26 @@ export default function Home() {
                       backgroundColor="#d9695c"
                       size="small"
                     >
-                      {podGoal}
+                      {podGoal ? podGoal : '어떤 목표를 이루어볼까요?'}
                     </Phill>
+                    {/* {podGoal ? (
+                      <Phill
+                      shape="chip"
+                      variant="filled"
+                      backgroundColor="#d9695c"
+                      size="small"
+                      >
+                        {podGoal}
+                      </Phill>
+                    ):(
+                      <Phill
+                        shape="chip"
+                        variant="outlined"
+                        size="small"
+                      >
+                        {"어떤 목표를 이루어볼까요?"}
+                      </Phill>
+                    )} */}
                   </Tag>
                   <CheckBtn to={`/pod/${today.podId}`}>
                     <Button
