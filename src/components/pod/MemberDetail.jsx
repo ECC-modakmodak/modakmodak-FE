@@ -5,6 +5,7 @@ import Pill from '../common/tagChip/Pill';
 import AreaSvg from '/pod/location.svg';
 import { useState, useEffect } from 'react';
 import { getMemberProfile } from '../../api/user';
+import { updatePodGoal } from '../../api/pod-detail';
 
 // css
 import {
@@ -37,7 +38,7 @@ export default function MemberDetail({
   onChangePodGoal,
 }) {
   const [details, setDetails] = useState(null);
-  const [podGoalDraft, setPodGoalDraft] = useState(member?.podGoal ?? '');
+  const [podGoalDraft, setPodGoalDraft] = useState(member?.displayedGoal ?? '');
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -71,7 +72,19 @@ export default function MemberDetail({
     member.studyType === '대면'
       ? 'rgba(250, 48, 75, 0.55)'
       : 'rgba(38, 172, 255, 0.55)';
+  // 팟 목표 수정
+  const handleSavePodGoal = async () => {
+    const next = podGoalDraft.trim();
+    if (!next) return;
 
+    try {
+      await updatePodGoal(myId, finalMember.participantId, next);
+      onChangePodGoal?.(next);
+      onClose?.();
+    } catch (error) {
+      console.error('podGoal 업데이트 실패', error);
+    }
+  };
   return (
     <DetailWrapper>
       <DetailContent>
@@ -86,10 +99,10 @@ export default function MemberDetail({
           <ProfileInfoWrapper>
             <Name>{finalMember.nickname}</Name>
             <PodGoal>
-              {finalMember.podGoal ? (
+              {finalMember.displayedGoal ? (
                 <Goal
                   completed={true}
-                  value={finalMember.podGoal}
+                  value={finalMember.displayedGoal}
                   readOnly
                   style={{
                     cursor: 'default',
@@ -110,7 +123,9 @@ export default function MemberDetail({
                 <Goal
                   completed={false}
                   readOnly
-                  value={finalMember.podGoal || '어떤 목표를 이루어볼까요?'}
+                  value={
+                    finalMember.displayedGoal || '어떤 목표를 이루어볼까요?'
+                  }
                   style={{
                     padding: '8px 20px',
                     fontSize: '20px',
@@ -183,19 +198,14 @@ export default function MemberDetail({
       </DetailContent>
       {/* 디자인 체크 */}
       <ButtonWrapper>
-        {isMe && !finalMember.podGoal ? (
+        {isMe && !finalMember.displayedGoal ? (
           <Button
             shape="chip"
             variant="filled"
             bgColor="#d9695c"
             size="large"
             style={{ padding: '10px 20px', fontSize: '20px' }}
-            onClick={() => {
-              const next = podGoalDraft.trim();
-              if (!next) return;
-              onChangePodGoal?.(next); // 저장
-              onClose?.(); // 닫기
-            }}
+            onClick={handleSavePodGoal}
           >
             목표 등록 후 닫기
           </Button>
