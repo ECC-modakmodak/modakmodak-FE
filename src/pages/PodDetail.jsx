@@ -164,15 +164,25 @@ export default function PodDetail() {
 
   // podGoal 갱신
   const updateMemberPodGoal = (memberId, nextPodGoal) => {
-    setPod((prev) => ({
-      ...prev,
-      participants: {
-        ...prev.participants,
-        list: prev.participants.list.map((m) =>
-          m.memberId === memberId ? { ...m, podGoal: nextPodGoal } : m,
-        ),
-      },
-    }));
+    setPod((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        participants: {
+          ...prev.participants,
+          list: prev.participants.list.map((m) =>
+            m.memberId === memberId
+              ? {
+                  ...m,
+                  podGoal: nextPodGoal,
+                  displayedGoal: nextPodGoal,
+                  hasGoal: true,
+                }
+              : m,
+          ),
+        },
+      };
+    });
   };
 
   // 로딩화면
@@ -204,6 +214,21 @@ export default function PodDetail() {
                 pod.userStatus?.isHost && canClosePod
                   ? setIsClosePopupOpen(true)
                   : !pod.userStatus && setIsApplyPopupOpen(true);
+              }}
+              disabled={
+                isPodClosed ||
+                pod.userStatus?.participationStatus === 'PENDING' ||
+                (pod.userStatus?.participationStatus === 'APPROVED' &&
+                  !pod.userStatus?.isHost)
+              }
+              style={{
+                cursor:
+                  isPodClosed ||
+                  pod.userStatus?.participationStatus === 'PENDING' ||
+                  (pod.userStatus?.participationStatus === 'APPROVED' &&
+                    !pod.userStatus?.isHost)
+                    ? 'default'
+                    : 'pointer',
               }}
             >
               {isPodClosed
