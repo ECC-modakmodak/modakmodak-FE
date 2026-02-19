@@ -44,7 +44,7 @@ import {
 export default function Home() {
   // 임시 데이터
   const retrospect = {
-    name: '모각코_회고',
+    name: '모각코',
   };
 
   // API 연결
