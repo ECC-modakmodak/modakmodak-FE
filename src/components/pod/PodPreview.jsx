@@ -48,7 +48,7 @@ export default function PodPreview({
         <PodName>{podDetailInfo.title}</PodName>
         <div>
           <PodPreviewInfoContainer>
-            {podDetailInfo.hashtags.includes('OFFLINE') && (
+            {!podDetailInfo.hashtags.includes('ZOOM') && (
               <div>
                 <img src="/pod/location.svg" alt="위치 아이콘" />
                 <span>{podDetailInfo.area}</span>

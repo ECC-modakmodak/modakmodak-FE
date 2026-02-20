@@ -69,9 +69,11 @@ export default function MemberDetail({
 
   const isMe = Number(finalMember.memberId) === Number(myId);
   const bgColor =
-    member.studyType === '대면'
+    member.studyType === 'OFFLINE'
       ? 'rgba(250, 48, 75, 0.55)'
       : 'rgba(38, 172, 255, 0.55)';
+  const Type = member.studyType === 'OFFLINE' ? '대면' : '비대면';
+
   // 팟 목표 수정
   const handleSavePodGoal = async () => {
     const next = podGoalDraft.trim();
@@ -172,7 +174,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                  #{finalMember.hashtags[1]}
+                  #{Type}
                 </Pill>
               </Tag>
             </Tags>
