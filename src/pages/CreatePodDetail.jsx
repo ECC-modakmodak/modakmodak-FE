@@ -141,14 +141,27 @@ export default function CreatePodDetail() {
     const [m, d] = md.split('/').map(Number);
     const [hh, mm] = time.split(':').map(Number);
     
-    // 현재 연도만
-    const year = new Date().getFullYear();
+    // 년도 구별
+    const now = new Date();
+    const currentYear = now.getFullYear();
 
     // 1 -> 01 로 맞춤
     const pad = (n) => n.toString().padStart(2, '0');
 
-    // 결과 형식: "2026-01-23T23:00"
-    return `${year}-${pad(m)}-${pad(d)}T${pad(hh)}:${pad(mm)}`;
+    // 올해 기준 날짜 생성
+    const targetThisYear = new Date(
+      currentYear,
+      m - 1, // JS month는 0부터 시작
+      d,
+      hh,
+      mm
+    );
+
+    // 오늘보다 과거면 -> 내년날짜로
+    const finalYear =
+      targetThisYear < now ? currentYear + 1 : currentYear;
+
+    return `${finalYear}-${pad(m)}-${pad(d)}T${pad(hh)}:${pad(mm)}`;
   };
 
   // 값 저장 확인
