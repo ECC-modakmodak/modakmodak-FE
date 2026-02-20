@@ -13,7 +13,7 @@ export const fetchMyIdByUsername = async (username) => {
 };
 
 export const loginUser = async (username, password) => {
-  const response = await api.post('api/users/login', { username, password });
+  const response = await api.post('/api/users/login', { username, password });
   console.log('서버 응답 확인용:', response.data);
   localStorage.setItem('username', response.data.username);
 
@@ -32,7 +32,7 @@ export const loginUser = async (username, password) => {
 };
 
 export const loginWithGoogle = async (idToken) => {
-  const response = await api.post('api/users/login/google', { idToken });
+  const response = await api.post('/api/users/login/google', { idToken });
   console.log('구글 로그인 서버 응답:', response.data);
 
   if (response.status === 200 || response.status === 201) {
@@ -52,11 +52,11 @@ export const checkDuplicateApi = async (type, value) => {
   let CHECK_URL = '';
 
   if (type === 'nickname') {
-    CHECK_URL = `api/users/check-nickname`;
+    CHECK_URL = `/api/users/check-nickname`;
   } else if (type === 'username') {
-    CHECK_URL = `api/users/check-username`;
+    CHECK_URL = `/api/users/check-username`;
   } else if (type === 'email') {
-    CHECK_URL = `api/users/check-email`;
+    CHECK_URL = `/api/users/check-email`;
   }
 
   const response = await api.get(CHECK_URL, {
@@ -85,7 +85,7 @@ export const checkDuplicateApi = async (type, value) => {
 export const signupUser = async (formData) => {
   const typeMap = { 조용히: 'QUIET', 도란도란: 'CHATTY' };
 
-  const response = await api.post('api/users/signup', {
+  const response = await api.post('/api/users/signup', {
     nickname: formData.nickname,
     username: formData.username,
     email: formData.email,
@@ -101,4 +101,3 @@ export const signupUser = async (formData) => {
   }
   throw response;
 };
-

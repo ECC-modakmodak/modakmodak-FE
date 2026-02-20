@@ -4,8 +4,9 @@ const MOOD_LIST = ['CHATTY', 'QUIET'];
 const TYPE_LIST = ['CAFE', 'ZOOM', 'OTHER'];
 
 export const getHomeData = async () => {
-  const res = await api.get('/api/meetings');
-
+  const res = await api.get('/api/meetings', {
+    headers: { 'X-User-Id': localStorage.getItem('myId') },
+  });
   const payload = res.data?.data ?? res.data;
   const rawToday = payload?.todayData;
 
@@ -39,14 +40,16 @@ export const getHomeData = async () => {
         type: typeVal,
         people: `${item.currentParticipants}/${item.maxParticipants}`,
         podImg: item.representativeImage,
+        location: item.location,
       };
     });
-
   return { today: todayData, group: totalGroupData };
 };
 
 export const getPodGoal = async (meetingId, myId) => {
-  const res = await api.get(`/api/meetings/${meetingId}`);
+  const res = await api.get(`/api/meetings/${meetingId}`, {
+    headers: { 'X-User-Id': localStorage.getItem('myId') },
+  });
   const participants = res.data?.data?.participants?.list ?? [];
   const me = participants.find((p) => Number(p.memberId) === Number(myId));
   return me?.displayedGoal ?? null;

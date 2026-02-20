@@ -61,7 +61,7 @@ export default function PodMemberCard({
     onBadgeUpdated(status);
     setIsBadgesVisible(false);
     try {
-      await updateStatusBadge(myId, member.memberId, status);
+      await updateStatusBadge(myId, member.participantId, status);
     } catch (error) {
       console.error('팟 멤버 상태 배지 변경 실패:', error);
       throw error;

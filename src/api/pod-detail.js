@@ -36,12 +36,15 @@ function toServerDateTime(input) {
 // 팟 상세 정보 조회
 export async function fetchPodDetail(podId) {
   try {
-    const res = await api.get(`/api/meetings/${podId}`);
+    const res = await api.get(`/api/meetings/${podId}`, {
+      headers: { 'X-User-Id': localStorage.getItem('myId') },
+    });
     const rawData = res.data.data;
     const processedData = {
       ...rawData,
       // Date 포맷팅
       date: formatDateTime(rawData.date),
+      hostAnnouncement: '',
       participants: {
         ...rawData.participants,
         list: (rawData.participants.list || []).map((participant) => ({
@@ -63,10 +66,16 @@ export async function fetchPodDetail(podId) {
 // 팟 멤버 출석 체크 상태 변경
 export async function updateAttendance(podId, participantId, attended) {
   try {
-    const res = await api.patch(`/api/meetings/${podId}/attendance`, {
-      participantId: participantId,
-      attended: attended,
-    });
+    const res = await api.patch(
+      `/api/meetings/${podId}/attendance`,
+      {
+        participantId: participantId,
+        attended: attended,
+      },
+      {
+        headers: { 'X-User-Id': localStorage.getItem('myId') },
+      },
+    );
     return res.data;
   } catch (error) {
     console.error('Error updating attendance:', error);
@@ -99,9 +108,15 @@ export async function updatePodInfo(podId, key, updatedValue) {
   // 팟장 멘션 수정
   if (key === 'hostAnnouncement') {
     try {
-      const res = await api.patch(`/api/meetings/${podId}/host-announcement`, {
-        hostAnnouncement: updatedValue,
-      });
+      const res = await api.patch(
+        `/api/meetings/${podId}/host-announcement`,
+        {
+          hostAnnouncement: updatedValue,
+        },
+        {
+          headers: { 'X-User-Id': localStorage.getItem('myId') },
+        },
+      );
       return res.data;
     } catch (error) {
       console.error('Error updating host announcement:', error);
@@ -110,9 +125,15 @@ export async function updatePodInfo(podId, key, updatedValue) {
   } else if (key === 'date') {
     // 팟 날짜 수정
     try {
-      const res = await api.patch(`/api/meetings/${podId}/date`, {
-        date: toServerDateTime(updatedValue),
-      });
+      const res = await api.patch(
+        `/api/meetings/${podId}/date`,
+        {
+          date: toServerDateTime(updatedValue),
+        },
+        {
+          headers: { 'X-User-Id': localStorage.getItem('myId') },
+        },
+      );
       return res.data;
     } catch (error) {
       console.error('Error updating pod date:', error);
@@ -121,9 +142,15 @@ export async function updatePodInfo(podId, key, updatedValue) {
   } else if (key === 'locationDetail') {
     // 팟 장소 수정
     try {
-      const res = await api.patch(`/api/meetings/${podId}/location-detail`, {
-        locationDetail: updatedValue,
-      });
+      const res = await api.patch(
+        `/api/meetings/${podId}/location-detail`,
+        {
+          locationDetail: updatedValue,
+        },
+        {
+          headers: { 'X-User-Id': localStorage.getItem('myId') },
+        },
+      );
       return res.data;
     } catch (error) {
       console.error('Error updating pod location detail:', error);
@@ -135,7 +162,13 @@ export async function updatePodInfo(podId, key, updatedValue) {
 // 팟 모집 종료
 export async function closePod(podId) {
   try {
-    const res = await api.patch(`/api/meetings/${podId}/complete`);
+    const res = await api.patch(
+      `/api/meetings/${podId}/complete`,
+      {},
+      {
+        headers: { 'X-User-Id': localStorage.getItem('myId') },
+      },
+    );
     return res.data;
   } catch (error) {
     console.error('Error closing pod:', error);
@@ -179,6 +212,25 @@ export async function respondToApplication(myId, podId, applicationId, status) {
     return res.data;
   } catch (error) {
     console.error('Error responding to application:', error);
+    throw error;
+  }
+}
+
+// 팟 목표 수정
+export async function updatePodGoal(myId, participantId, displayedGoal) {
+  try {
+    const res = await api.patch(
+      `/api/participants/${participantId}/goal`,
+      {
+        goal: displayedGoal,
+      },
+      {
+        headers: { 'X-User-Id': myId },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    console.error('팟 목표 수정 실패', error);
     throw error;
   }
 }

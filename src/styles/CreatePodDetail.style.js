@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 
@@ -170,15 +169,18 @@ export const ImgLink = styled.div`
   flex-direction: column;
 `;
 
-export const TextLink_S = styled(Link)`
+export const RandomImgBtn = styled.button`
   text-decoration: underline;
   color: #000;
   font-size: 16px;
   font-weight: 400;
   cursor: pointer;
+
+  border: 0;
+  background: 0;
 `;
 
-export const TextLink = styled(Link)`
+export const CreateBtn = styled.button`
   display: inline-flex;
   align-self: flex-end;
   align-items: center;
@@ -187,7 +189,9 @@ export const TextLink = styled(Link)`
 
   text-decoration: none;
   gap: 5px;
-
+  
+  border: 0;
+  background: 0;
   color: #000;
   font-size: 20px;
   font-weight: 500;

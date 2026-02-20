@@ -52,7 +52,7 @@ export default function PodDetail() {
       if (podData?.participants?.list) {
         const initialAttendance = Object.fromEntries(
           podData.participants.list.map((m) => [
-            m.memberId,
+            m.participantId,
             m.attended ?? false,
           ]),
         );
@@ -97,10 +97,12 @@ export default function PodDetail() {
   };
 
   // 상태 배지 변경
-  const handleBadgeUpdated = (memberId, nextBadge) => {
+  const handleBadgeUpdated = (participantId, nextBadge) => {
     setPod((prev) => {
       const updatedList = prev.participants.list.map((m) =>
-        m.memberId === memberId ? { ...m, statusBadge: nextBadge } : m,
+        m.participantId === participantId
+          ? { ...m, statusBadge: nextBadge }
+          : m,
       );
 
       return {
@@ -109,6 +111,9 @@ export default function PodDetail() {
       };
     });
   };
+
+  // 팟 종료
+  const [isPodClosed, setIsPodClosed] = useState(false);
 
   // 팝업
   const [isClosePopupOpen, setIsClosePopupOpen] = useState(false);
@@ -121,15 +126,15 @@ export default function PodDetail() {
   const [placeChecked, setPlaceChecked] = useState(false);
 
   // 출석 체크 토글
-  const onToggleAttendance = async (memberId) => {
-    const nextValue = !attendanceById[memberId];
+  const onToggleAttendance = async (participantId) => {
+    const nextValue = !attendanceById[participantId];
 
     setAttendanceById((prev) => ({
       ...prev,
-      [memberId]: nextValue,
+      [participantId]: nextValue,
     }));
 
-    await updateAttendance(pod.meetingId, memberId, nextValue);
+    await updateAttendance(pod.meetingId, participantId, nextValue);
   };
 
   // 팝업 뜨면 스크롤 제어
@@ -159,15 +164,25 @@ export default function PodDetail() {
 
   // podGoal 갱신
   const updateMemberPodGoal = (memberId, nextPodGoal) => {
-    setPod((prev) => ({
-      ...prev,
-      participants: {
-        ...prev.participants,
-        list: prev.participants.list.map((m) =>
-          m.memberId === memberId ? { ...m, podGoal: nextPodGoal } : m,
-        ),
-      },
-    }));
+    setPod((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        participants: {
+          ...prev.participants,
+          list: prev.participants.list.map((m) =>
+            m.memberId === memberId
+              ? {
+                  ...m,
+                  podGoal: nextPodGoal,
+                  displayedGoal: nextPodGoal,
+                  hasGoal: true,
+                }
+              : m,
+          ),
+        },
+      };
+    });
   };
 
   // 로딩화면
@@ -196,23 +211,35 @@ export default function PodDetail() {
               size="slim"
               width="200px"
               onClick={() => {
-                pod.userStatus.isHost && canClosePod
-                  ? // 팟장이면 모집 종료 팝업
-                    setIsClosePopupOpen(true)
-                  : // 팟원이 아니면 참여 신청 팝업
-                    setIsApplyPopupOpen(true);
+                pod.userStatus?.isHost && canClosePod
+                  ? setIsClosePopupOpen(true)
+                  : !pod.userStatus && setIsApplyPopupOpen(true);
+              }}
+              disabled={
+                isPodClosed ||
+                pod.userStatus?.participationStatus === 'PENDING' ||
+                (pod.userStatus?.participationStatus === 'APPROVED' &&
+                  !pod.userStatus?.isHost)
+              }
+              style={{
+                cursor:
+                  isPodClosed ||
+                  pod.userStatus?.participationStatus === 'PENDING' ||
+                  (pod.userStatus?.participationStatus === 'APPROVED' &&
+                    !pod.userStatus?.isHost)
+                    ? 'default'
+                    : 'pointer',
               }}
             >
-              {/* 로그인 유저가 팟장인 경우 */}
-              {pod.userStatus.isHost && canClosePod
-                ? '팟 모집 종료하기'
-                : // 로그인 유저가 팟원이 아닌 경우
-                  canApplyPod
-                  ? '참여 신청하기'
-                  : pod.userStatus.participantStatus === 'PENDING' &&
-                      canApplyPod
-                    ? '신청 완료'
-                    : '참여 중'}
+              {isPodClosed
+                ? '파이팅'
+                : pod.userStatus?.isHost && canClosePod
+                  ? '팟 모집 종료하기'
+                  : !pod.userStatus && canApplyPod
+                    ? '참여 신청하기'
+                    : pod.userStatus?.participationStatus === 'PENDING'
+                      ? '신청 완료'
+                      : '참여 중'}
             </Button>
           </ButtonWrapper>
         </PodPreviewContainer>
@@ -220,11 +247,11 @@ export default function PodDetail() {
           {/* 팟원 카드 클릭 시 프로필로 이동 */}
           {selectedMember ? (
             <MemberDetail
-              member={selectedMember}
+              member={selectedMember} // 선택 멤버 배열
               myId={myId}
               onClose={() => setSelectedMemberId(null)}
-              onChangePodGoal={(nextPodGoal) =>
-                updateMemberPodGoal(selectedMember.id, nextPodGoal)
+              onChangePodGoal={(next) =>
+                updateMemberPodGoal(selectedMember.memberId, next)
               }
             />
           ) : (
@@ -243,14 +270,14 @@ export default function PodDetail() {
                     onHostMentionChange={handlePodInfoChange}
                     onHostMentionUpdate={handleUpdatedPodInfo}
                     // 출석
-                    attendanceChecked={!!attendanceById[member.memberId]}
+                    attendanceChecked={!!attendanceById[member.participantId]}
                     onToggleAttendance={(e) => {
                       e.stopPropagation();
-                      onToggleAttendance(member.memberId);
+                      onToggleAttendance(member.participantId);
                     }}
                     // 배지
                     onBadgeUpdated={(nextBadge) =>
-                      handleBadgeUpdated(member.memberId, nextBadge)
+                      handleBadgeUpdated(member.participantId, nextBadge)
                     }
                     // 권한
                     canEditMention={canEditMention && member.isHost}
@@ -300,6 +327,7 @@ export default function PodDetail() {
             isOpen={isClosePopupOpen}
             onClose={() => setIsClosePopupOpen(false)}
             onCompleted={() => {
+              setIsPodClosed(true);
               setIsCloseConfirmPopupOpen(true);
             }}
           />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BounceLoader } from 'react-spinners';
 
 import { getHomeData, getPodGoal } from '../api/Home';
 import { getMyProfile } from '../api/user';
@@ -36,15 +37,14 @@ import {
   PodName,
   PodDetail,
   PodSvg,
+  LoaderContainer,
 } from '../styles/Home.style';
-
-// === [TODO] podGoal 받아오기
 
 // func.
 export default function Home() {
   // 임시 데이터
   const retrospect = {
-    name: '모각코_회고',
+    name: '모각코',
   };
 
   // API 연결
@@ -126,6 +126,16 @@ export default function Home() {
 
     return '';
   };
+
+  // 로딩 화면
+  if (!profile) {
+    return (
+      <LoaderContainer>
+        <BounceLoader color="#D9695C" loading={true} size={60} />
+      </LoaderContainer>
+    );
+  }
+
   return (
     <>
       <Page>
@@ -133,7 +143,7 @@ export default function Home() {
           {today ? (
             <span>
               {profile.targetMessage}
-              {getParticle(profile.targetMessage)} 위해 {randomText}
+              {getParticle(profile.targetMessage, 'object')} 위해 {randomText}
             </span>
           ) : (
             <span>{randomEmoji}</span>
@@ -160,15 +170,19 @@ export default function Home() {
                       {today.time}
                     </Phill>
                     ,{' '}
-                    <Phill
-                      shape="chip"
-                      variant="outlined"
-                      size="large"
-                      style={{ marginLeft: '8px', marginRight: '3px' }}
-                    >
-                      {today.place}
-                    </Phill>
-                    에서{' '}
+                    {today.place !== '미정' && (
+                      <>
+                        <Phill
+                          shape="chip"
+                          variant="outlined"
+                          size="large"
+                          style={{ marginLeft: '8px', marginRight: '3px' }}
+                        >
+                          {today.place}
+                        </Phill>
+                        에서{' '}
+                      </>
+                    )}
                     <Phill
                       shape="chip"
                       variant="outlined"
@@ -190,8 +204,26 @@ export default function Home() {
                       backgroundColor="#d9695c"
                       size="small"
                     >
-                      {podGoal}
+                      {podGoal ? podGoal : '어떤 목표를 이루어볼까요?'}
                     </Phill>
+                    {/* {podGoal ? (
+                      <Phill
+                      shape="chip"
+                      variant="filled"
+                      backgroundColor="#d9695c"
+                      size="small"
+                      >
+                        {podGoal}
+                      </Phill>
+                    ):(
+                      <Phill
+                        shape="chip"
+                        variant="outlined"
+                        size="small"
+                      >
+                        {"어떤 목표를 이루어볼까요?"}
+                      </Phill>
+                    )} */}
                   </Tag>
                   <CheckBtn to={`/pod/${today.podId}`}>
                     <Button

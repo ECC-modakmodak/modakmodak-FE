@@ -1,10 +1,11 @@
 import Goal from '../common/tagChip/Goal';
 import StudyMood from '../common/tagChip/StudyMood';
 import Button from '../common/Button';
-import Pill from '../common/tagChip/Pill'
-import Host from '/pod/pod-host.svg';
+import Pill from '../common/tagChip/Pill';
 import AreaSvg from '/pod/location.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getMemberProfile } from '../../api/user';
+import { updatePodGoal } from '../../api/pod-detail';
 
 // css
 import {
@@ -36,27 +37,74 @@ export default function MemberDetail({
   onClose,
   onChangePodGoal,
 }) {
-  const [podGoalDraft, setPodGoalDraft] = useState(member?.podGoal ?? '');
-  if (!member) return null;
-  const isMe = member.id === myId;
-  const bgColor = member.studyType === '#대면' ? 'rgba(250, 48, 75, 0.55)' : 'rgba(38, 172, 255, 0.55)';
+  const [details, setDetails] = useState(null);
+  const [podGoalDraft, setPodGoalDraft] = useState(member?.displayedGoal ?? '');
 
+  useEffect(() => {
+    const fetchDetails = async () => {
+      // username이 없으면 못 가져옴
+      if (!member || !member.username) return;
+
+      const data = await getMemberProfile(member.username);
+      setDetails(data);
+    };
+
+    fetchDetails();
+  }, [member]);
+
+  if (!member) return null;
+  console.log('member:', member);
+  console.log('details:', details);
+
+  const mergePreferDefined = (base, extra) => {
+    if (!extra) return base;
+    const cleaned = Object.fromEntries(
+      Object.entries(extra).filter(([, v]) => v !== undefined && v !== null),
+    );
+    return { ...base, ...cleaned };
+  };
+
+  const finalMember = mergePreferDefined(member, details);
+  console.log('memeber 확인: ', finalMember);
+
+  const isMe = Number(finalMember.memberId) === Number(myId);
+  const bgColor =
+    member.studyType === 'OFFLINE'
+      ? 'rgba(250, 48, 75, 0.55)'
+      : 'rgba(38, 172, 255, 0.55)';
+  const Type = member.studyType === 'OFFLINE' ? '대면' : '비대면';
+
+  // 팟 목표 수정
+  const handleSavePodGoal = async () => {
+    const next = podGoalDraft.trim();
+    if (!next) return;
+
+    try {
+      await updatePodGoal(myId, finalMember.participantId, next);
+      onChangePodGoal?.(next);
+      onClose?.();
+    } catch (error) {
+      console.error('podGoal 업데이트 실패', error);
+    }
+  };
   return (
     <DetailWrapper>
       <DetailContent>
         {/* 왼쪽 */}
         <ProfileSection>
           <ProfileWrapper>
-            {member.isHost && <HostIcon src={Host} alt="팟장" />}
-            <ProfileImg src={member.profileImage} />
+            {finalMember.isHost && (
+              <HostIcon src="/pod/pod-host.svg" alt="팟장" />
+            )}
+            <ProfileImg src={`/images/${finalMember.profileImage}`} />
           </ProfileWrapper>
           <ProfileInfoWrapper>
-            <Name>{member.name}</Name>
+            <Name>{finalMember.nickname}</Name>
             <PodGoal>
-              {member.podGoal ? (
+              {finalMember.displayedGoal ? (
                 <Goal
                   completed={true}
-                  value={member.podGoal}
+                  value={finalMember.displayedGoal}
                   readOnly
                   style={{
                     cursor: 'default',
@@ -77,7 +125,9 @@ export default function MemberDetail({
                 <Goal
                   completed={false}
                   readOnly
-                  value={member.podGoal || '어떤 목표를 이루어볼까요?'}
+                  value={
+                    finalMember.displayedGoal || '어떤 목표를 이루어볼까요?'
+                  }
                   style={{
                     padding: '8px 20px',
                     fontSize: '20px',
@@ -96,7 +146,7 @@ export default function MemberDetail({
             <InfoLabel>목표</InfoLabel>
             <Goal
               completed={true}
-              value={member.goal}
+              value={finalMember.targetMessage}
               readOnly
               style={{
                 color: '#fafafa',
@@ -108,14 +158,14 @@ export default function MemberDetail({
                 lineHeight: '1.8', // textarea라서 수동 조절
               }}
             >
-              {member.goal}
+              {finalMember.targetMessage}
             </Goal>
           </InfoRow>
           <InfoRow>
             <InfoLabel>선호 유형</InfoLabel>
             <Tags>
               <Tag>
-                <StudyMood type={member.studyMood} size="medium" />
+                <StudyMood type={finalMember.hashtags[0]} size="medium" />
               </Tag>
               <Tag>
                 <Pill
@@ -124,7 +174,7 @@ export default function MemberDetail({
                   backgroundColor={bgColor}
                   style={{ cursor: 'default' }}
                 >
-                {member.studyType}
+                  #{Type}
                 </Pill>
               </Tag>
             </Tags>
@@ -137,32 +187,27 @@ export default function MemberDetail({
                 alt="주요 활동 지역"
                 style={{ alignSelf: 'center' }}
               />
-              <p>{member.mainArea}</p>
+              <p>{finalMember.mainArea}</p>
             </AreaSection>
           </InfoRow>
           <InfoRow>
             <InfoLabel>팟 참여율</InfoLabel>
             <ProgressContainer>
-              <ProgressBar width={member.attendanceRate} />
+              <ProgressBar width={finalMember.attendanceRate} />
             </ProgressContainer>
           </InfoRow>
         </InfoSection>
       </DetailContent>
       {/* 디자인 체크 */}
       <ButtonWrapper>
-        {isMe && !member.podGoal ? (
+        {isMe && !finalMember.displayedGoal ? (
           <Button
             shape="chip"
             variant="filled"
             bgColor="#d9695c"
             size="large"
             style={{ padding: '10px 20px', fontSize: '20px' }}
-            onClick={() => {
-              const next = podGoalDraft.trim();
-              if (!next) return;
-              onChangePodGoal?.(next); // 저장
-              onClose?.(); // 닫기
-            }}
+            onClick={handleSavePodGoal}
           >
             목표 등록 후 닫기
           </Button>

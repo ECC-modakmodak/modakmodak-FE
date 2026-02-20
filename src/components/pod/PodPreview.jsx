@@ -48,10 +48,12 @@ export default function PodPreview({
         <PodName>{podDetailInfo.title}</PodName>
         <div>
           <PodPreviewInfoContainer>
-            <div>
-              <img src="/pod/location.svg" alt="위치 아이콘" />
-              <span>{podDetailInfo.area}</span>
-            </div>
+            {!podDetailInfo.hashtags.includes('ZOOM') && (
+              <div>
+                <img src="/pod/location.svg" alt="위치 아이콘" />
+                <span>{podDetailInfo.area}</span>
+              </div>
+            )}
             <div>
               <img src="/pod/member.svg" alt="인원 아이콘" />
               <span>
