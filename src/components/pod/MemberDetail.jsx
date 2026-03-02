@@ -1,0 +1,229 @@
+import Goal from '../common/tagChip/Goal';
+import StudyMood from '../common/tagChip/StudyMood';
+import Button from '../common/Button';
+import Pill from '../common/tagChip/Pill';
+import AreaSvg from '/pod/location.svg';
+import { useState, useEffect } from 'react';
+import { getMemberProfile } from '../../api/user';
+import { updatePodGoal } from '../../api/pod-detail';
+
+// css
+import {
+  DetailWrapper,
+  DetailContent,
+  ProfileSection,
+  ProfileWrapper,
+  HostIcon,
+  ProfileImg,
+  ProfileInfoWrapper,
+  Name,
+  PodGoal,
+  InfoSection,
+  InfoRow,
+  InfoLabel,
+  Tags,
+  Tag,
+  AreaSection,
+  AreaIcon,
+  ProgressContainer,
+  ProgressBar,
+  ButtonWrapper,
+} from '../../styles/MemberDetail.style';
+
+// [추가] 멤버 상세 페이지
+export default function MemberDetail({
+  member,
+  myId,
+  onClose,
+  onChangePodGoal,
+}) {
+  const [details, setDetails] = useState(null);
+  const [podGoalDraft, setPodGoalDraft] = useState(member?.displayedGoal ?? '');
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      // username이 없으면 못 가져옴
+      if (!member || !member.username) return;
+
+      const data = await getMemberProfile(member.username);
+      setDetails(data);
+    };
+
+    fetchDetails();
+  }, [member]);
+
+  if (!member) return null;
+  console.log('member:', member);
+  console.log('details:', details);
+
+  const mergePreferDefined = (base, extra) => {
+    if (!extra) return base;
+    const cleaned = Object.fromEntries(
+      Object.entries(extra).filter(([, v]) => v !== undefined && v !== null),
+    );
+    return { ...base, ...cleaned };
+  };
+
+  const finalMember = mergePreferDefined(member, details);
+  console.log('memeber 확인: ', finalMember);
+
+  const isMe = Number(finalMember.memberId) === Number(myId);
+  const bgColor =
+    member.studyType === 'OFFLINE'
+      ? 'rgba(250, 48, 75, 0.55)'
+      : 'rgba(38, 172, 255, 0.55)';
+  const Type = member.studyType === 'OFFLINE' ? '대면' : '비대면';
+
+  // 팟 목표 수정
+  const handleSavePodGoal = async () => {
+    const next = podGoalDraft.trim();
+    if (!next) return;
+
+    try {
+      await updatePodGoal(myId, finalMember.participantId, next);
+      onChangePodGoal?.(next);
+      onClose?.();
+    } catch (error) {
+      console.error('podGoal 업데이트 실패', error);
+    }
+  };
+  return (
+    <DetailWrapper>
+      <DetailContent>
+        {/* 왼쪽 */}
+        <ProfileSection>
+          <ProfileWrapper>
+            {finalMember.isHost && (
+              <HostIcon src="/pod/pod-host.svg" alt="팟장" />
+            )}
+            <ProfileImg src={`/images/${finalMember.profileImage}`} />
+          </ProfileWrapper>
+          <ProfileInfoWrapper>
+            <Name>{finalMember.nickname}</Name>
+            <PodGoal>
+              {finalMember.displayedGoal ? (
+                <Goal
+                  completed={true}
+                  value={finalMember.displayedGoal}
+                  readOnly
+                  style={{
+                    cursor: 'default',
+                  }}
+                />
+              ) : isMe ? (
+                <Goal
+                  completed={false}
+                  value={podGoalDraft}
+                  style={{
+                    padding: '8px 20px',
+                    fontSize: '20px',
+                    fontWeight: '500',
+                  }}
+                  onChange={(e) => setPodGoalDraft(e.target.value)}
+                />
+              ) : (
+                <Goal
+                  completed={false}
+                  readOnly
+                  value={
+                    finalMember.displayedGoal || '어떤 목표를 이루어볼까요?'
+                  }
+                  style={{
+                    padding: '8px 20px',
+                    fontSize: '20px',
+                    fontWeight: '500',
+                    cursor: 'default',
+                  }}
+                />
+              )}
+            </PodGoal>
+          </ProfileInfoWrapper>
+        </ProfileSection>
+
+        {/* 오른쪽 */}
+        <InfoSection>
+          <InfoRow>
+            <InfoLabel>목표</InfoLabel>
+            <Goal
+              completed={true}
+              value={finalMember.targetMessage}
+              readOnly
+              style={{
+                color: '#fafafa',
+                height: '40px',
+                fontSize: '20px',
+                fontWeight: '500',
+                padding: '2px 15px',
+                cursor: 'default',
+                lineHeight: '1.8', // textarea라서 수동 조절
+              }}
+            >
+              {finalMember.targetMessage}
+            </Goal>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>선호 유형</InfoLabel>
+            <Tags>
+              <Tag>
+                <StudyMood type={finalMember.hashtags[0]} size="medium" />
+              </Tag>
+              <Tag>
+                <Pill
+                  variant="filled"
+                  size="medium"
+                  backgroundColor={bgColor}
+                  style={{ cursor: 'default' }}
+                >
+                  #{Type}
+                </Pill>
+              </Tag>
+            </Tags>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>주요 활동 지역</InfoLabel>
+            <AreaSection>
+              <AreaIcon
+                src={AreaSvg}
+                alt="주요 활동 지역"
+                style={{ alignSelf: 'center' }}
+              />
+              <p>{finalMember.mainArea}</p>
+            </AreaSection>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>팟 참여율</InfoLabel>
+            <ProgressContainer>
+              <ProgressBar width={finalMember.attendanceRate} />
+            </ProgressContainer>
+          </InfoRow>
+        </InfoSection>
+      </DetailContent>
+      {/* 디자인 체크 */}
+      <ButtonWrapper>
+        {isMe && !finalMember.displayedGoal ? (
+          <Button
+            shape="chip"
+            variant="filled"
+            bgColor="#d9695c"
+            size="large"
+            style={{ padding: '10px 20px', fontSize: '20px' }}
+            onClick={handleSavePodGoal}
+          >
+            목표 등록 후 닫기
+          </Button>
+        ) : (
+          <Button
+            shape="chip"
+            variant="filled"
+            bgColor="#d9695c"
+            size="medium"
+            style={{ padding: '10px 20px', fontSize: '20px' }}
+            onClick={onClose}
+          >
+            프로필 닫기
+          </Button>
+        )}
+      </ButtonWrapper>
+    </DetailWrapper>
+  );
+}
