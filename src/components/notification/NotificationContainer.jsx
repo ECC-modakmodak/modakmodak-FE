@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import Toggle from './toggle';
+import Toggle from './Toggle';
 import NotificationItem from './NotificationItem';
 import { getNotifications } from '../../api/notification';
 import { useEffect, useState } from 'react';
