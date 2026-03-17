@@ -81,9 +81,17 @@ const ButtonArea = styled.div`
   max-width: 160px;
   margin-bottom: 5vh;
 
+  & > button {
+    padding: 10px 12px;
+    word-break: keepall;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
   & > button:first-of-type {
     transition: all 0.2s ease-in-out;
-
     &:hover {
       background-color: #e59990;
     }
@@ -91,7 +99,6 @@ const ButtonArea = styled.div`
 
   & > button:last-of-type {
     transition: all 0.2s ease-in-out;
-
     &:hover {
       background-color: #e6e6e6;
     }
