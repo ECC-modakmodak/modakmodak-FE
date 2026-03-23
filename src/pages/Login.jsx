@@ -150,7 +150,6 @@ export default function LoginPage() {
             onError={() => {
               console.log('Login Failed');
             }}
-            width="380"
             use_fedcm_for_prompt={true}
           />
         </ButtonWrapper>
@@ -177,17 +176,25 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   max-width: 400px;
-  padding: 60px 10px;
+  padding: 60px 20px;
   flex-grow: 1;
   box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    padding: 40px 16px;
+  }
 `;
 
 const LogoImage = styled.img`
-  width: 355px;
+  max-width: 355px;
   height: 106px;
-  aspect-ratio: 355 / 106;
   object-fit: contain;
   margin-bottom: 44px;
+
+  @media (max-width: 400px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -235,12 +242,10 @@ const ButtonWrapper = styled.div`
 
   & > div {
     width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
 
     iframe {
       width: 100% !important;
-      margin: 0 auto !important;
+      margin: unset !important;
     }
   }
 `;
