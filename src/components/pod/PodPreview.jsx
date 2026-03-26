@@ -68,7 +68,7 @@ export default function PodPreview({
         <TagContainer>
           <StudyMood type={podDetailInfo.hashtags[0]} />
           <StudyType type={podDetailInfo.hashtags[1]} />
-          <StudyCategory type="CODING" />
+          <StudyCategory type="CODING" /> {/* 추후 데이터 연동 */}
         </TagContainer>
         <PodDetailInfoContainer>
           <PodDetailInfoItem>
@@ -206,6 +206,7 @@ const TagContainer = styled.div`
   align-items: center;
   gap: 6px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 `;
 
 const PodDetailInfoContainer = styled.div`
