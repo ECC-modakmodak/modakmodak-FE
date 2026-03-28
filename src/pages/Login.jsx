@@ -102,6 +102,7 @@ export default function LoginPage() {
             label="아이디"
             size="large"
             fullWidth
+            clearable
           />
           <Input
             type="password"
@@ -112,6 +113,7 @@ export default function LoginPage() {
             size="large"
             fullWidth
             showPasswordToggle
+            clearable
           />
         </InputWrapper>
         <FindLinksWrapper>
@@ -191,7 +193,7 @@ const LogoImage = styled.img`
   object-fit: contain;
   margin-bottom: 44px;
 
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     width: 100%;
     height: auto;
   }
@@ -238,6 +240,20 @@ const ButtonWrapper = styled.div`
 
   & > button {
     width: 100%;
+  }
+
+  & > button:first-of-type {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e59990;
+    }
+  }
+
+  & > button:nth-of-type(2) {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e6e6e6;
+    }
   }
 
   & > div {

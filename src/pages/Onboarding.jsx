@@ -55,6 +55,12 @@ const ContentWrapper = styled.div`
   gap: 9px;
   width: 100%;
   max-width: 450px;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 `;
 
 const LogoWrapper = styled.div`
@@ -65,6 +71,10 @@ const LogoWrapper = styled.div`
   width: 80%;
   max-width: 300%;
   justify-content: center;
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const LogoImage = styled.img`
