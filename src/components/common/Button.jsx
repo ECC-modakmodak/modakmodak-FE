@@ -15,17 +15,17 @@ const StyledButton = styled.button`
     const styleDefaults = {
       chip: {
         // 회고 마무리 버튼
-        large: { h: '50px', fz: '24px', fw: '600', p: '10px 20px' },
+        large: { h: '50px', fz: '20px', fw: '600', p: '10px 20px' },
         // 팝업 버튼
-        medium: { h: '50px', fz: '20px', fw: '400', p: '13px 23px' },
+        medium: { h: '50px', fz: '16px', fw: '400', p: '13px 23px' },
         // 홈 화면 확인하기 버튼
-        small: { h: '39px', fz: '20px', fw: '400', p: '0 0' },
+        small: { h: '39px', fz: '16px', fw: '400', p: '0 0' },
       },
       rect: {
-        large: { h: '61px', fz: '20px', fw: '500', p: '0 20px' },
+        large: { h: '61px', fz: '16px', fw: '500', p: '0 20px' },
         // 참여 신청하기 버튼
-        slim: { h: '40px', fz: '14px', fw: '500', p: '0 20px' },
-        full: { h: '61px', fz: '20px', fw: '500', p: '0 20px' },
+        slim: { h: '40px', fz: '10px', fw: '500', p: '0 20px' },
+        full: { h: '61px', fz: '16px', fw: '500', p: '0 20px' },
       },
     };
 

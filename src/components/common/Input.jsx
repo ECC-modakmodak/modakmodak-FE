@@ -15,7 +15,7 @@ const Label = styled.label`
   align-items: center;
   height: 34px;
   color: #000;
-  font-size: ${(props) => props.fontSize || '16px'};
+  font-size: ${(props) => props.fontSize || '12px'};
   font-weight: ${(props) => props.fontWeight || '400'};
   margin-bottom: ${(props) => props.labelGap || '0'};
 `;
@@ -43,7 +43,7 @@ const StyledInput = styled.input`
   box-sizing: border-box;
   outline: none;
   font-family: inherit;
-  font-size: ${(props) => props.fontSize || '16px'};
+  font-size: ${(props) => props.fontSize || '12px'};
   font-weight: ${(props) => props.fontWeight || '400'};
   color: #000;
   background-color: #fff;
@@ -85,7 +85,7 @@ const ToggleButton = styled(IconButton)`
 
 const HelperText = styled.div`
   font-family: 'Pretendard', sans-serif;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
   margin-top: 4px;
   height: 27px;

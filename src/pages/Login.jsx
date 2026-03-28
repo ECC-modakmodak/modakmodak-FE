@@ -29,14 +29,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleFindIdLink = (e) => {
+  const handleFindAccountLink = (e) => {
     e.preventDefault();
-    navigate('/find-id');
-  };
-
-  const handleFindPwLink = (e) => {
-    e.preventDefault();
-    navigate('/find-pw');
+    navigate('/find-account');
   };
 
   const handleLogin = async (e) => {
@@ -116,15 +111,11 @@ export default function LoginPage() {
             clearable
           />
         </InputWrapper>
-        <FindLinksWrapper>
-          <ForgotLink href="#" onClick={handleFindIdLink}>
-            아이디
+        <FindLinkWrapper>
+          <ForgotLink href="#" onClick={handleFindAccountLink}>
+            아이디 / 비밀번호 찾기
           </ForgotLink>
-          <SeparatorText>/</SeparatorText>
-          <ForgotLink href="#" onClick={handleFindPwLink}>
-            비밀번호 찾기
-          </ForgotLink>
-        </FindLinksWrapper>
+        </FindLinkWrapper>
 
         <ButtonWrapper>
           <Button
@@ -208,7 +199,7 @@ const InputWrapper = styled.div`
   margin-bottom: 4px;
 `;
 
-const FindLinksWrapper = styled.div`
+const FindLinkWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
@@ -216,19 +207,13 @@ const FindLinksWrapper = styled.div`
 `;
 
 const ForgotLink = styled.a`
-  font-size: 16px;
+  font-size: 12px;
   color: #a5a5a5;
   margin-bottom: 40px;
 
   &:hover {
     text-decoration: underline;
   }
-`;
-
-const SeparatorText = styled.span`
-  font-size: 16px;
-  color: #a5a5a5;
-  user-select: none;
 `;
 
 const ButtonWrapper = styled.div`
@@ -268,7 +253,7 @@ const ButtonWrapper = styled.div`
 
 const Separator = styled.div`
   text-align: center;
-  font-size: 16px;
+  font-size: 12px;
   color: #000;
   margin: 0;
   position: relative;
