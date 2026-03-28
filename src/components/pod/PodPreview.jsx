@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import StudyMood from '../common/tagChip/StudyMood';
 import StudyType from '../common/tagChip/StudyType';
 import { useState } from 'react';
+import StudyCategory from '../common/tagChip/StudyCategory';
 
 export default function PodPreview({
   podDetailInfo,
@@ -67,6 +68,7 @@ export default function PodPreview({
         <TagContainer>
           <StudyMood type={podDetailInfo.hashtags[0]} />
           <StudyType type={podDetailInfo.hashtags[1]} />
+          <StudyCategory type="CODING" /> {/* 추후 데이터 연동 */}
         </TagContainer>
         <PodDetailInfoContainer>
           <PodDetailInfoItem>
@@ -204,6 +206,7 @@ const TagContainer = styled.div`
   align-items: center;
   gap: 6px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 `;
 
 const PodDetailInfoContainer = styled.div`
