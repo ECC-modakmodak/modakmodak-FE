@@ -1,7 +1,13 @@
 import { api } from '../lib/api';
 
 // step 1
-export const postSetupPod1 = async ({ mood, type, otherText, maxPeople, category }) => {
+export const postSetupPod1 = async ({
+  mood,
+  type,
+  otherText,
+  maxPeople,
+  category,
+}) => {
   const res = await api.post(
     '/api/meetings/setup',
     {

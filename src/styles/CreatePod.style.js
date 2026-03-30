@@ -144,14 +144,24 @@ export const TextLink = styled(Link)`
 `;
 
 // === Swiper style ===
-// 화살표 기본 색상 변경 
+// 화살표 기본 색상 변경
 
 export const CategoryWrapper = styled.div`
   display: flex;
   align-items: center;
-  max-width: 225px;
+  justify-content: center;
   text-align: center;
   gap: 23px;
+
+  .swiper {
+    width: 131px;
+  }
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
 
   .custom-next,
   .custom-prev {
@@ -162,7 +172,7 @@ export const CategoryWrapper = styled.div`
     border: none;
     padding: 0;
     cursor: pointer;
-    
+
     // 화살표 크기
     img {
       height: 24px;
@@ -173,7 +183,7 @@ export const CategoryWrapper = styled.div`
   .custom-prev.swiper-button-disabled,
   .custom-next.swiper-button-disabled {
     opacity: 0.3;
-    pointer-events: none; 
+    pointer-events: none;
     cursor: default;
   }
 `;

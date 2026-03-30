@@ -33,15 +33,55 @@ import {
 
 // 카테고리 매핑 데이터
 const POD_DATA = [
-  { type: 'title', label: '팟 카테고리 선택'},
-  { type: 'category',label: '#시험대비', value: 'EXAMS', bgColor:'rgba(255, 187, 13, 0.55)' },
-  { type: 'category', label: '#과제팀플', value: 'PROJECTS', bgColor: 'rgba(0, 159, 40, 0.55)' },
-  { type: 'category', label: '#프로그래밍', value: 'CODING', bgColor: 'rgba(255, 72, 0, 0.55)' },
-  { type: 'category', label: '#어학', value: 'LANGUAGES', bgColor: 'rgba(66, 204, 155, 0.55)' },
-  { type: 'category', label: '#자격증', value: 'CERTS', bgColor: 'rgba(255, 9, 13, 0.55)' },
-  { type: 'category', label: '#취업준비', value: 'JOBS', bgColor: 'rgba(34, 67, 251, 0.55)' },
-  { type: 'category', label: '#독서', value: 'READING', bgColor: 'rgba(255, 114, 231, 0.55)' },
-  { type: 'category', label: '#자기계발', value: 'GROWTH', bgColor: 'rgba(165, 165, 165, 0.55)' },
+  { type: 'title', label: '팟 카테고리 선택' },
+  {
+    type: 'category',
+    label: '#시험대비',
+    value: 'EXAMS',
+    bgColor: 'rgba(255, 187, 13, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#과제팀플',
+    value: 'PROJECTS',
+    bgColor: 'rgba(0, 159, 40, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#프로그래밍',
+    value: 'CODING',
+    bgColor: 'rgba(255, 72, 0, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#어학',
+    value: 'LANGUAGES',
+    bgColor: 'rgba(66, 204, 155, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#자격증',
+    value: 'CERTS',
+    bgColor: 'rgba(255, 9, 13, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#취업준비',
+    value: 'JOBS',
+    bgColor: 'rgba(34, 67, 251, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#독서',
+    value: 'READING',
+    bgColor: 'rgba(255, 114, 231, 0.55)',
+  },
+  {
+    type: 'category',
+    label: '#자기계발',
+    value: 'GROWTH',
+    bgColor: 'rgba(165, 165, 165, 0.55)',
+  },
 ];
 
 // func.
@@ -129,7 +169,12 @@ export default function CreatedPod() {
       isTypeSelected = isOtherSaved && otherText.trim().length > 0;
     }
 
-    return isMoodSelected && isTypeSelected && isMaxPeopleSelected && isCategorySelected;
+    return (
+      isMoodSelected &&
+      isTypeSelected &&
+      isMaxPeopleSelected &&
+      isCategorySelected
+    );
   };
 
   return (
@@ -213,9 +258,9 @@ export default function CreatedPod() {
             <Row>
               <CategoryWrapper>
                 <button className="custom-prev">
-                  <img 
-                    src={ArrowBtn} 
-                    alt="이전" 
+                  <img
+                    src={ArrowBtn}
+                    alt="이전"
                     style={{ transform: 'rotate(180deg)' }}
                   />
                 </button>
@@ -229,23 +274,32 @@ export default function CreatedPod() {
                   loop={false}
                   slidesPerView={1}
                   spaceBetween={10}
-                  onSlideChange={(swiper)=>{
+                  onSlideChange={(swiper) => {
                     const currentData = POD_DATA[swiper.activeIndex];
-                    setCategory(currentData.type === 'title' ? null : currentData.value);
+                    setCategory(
+                      currentData.type === 'title' ? null : currentData.value,
+                    );
                   }}
                 >
-                  {POD_DATA.map((item, index) =>(
+                  {POD_DATA.map((item, index) => (
                     <SwiperSlide key={index}>
                       {item.type === 'title' ? (
-                        <span style={{ fontSize: '16px', fontWeight: '500', color: '#000', cursor: 'default' }}>
+                        <span
+                          style={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            color: '#000',
+                            cursor: 'default',
+                          }}
+                        >
                           {item.label}
                         </span>
                       ) : (
                         <Phill
-                          variant ="filled"
+                          variant="filled"
                           size="small"
-                          backgroundColor= {item.bgColor}
-                          style={{ cursor: "pointer" }}
+                          backgroundColor={item.bgColor}
+                          style={{ cursor: 'pointer' }}
                         >
                           {item.label}
                         </Phill>
