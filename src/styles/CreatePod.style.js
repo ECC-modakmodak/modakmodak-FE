@@ -30,7 +30,7 @@ export const Title = styled.h1`
   margin-bottom: 41px;
 
   color: #000;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   text-align: center;
 `;
@@ -65,13 +65,13 @@ export const OptionText = styled.span`
   cursor: pointer;
 
   color: ${(props) => (props.isSelected ? '#D9695C' : '#828282')};
-  font-size: ${(props) => (props.isSelected ? '28px' : '20px')};
+  font-size: ${(props) => (props.isSelected ? '24px' : '16px')};
   font-weight: ${(props) => (props.isSelected ? '700' : '500')};
 `;
 
 export const Or = styled.span`
   color: #000;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
 `;
 
@@ -103,7 +103,7 @@ export const OtherInput = styled(Input)`
   padding: 11px 19px;
 
   margin-top: 10px;
-  font-size: 16px;
+  font-size: 12px;
   color: #000;
   background: #fff;
 
@@ -116,7 +116,7 @@ export const SaveBtn = styled.button`
   padding: 0;
 
   color: #000;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
   text-decoration-line: underline;
   cursor: pointer;
@@ -137,8 +137,43 @@ export const TextLink = styled(Link)`
   gap: 5px;
 
   color: #000;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
 
   cursor: pointer;
+`;
+
+// === Swiper style ===
+// 화살표 기본 색상 변경 
+
+export const CategoryWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  max-width: 225px;
+  text-align: center;
+  gap: 23px;
+
+  .custom-next,
+  .custom-prev {
+    display: inline-flex;
+    align-items: center;
+
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    
+    // 화살표 크기
+    img {
+      height: 24px;
+    }
+  }
+
+  // 양끝 page 화살표 비활성화 및 투명도 처리
+  .custom-prev.swiper-button-disabled,
+  .custom-next.swiper-button-disabled {
+    opacity: 0.3;
+    pointer-events: none; 
+    cursor: default;
+  }
 `;

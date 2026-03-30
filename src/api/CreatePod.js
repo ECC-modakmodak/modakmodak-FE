@@ -1,7 +1,7 @@
 import { api } from '../lib/api';
 
 // step 1
-export const postSetupPod1 = async ({ mood, type, otherText, maxPeople }) => {
+export const postSetupPod1 = async ({ mood, type, otherText, maxPeople, category }) => {
   const res = await api.post(
     '/api/meetings/setup',
     {
@@ -9,6 +9,7 @@ export const postSetupPod1 = async ({ mood, type, otherText, maxPeople }) => {
       category: type,
       categoryEtc: otherText,
       maxParticipants: maxPeople,
+      podCategory: category, // 팟카테고리 추가
     },
     {
       headers: { 'X-User-Id': localStorage.getItem('myId') },
