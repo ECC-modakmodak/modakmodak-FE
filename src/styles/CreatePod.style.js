@@ -144,7 +144,6 @@ export const TextLink = styled(Link)`
 `;
 
 // === Swiper style ===
-// 화살표 기본 색상 변경
 
 export const CategoryWrapper = styled.div`
   display: flex;
