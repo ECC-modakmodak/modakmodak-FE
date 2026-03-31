@@ -286,7 +286,7 @@ export default function CreatedPod() {
                       {item.type === 'title' ? (
                         <span
                           style={{
-                            fontSize: '16px',
+                            fontSize: '20px',
                             fontWeight: '500',
                             color: '#000',
                             cursor: 'default',

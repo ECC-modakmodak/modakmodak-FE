@@ -30,7 +30,7 @@ export const Title = styled.h1`
   margin-bottom: 41px;
 
   color: #000;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   text-align: center;
 `;
@@ -65,13 +65,13 @@ export const OptionText = styled.span`
   cursor: pointer;
 
   color: ${(props) => (props.isSelected ? '#D9695C' : '#828282')};
-  font-size: ${(props) => (props.isSelected ? '24px' : '16px')};
+  font-size: ${(props) => (props.isSelected ? '28px' : '20px')};
   font-weight: ${(props) => (props.isSelected ? '700' : '500')};
 `;
 
 export const Or = styled.span`
   color: #000;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
 `;
 
@@ -103,7 +103,7 @@ export const OtherInput = styled(Input)`
   padding: 11px 19px;
 
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 16px;
   color: #000;
   background: #fff;
 
@@ -116,7 +116,7 @@ export const SaveBtn = styled.button`
   padding: 0;
 
   color: #000;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
   text-decoration-line: underline;
   cursor: pointer;
@@ -137,7 +137,7 @@ export const TextLink = styled(Link)`
   gap: 5px;
 
   color: #000;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
 
   cursor: pointer;
