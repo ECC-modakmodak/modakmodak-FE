@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ChatFloatingButton, ChatGuide } from '../../styles/Chat.style';
 import { useParams } from 'react-router-dom';
 
-export default function ChatFloating() {
+export default function ChatFloating({ onClick }) {
   const { podId } = useParams();
   const myId = localStorage.getItem('myId');
 
@@ -31,7 +31,7 @@ export default function ChatFloating() {
           팟원들과 대화를 나누어보세요!
         </ChatGuide>
       )}
-      <ChatFloatingButton>
+      <ChatFloatingButton onClick={onClick}>
         <img src="/src/assets/svg/chat.svg" alt="Chat" />
       </ChatFloatingButton>
     </>
