@@ -204,7 +204,7 @@ export default function PodDetail() {
   let content;
 
   if (showChat) {
-    content = <Chat />;
+    content = <Chat onClose={() => setShowChat(false)} />;
   } else if (selectedMember) {
     content = (
       <MemberDetail
@@ -305,9 +305,9 @@ export default function PodDetail() {
         </PodPreviewContainer>
         <PodDetailInfoContainer>
           {content}
-          {!selectedMember && isParticipant && (
+          {!selectedMember && !showChat && isParticipant && (
             <ChatFloating
-              key={pod.meetingId}
+              key={podId}
               onClick={() => {
                 setShowChat(true);
               }}
