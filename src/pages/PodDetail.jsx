@@ -15,7 +15,7 @@ import { updateAttendance } from '../api/pod-detail';
 import { updatePodInfo } from '../api/pod-detail';
 import CloseConfirmPopup from '../components/popup/CloseConfirm';
 import ChatFloating from '../components/chat/ChatFloating';
-import Chat from '../components/chat/Chat';
+import ChatRoom from '../components/chat/ChatRoom';
 
 export default function PodDetail() {
   const myId = Number(localStorage.getItem('myId'));
@@ -204,7 +204,14 @@ export default function PodDetail() {
   let content;
 
   if (showChat) {
-    content = <Chat onClose={() => setShowChat(false)} />;
+    content = (
+      <ChatRoom
+        myId={myId}
+        member={pod?.participants?.list.find((m) => m.memberId === myId)}
+        isHost={pod?.userStatus?.isHost}
+        onClose={() => setShowChat(false)}
+      />
+    );
   } else if (selectedMember) {
     content = (
       <MemberDetail

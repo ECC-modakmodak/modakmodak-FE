@@ -130,3 +130,16 @@ export const ChatSendButton = styled.button`
     height: 100%;
   }
 `;
+
+export const ChatDateDivider = styled.div`
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+  padding: 12px 20px;
+
+  span {
+    font-size: 16px;
+    color: #666;
+  }
+`;
