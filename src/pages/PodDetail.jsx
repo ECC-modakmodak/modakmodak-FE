@@ -14,6 +14,7 @@ import usePodPermissions from '../hooks/usePodPermissions';
 import { updateAttendance } from '../api/pod-detail';
 import { updatePodInfo } from '../api/pod-detail';
 import CloseConfirmPopup from '../components/popup/CloseConfirm';
+import ChatFloating from '../components/chat/ChatFloating';
 
 export default function PodDetail() {
   const myId = Number(localStorage.getItem('myId'));
@@ -31,6 +32,7 @@ export default function PodDetail() {
 
   // 권한
   const {
+    isParticipant,
     canEditPodInfo,
     canEditMention,
     canCheckAttendance,
@@ -288,6 +290,7 @@ export default function PodDetail() {
               ))}
             </>
           )}
+          {isParticipant && <ChatFloating key={pod.meetingId} />}
         </PodDetailInfoContainer>
       </PodDetailContainer>
       {/* 참여 신청 팝업 */}
@@ -369,6 +372,7 @@ const ButtonWrapper = styled.div`
 const PodDetailInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100%;
   background-color: #f0f0f0;
   border-radius: 30px;
