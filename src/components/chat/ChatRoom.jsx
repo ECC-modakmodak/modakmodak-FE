@@ -36,6 +36,11 @@ export default function ChatRoom({ myId, member, isHost, onClose }) {
         // 채팅방 구독
         stompClient.current.subscribe(`/sub/chat/room/${podId}`, (msg) => {
           const newMessage = JSON.parse(msg.body);
+
+          if (!newMessage.createdAt) {
+            newMessage.createdAt = new Date().toISOString();
+          }
+
           setMessages((prev) => [...prev, newMessage]);
         });
       },
@@ -86,6 +91,13 @@ export default function ChatRoom({ myId, member, isHost, onClose }) {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
     <ChatContainer>
       {/* 닫기 */}
@@ -100,6 +112,7 @@ export default function ChatRoom({ myId, member, isHost, onClose }) {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
         <ChatSendButton onClick={sendMessage} disabled={!message.trim()}>
           {message ? (

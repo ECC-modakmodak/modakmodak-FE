@@ -1,9 +1,14 @@
-import { ChatDateDivider } from '../../styles/Chat.style';
+import {
+  ChatDateDivider,
+  ChatDateDividerContainer,
+} from '../../styles/Chat.style';
 
 export const DateDivider = ({ date }) => {
   return (
-    <ChatDateDivider>
-      <span>{date}</span>
-    </ChatDateDivider>
+    <ChatDateDividerContainer>
+      <ChatDateDivider>
+        <span>{date}</span>
+      </ChatDateDivider>
+    </ChatDateDividerContainer>
   );
 };
