@@ -14,8 +14,21 @@ export default function ChatItem({ message, isFirst, isLast }) {
   const myId = Number(localStorage.getItem('myId'));
   const isMe = message.senderId === myId;
 
-  const displayTime = message.createdAt?.split('T')[1]?.substring(0, 5);
-  console.log('message.createdAt:', message.createdAt);
+  const displayTime = (() => {
+    if (!message.createdAt) return '';
+
+    const dateStr = message.createdAt.endsWith('Z')
+      ? message.createdAt
+      : message.createdAt + 'Z';
+
+    const date = new Date(dateStr);
+
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  })();
 
   return (
     <>
