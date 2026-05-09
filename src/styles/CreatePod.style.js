@@ -142,3 +142,47 @@ export const TextLink = styled(Link)`
 
   cursor: pointer;
 `;
+
+// === Swiper style ===
+
+export const CategoryWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 23px;
+
+  .swiper {
+    width: 131px;
+  }
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+
+  .custom-next,
+  .custom-prev {
+    display: inline-flex;
+    align-items: center;
+
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+
+    // 화살표 크기
+    img {
+      height: 24px;
+    }
+  }
+
+  // 양끝 page 화살표 비활성화 및 투명도 처리
+  .custom-prev.swiper-button-disabled,
+  .custom-next.swiper-button-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    cursor: default;
+  }
+`;
