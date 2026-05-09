@@ -28,6 +28,13 @@ import {
   CreateBtn,
 } from '../styles/CreatePodDetail.style';
 
+import POD_IMAGES from '../components/pod/PodImg';
+import {
+  isValidDateTimeFormat,
+  getRandomPodImage,
+  buildIsoDateTime,
+} from '../utils/CreatePodDetail';
+
 export default function CreatePodDetail() {
   // === status ===
   const [inputs, setInputs] = useState({
@@ -69,11 +76,24 @@ export default function CreatePodDetail() {
     }));
   };
 
-  const isValidDateTimeFormat = (date, time) => {
-    const dateRegex = /^\d{1,2}\/\d{1,2}$/; // M/D 또는 MM/DD
-    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/; // 00:00 ~ 23:59 (24시간제)
-    
-    return dateRegex.test(date) && timeRegex.test(time);
+  // 다음맵 우편번호
+  const getAreaFromAddress = (address) => {
+    const parts = address.split(' ');
+    return `${parts[0]} ${parts[1]}`;
+  };
+
+  const openPostcode = () => {
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        const roadAddress = data.roadAddress || data.jibunAddress;
+
+        setInputs((prev) => ({
+          ...prev,
+          placeGeneral: getAreaFromAddress(roadAddress),
+          placeDetail: data.buildingName || roadAddress,
+        }));
+      },
+    }).open();
   };
 
   const handleSave = (key) => {
@@ -117,13 +137,6 @@ export default function CreatePodDetail() {
   };
 
   // 팟 이미지 관리
-  const POD_IMAGES = ['pod_1', 'pod_2', 'pod_3', 'pod_4'];
-
-  const getRandomPodImage = () => {
-    const index = Math.floor(Math.random() * POD_IMAGES.length);
-    return POD_IMAGES[index];
-  };
-
   const [podImg, setPodImg] = useState(getRandomPodImage);
 
   const handleRandomImage = () => {
@@ -134,34 +147,6 @@ export default function CreatePodDetail() {
       } while (next === prev);
       return next;
     });
-  };
-
-  const buildIsoDateTime = (md, time) => {
-    // md: "1/23", time: "23:00"
-    const [m, d] = md.split('/').map(Number);
-    const [hh, mm] = time.split(':').map(Number);
-    
-    // 년도 구별
-    const now = new Date();
-    const currentYear = now.getFullYear();
-
-    // 1 -> 01 로 맞춤
-    const pad = (n) => n.toString().padStart(2, '0');
-
-    // 올해 기준 날짜 생성
-    const targetThisYear = new Date(
-      currentYear,
-      m - 1, // JS month는 0부터 시작
-      d,
-      hh,
-      mm
-    );
-
-    // 오늘보다 과거면 -> 내년날짜로
-    const finalYear =
-      targetThisYear < now ? currentYear + 1 : currentYear;
-
-    return `${finalYear}-${pad(m)}-${pad(d)}T${pad(hh)}:${pad(mm)}`;
   };
 
   // 값 저장 확인
@@ -261,30 +246,46 @@ export default function CreatePodDetail() {
             <Row>
               <InputTitle>팟 장소</InputTitle>
               <InputWrapper>
-                {!isZoom && (
-                  <Input_SS
-                    name="placeGeneral"
-                    placeholder="예) 신촌, 홍대"
-                    value={inputs.placeGeneral}
+                {isZoom ? (
+                  <Input_S
+                    classname="zoom"
+                    width="500px"
+                    name="placeDetail"
+                    placeholder="링크를 입력해 주세요!"
+                    value={inputs.placeDetail}
                     onChange={handleChange}
                     readOnly={status.isPlaceSaved}
                     onClick={() =>
                       status.isPlaceSaved && handleEdit('isPlaceSaved')
                     }
                   />
+                ) : (
+                  <>
+                    <Input_SS
+                      name="placeGeneral"
+                      placeholder="장소 선택하기"
+                      value={inputs.placeGeneral}
+                      readOnly
+                      onClick={() => {
+                        if (status.isPlaceSaved) handleEdit('isPlaceSaved');
+                        openPostcode();
+                      }}
+                    />
+
+                    <Input_S
+                      classname="n-zoom"
+                      style={{ width: '295px' }}
+                      name="placeDetail"
+                      placeholder=""
+                      value={inputs.placeDetail}
+                      readOnly
+                      onClick={() => {
+                        if (status.isPlaceSaved) handleEdit('isPlaceSaved');
+                        openPostcode();
+                      }}
+                    />
+                  </>
                 )}
-                <Input_S
-                  name="placeDetail"
-                  placeholder={
-                    isZoom ? '줌 링크 또는 접속 방법' : '예) 스타벅스 홍대역점'
-                  }
-                  value={inputs.placeDetail}
-                  onChange={handleChange}
-                  readOnly={status.isPlaceSaved}
-                  onClick={() =>
-                    status.isPlaceSaved && handleEdit('isPlaceSaved')
-                  }
-                />
                 {!isZoom && !status.isPlaceSaved && (
                   <SaveBtn
                     variant="secondary"
@@ -311,7 +312,10 @@ export default function CreatePodDetail() {
                 />
                 {!status.isDetailSaved && (
                   <SaveBtn
-                    style={{ alignSelf: 'flex-end' }}
+                    style={{
+                      alignSelf: 'flex-end',
+                      transform: 'translateY(-6.5px)',
+                    }}
                     variant="secondary"
                     onClick={() => handleSave('isDetailSaved')}
                   >
