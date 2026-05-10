@@ -207,7 +207,7 @@ const FindLinkWrapper = styled.div`
 `;
 
 const ForgotLink = styled.a`
-  font-size: 12px;
+  font-size: 16px;
   color: #a5a5a5;
   margin-bottom: 40px;
 
@@ -253,7 +253,7 @@ const ButtonWrapper = styled.div`
 
 const Separator = styled.div`
   text-align: center;
-  font-size: 12px;
+  font-size: 16px;
   color: #000;
   margin: 0;
   position: relative;

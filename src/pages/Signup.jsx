@@ -401,7 +401,7 @@ const RowWrapper = styled.div`
 const SideButton = styled(Button)`
   margin-top: 34px;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 16px;
 `;
 
 const PinkBox = styled.div`
@@ -418,7 +418,7 @@ const PinkBox = styled.div`
 const SectionLabel = styled.label`
   color: #000;
   font-family: Pretendard;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
   height: 34px;
   line-height: 34px;
@@ -450,7 +450,7 @@ const SubBox = styled.div`
 `;
 
 const PlusIcon = styled.span`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   color: #000;
 `;
@@ -459,7 +459,7 @@ const PillButton = styled(Button)`
   min-width: 0;
   flex: 1;
   height: 27px !important;
-  font-size: 12px !important;
+  font-size: 16px !important;
   font-weight: 600 !important;
   padding: 9px 22px !important;
   box-shadow: none !important;
