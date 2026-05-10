@@ -213,6 +213,7 @@ export default function Signup() {
             onChange={handleChange}
             width="80%"
             placeholder="한글 또는 영어를 포함하는 2-10자"
+            clearable
           />
           <SideButton
             type="button"
@@ -233,6 +234,7 @@ export default function Signup() {
             onChange={handleChange}
             width="80%"
             placeholder="영어, 숫자를 포함하는 4-20자"
+            clearable
           />
           <SideButton
             type="button"
@@ -252,6 +254,7 @@ export default function Signup() {
             onChange={handleChange}
             width="80%"
             placeholder="예) example@email.com"
+            clearable
           />
           <SideButton
             type="button"
@@ -271,6 +274,8 @@ export default function Signup() {
           value={formData.password}
           onChange={handleChange}
           placeholder="영어, 숫자, 특수문자를 포함하는 8-20자"
+          showPasswordToggle
+          clearable
         />
         <Input
           type="password"
@@ -279,6 +284,8 @@ export default function Signup() {
           name="passwordConfirm"
           value={formData.passwordConfirm}
           onChange={handleChange}
+          showPasswordToggle
+          clearable
         />
 
         <PinkBox>
