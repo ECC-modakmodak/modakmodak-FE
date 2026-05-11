@@ -30,6 +30,12 @@ export default function ChatItem({ message, isFirst, isLast }) {
     });
   })();
 
+  console.log('ChatItem 렌더링:', {
+    message,
+    isFirst,
+    isLast,
+  });
+
   return (
     <>
       {isMe ? (
@@ -42,8 +48,14 @@ export default function ChatItem({ message, isFirst, isLast }) {
           <OtherChatProfile>
             {isFirst ? (
               <ProfileWrapper>
-                <ProfileImage src="/images/img-placeholder.png" alt="프로필" />
-                {message.host && (
+                <ProfileImage
+                  src={
+                    message.senderProfileImageUrl ||
+                    '/images/profile_default.png'
+                  }
+                  alt="프로필"
+                />
+                {message.isHost && (
                   <HostIconWrapper>
                     <img src="/pod/pod-host.svg" alt="팟장 아이콘" />
                   </HostIconWrapper>
