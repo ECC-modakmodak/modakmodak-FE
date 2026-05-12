@@ -161,9 +161,9 @@ export default function NavBar() {
 
   const handleLogout = () => {
     localStorage.clear();
-
-    alert('로그아웃 되었습니다.');
     setIsLoggedIn(false);
+    alert('로그아웃 되었습니다.');
+    navigate('/', { replace: true });
   };
 
   return (

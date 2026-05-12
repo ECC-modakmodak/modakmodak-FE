@@ -40,8 +40,11 @@ const OnboardingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
   background-color: #fff;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
 const ContentWrapper = styled.div`
@@ -52,14 +55,26 @@ const ContentWrapper = styled.div`
   gap: 9px;
   width: 100%;
   max-width: 450px;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 `;
 
 const LogoWrapper = styled.div`
-  margin-top: 200px;
-  margin-bottom: 70px;
+  margin-top: 28vh;
+  margin-bottom: 10vh;
   display: flex;
   align-items: center;
+  width: 80%;
+  max-width: 300%;
   justify-content: center;
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const LogoImage = styled.img`
@@ -72,5 +87,30 @@ const ButtonArea = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 160px;
+  width: 100%;
+  max-width: 160px;
+  margin-bottom: 5vh;
+
+  & > button {
+    padding: 10px 12px;
+    word-break: keepall;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  & > button:first-of-type {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e59990;
+    }
+  }
+
+  & > button:last-of-type {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e6e6e6;
+    }
+  }
 `;

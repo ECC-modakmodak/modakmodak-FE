@@ -29,14 +29,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleFindIdLink = (e) => {
+  const handleFindAccountLink = (e) => {
     e.preventDefault();
-    navigate('/find-id');
-  };
-
-  const handleFindPwLink = (e) => {
-    e.preventDefault();
-    navigate('/find-pw');
+    navigate('/find-account');
   };
 
   const handleLogin = async (e) => {
@@ -102,6 +97,7 @@ export default function LoginPage() {
             label="아이디"
             size="large"
             fullWidth
+            clearable
           />
           <Input
             type="password"
@@ -112,17 +108,14 @@ export default function LoginPage() {
             size="large"
             fullWidth
             showPasswordToggle
+            clearable
           />
         </InputWrapper>
-        <FindLinksWrapper>
-          <ForgotLink href="#" onClick={handleFindIdLink}>
-            아이디
+        <FindLinkWrapper>
+          <ForgotLink href="#" onClick={handleFindAccountLink}>
+            아이디 / 비밀번호 찾기
           </ForgotLink>
-          <SeparatorText>/</SeparatorText>
-          <ForgotLink href="#" onClick={handleFindPwLink}>
-            비밀번호 찾기
-          </ForgotLink>
-        </FindLinksWrapper>
+        </FindLinkWrapper>
 
         <ButtonWrapper>
           <Button
@@ -150,7 +143,6 @@ export default function LoginPage() {
             onError={() => {
               console.log('Login Failed');
             }}
-            width="380"
             use_fedcm_for_prompt={true}
           />
         </ButtonWrapper>
@@ -177,17 +169,25 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   max-width: 400px;
-  padding: 60px 10px;
+  padding: 60px 20px;
   flex-grow: 1;
   box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    padding: 40px 16px;
+  }
 `;
 
 const LogoImage = styled.img`
-  width: 355px;
+  max-width: 355px;
   height: 106px;
-  aspect-ratio: 355 / 106;
   object-fit: contain;
   margin-bottom: 44px;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -199,7 +199,7 @@ const InputWrapper = styled.div`
   margin-bottom: 4px;
 `;
 
-const FindLinksWrapper = styled.div`
+const FindLinkWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
@@ -216,12 +216,6 @@ const ForgotLink = styled.a`
   }
 `;
 
-const SeparatorText = styled.span`
-  font-size: 16px;
-  color: #a5a5a5;
-  user-select: none;
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -233,14 +227,26 @@ const ButtonWrapper = styled.div`
     width: 100%;
   }
 
+  & > button:first-of-type {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e59990;
+    }
+  }
+
+  & > button:nth-of-type(2) {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: #e6e6e6;
+    }
+  }
+
   & > div {
     width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
 
     iframe {
       width: 100% !important;
-      margin: 0 auto !important;
+      margin: unset !important;
     }
   }
 `;
