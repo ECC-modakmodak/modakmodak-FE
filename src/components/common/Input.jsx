@@ -48,6 +48,18 @@ const StyledInput = styled.input`
   color: #000;
   background-color: #fff;
 
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+
+  &::-webkit-contacts-auto-fill-button,
+  &::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
+
   &::placeholder {
     color: ${(props) => (props.variant === 'black' ? '#D9D9D9' : '#A5A5A5')};
     font-weight: 400;
