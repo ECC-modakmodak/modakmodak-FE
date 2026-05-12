@@ -61,7 +61,7 @@ export const InputTitle = styled.span`
   font-size: 20px;
   font-weight: 500;
 
-  marign-top: 10px;
+  margin-top: 10px;
 `;
 
 export const InputWrapper = styled.div`
@@ -90,7 +90,6 @@ export const Input_SS = styled(BaseInput)`
 
 export const Input_S = styled(BaseInput)`
   display: inline-flex;
-  width: 293px;
   height: 50px;
   padding: 13px 20px;
 
@@ -189,7 +188,7 @@ export const CreateBtn = styled.button`
 
   text-decoration: none;
   gap: 5px;
-  
+
   border: 0;
   background: 0;
   color: #000;
