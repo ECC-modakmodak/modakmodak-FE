@@ -14,6 +14,8 @@ import usePodPermissions from '../hooks/usePodPermissions';
 import { updateAttendance } from '../api/pod-detail';
 import { updatePodInfo } from '../api/pod-detail';
 import CloseConfirmPopup from '../components/popup/CloseConfirm';
+import ChatFloating from '../components/chat/ChatFloating';
+import ChatRoom from '../components/chat/ChatRoom';
 
 export default function PodDetail() {
   const myId = Number(localStorage.getItem('myId'));
@@ -31,6 +33,7 @@ export default function PodDetail() {
 
   // 권한
   const {
+    isParticipant,
     canEditPodInfo,
     canEditMention,
     canCheckAttendance,
@@ -185,12 +188,76 @@ export default function PodDetail() {
     });
   };
 
+  // 채팅
+  const [showChat, setShowChat] = useState(false);
+
   // 로딩화면
   if (!pod) {
     return (
       <LoaderContainer>
         <BounceLoader color="#D9695C" loading={true} size={60} />
       </LoaderContainer>
+    );
+  }
+
+  // 조건문 정리
+  let content;
+
+  if (showChat) {
+    content = (
+      <ChatRoom
+        myId={myId}
+        member={pod?.participants?.list.find((m) => m.memberId === myId)}
+        isHost={pod?.userStatus?.isHost}
+        onClose={() => setShowChat(false)}
+      />
+    );
+  } else if (selectedMember) {
+    content = (
+      <MemberDetail
+        member={selectedMember} // 선택 멤버 배열
+        myId={myId}
+        onClose={() => setSelectedMemberId(null)}
+        onChangePodGoal={(next) =>
+          updateMemberPodGoal(selectedMember.memberId, next)
+        }
+      />
+    );
+  } else {
+    content = (
+      <>
+        {' '}
+        {pod.participants.list.map((member) => (
+          <ClickableMemberWrapper
+            key={member.memberId}
+            onClick={() => setSelectedMemberId(member.memberId)}
+          >
+            <PodMemberCard
+              myId={myId}
+              member={member}
+              // (팟장) 멘션
+              editablePodInfo={editablePodInfo}
+              onHostMentionChange={handlePodInfoChange}
+              onHostMentionUpdate={handleUpdatedPodInfo}
+              // 출석
+              attendanceChecked={!!attendanceById[member.participantId]}
+              onToggleAttendance={(e) => {
+                e.stopPropagation();
+                onToggleAttendance(member.participantId);
+              }}
+              // 배지
+              onBadgeUpdated={(nextBadge) =>
+                handleBadgeUpdated(member.participantId, nextBadge)
+              }
+              // 권한
+              canEditMention={canEditMention && member.isHost}
+              canCheckAttendance={canCheckAttendance}
+              canChangeBadge={canChangeBadge && myId === member.memberId}
+            />
+          </ClickableMemberWrapper>
+        ))}
+        ;
+      </>
     );
   }
 
@@ -244,49 +311,14 @@ export default function PodDetail() {
           </ButtonWrapper>
         </PodPreviewContainer>
         <PodDetailInfoContainer>
-          {/* 팟원 카드 클릭 시 프로필로 이동 */}
-          {selectedMember ? (
-            <MemberDetail
-              member={selectedMember} // 선택 멤버 배열
-              myId={myId}
-              onClose={() => setSelectedMemberId(null)}
-              onChangePodGoal={(next) =>
-                updateMemberPodGoal(selectedMember.memberId, next)
-              }
+          {content}
+          {!selectedMember && !showChat && isParticipant && (
+            <ChatFloating
+              key={podId}
+              onClick={() => {
+                setShowChat(true);
+              }}
             />
-          ) : (
-            <>
-              {/* 팟원 리스트 */}
-              {pod.participants.list.map((member) => (
-                <ClickableMemberWrapper
-                  key={member.memberId}
-                  onClick={() => setSelectedMemberId(member.memberId)}
-                >
-                  <PodMemberCard
-                    myId={myId}
-                    member={member}
-                    // (팟장) 멘션
-                    editablePodInfo={editablePodInfo}
-                    onHostMentionChange={handlePodInfoChange}
-                    onHostMentionUpdate={handleUpdatedPodInfo}
-                    // 출석
-                    attendanceChecked={!!attendanceById[member.participantId]}
-                    onToggleAttendance={(e) => {
-                      e.stopPropagation();
-                      onToggleAttendance(member.participantId);
-                    }}
-                    // 배지
-                    onBadgeUpdated={(nextBadge) =>
-                      handleBadgeUpdated(member.participantId, nextBadge)
-                    }
-                    // 권한
-                    canEditMention={canEditMention && member.isHost}
-                    canCheckAttendance={canCheckAttendance}
-                    canChangeBadge={canChangeBadge && myId === member.memberId}
-                  />
-                </ClickableMemberWrapper>
-              ))}
-            </>
           )}
         </PodDetailInfoContainer>
       </PodDetailContainer>
@@ -369,6 +401,7 @@ const ButtonWrapper = styled.div`
 const PodDetailInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100%;
   background-color: #f0f0f0;
   border-radius: 30px;
